@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+    android:background="@drawable/main_page_backgound"
+>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src = "@drawable/info"
+            android:tint="@color/colorPrimaryDark"
+            android:padding="5dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/circle_button"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today you drank"
+            android:textColor="@color/colorPrimaryDark"
+            android:paddingTop="60dp"
+            android:textSize="20sp"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.9"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"
+            android:textSize="100sp"
+
+            android:layout_gravity="center"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginStart="180dp"
+            android:textSize="15sp"
+            android:text="of 2 Litre"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="add a drink"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:tint ="@color/colorPrimaryDark"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/drink_button"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="30dp">
+             <ImageButton
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:src = "@drawable/history_icon"
+                 android:tint="@color/colorPrimaryDark"
+                 android:padding="10dp"
+                 android:background="@drawable/circle_button"
+                />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src = "@drawable/show_chart"
+                android:tint="@color/colorPrimaryDark"
+                android:padding="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/circle_button"
+                /> <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src = "@drawable/setting_icon"
+            android:tint="@color/colorPrimaryDark"
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/circle_button"
+            />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</RelativeLayout>
