@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/background_light">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Select a mount"
+        android:paddingLeft="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:paddingBottom="20dp"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/hundred_ml_button"
+            android:padding="15dp"
+            android:text="100 ml"
+            android:drawableTop="@drawable/water_glass_100ml"
+            android:background="@drawable/drink_icon_backgorund"
+            android:textColor="@color/colorPrimaryDark"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/hundred_fifty_ml_button"
+            android:padding="15dp"
+            android:text="150 ml"
+            android:drawableTop="@drawable/water_glass_150ml"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:background="@drawable/drink_icon_backgorund"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/two_hundred_ml_button"
+            android:text="200 ml"
+            android:drawableTop="@drawable/water_glass_200ml"
+            android:layout_marginLeft="10dp"
+            android:padding="15dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:background="@drawable/drink_icon_backgorund"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:layout_gravity="center">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/two_hundred_forty_ml_button"
+            android:padding="15dp"
+            android:text="240 ml"
+            android:drawableTop="@drawable/water_glass_240ml"
+            android:background="@drawable/drink_icon_backgorund"
+            android:textColor="@color/colorPrimaryDark"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/three_hundred_thirty_ml_button"
+            android:padding="15dp"
+            android:text="330 ml"
+            android:drawableTop="@drawable/water_bottle_330ml"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:background="@drawable/drink_icon_backgorund"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/thousand_five_hundred"
+            android:text="1.5 l"
+            android:drawableTop="@drawable/water_buttole_1500"
+            android:layout_marginLeft="10dp"
+            android:padding="15dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:background="@drawable/drink_icon_backgorund"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:weightSum="1">
+        <Button
+            android:id="@+id/other_size_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_corner"
+            android:text="other size"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="0.40" />
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cancel"
+            android:background="@drawable/round_corner"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="0.46" />
+
+    </LinearLayout>
+</LinearLayout>
