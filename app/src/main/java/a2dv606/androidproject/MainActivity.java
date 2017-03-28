@@ -8,7 +8,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+
 import a2dv606.androidproject.WaterDrunkHistory.DateLogActivity;
+import a2dv606.androidproject.WaterDrunkHistory.OutlineActivity;
 
 public class MainActivity extends Activity  implements View.OnClickListener {
 
@@ -70,6 +72,8 @@ public class MainActivity extends Activity  implements View.OnClickListener {
     }
 
     private void goToOutlineActivity() {
+        Intent intent2 = new Intent(getApplicationContext(), OutlineActivity.class);
+        startActivity(intent2);
     }
 
     private void goTolChartActivity() {

@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">AndroidProject</string>
+    <string name="app_name">Water Drink</string>
+    <string name="wake_up_review">2 glasses of water after waking up - helps activate internal organs</string>
+    <string name="sleep_review">1 glass of water before going to bed - avoids stroke or heart attack</string>
+    <string name="shower_review">1 glass of water before taking a shower - helps lower blood pressure </string>
+    <string name="meal_review">1 glass of water 30 before a meal - helps digestion</string>
+
+    <string name="add_drink">Add a drink</string>
 </resources>
