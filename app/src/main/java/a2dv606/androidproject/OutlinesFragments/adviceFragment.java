@@ -1,4 +1,4 @@
-package a2dv606.androidproject.WaterDrunkHistory;
+package a2dv606.androidproject.OutlinesFragments;
 
 
 import android.app.Fragment;

@@ -1,8 +1,5 @@
 package a2dv606.androidproject.WaterDrunkHistory;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import a2dv606.androidproject.AddDrinkActivity;
 import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.R;
 

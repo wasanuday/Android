@@ -1,0 +1,46 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:preference="http://schemas.android.com/apk/res-auto">
+<PreferenceCategory
+    android:title="UNITS AND CONTAINER SIZE "
+    >
+    <ListPreference
+        android:key="key_unit"
+        android:title="Units"
+        android:shouldDisableView="true"
+        android:entries="@array/unit_names_array"
+        android:entryValues="@array/unit_values_array"
+        android:summary="@string/unit_summary"
+        ></ListPreference>
+    <alobar.preference.NumberPickerPreference
+        android:key="key_glass"
+        android:title="Glass"
+        android:defaultValue="@integer/glass_water_xl_value"
+        android:icon="@drawable/water_glass"
+        preference:maxValue="@integer/water_recom_number_max_value"
+        preference:minValue="@integer/water_recom_number_min_value"
+        preference:wrapSelectorWheel="false"
+        android:summary="240 ml"/>
+    <alobar.preference.NumberPickerPreference
+        android:key="key_bottle"
+        android:title="Bottle"
+        android:defaultValue="@integer/bottle_water_l_value"
+        android:icon="@drawable/water_bottle"
+        preference:maxValue="@integer/water_recom_number_max_value"
+        preference:minValue="@integer/water_recom_number_min_value"
+        preference:wrapSelectorWheel="false"
+        android:summary="1500 ml"/></PreferenceCategory>
+    <PreferenceCategory android:title="APP SOUNDS">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="key_sounds"
+            android:title="@string/pref_sounds_title"
+            android:summary="@string/sounds_summary">
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
+
+
+
+
+
+</PreferenceScreen>

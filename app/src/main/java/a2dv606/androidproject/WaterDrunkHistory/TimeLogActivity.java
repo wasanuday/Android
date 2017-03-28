@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import a2dv606.androidproject.AddDrinkActivity;
 import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;
 
@@ -76,10 +75,6 @@ public class TimeLogActivity extends AppCompatActivity {
                     builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(TimeLogActivity.this, UpdateLogActivity.class);
-                            //  intent.putExtra("ID", id);
-                            //   eventID = id;
-                            startActivityForResult(intent, 1);
 
 
                         }
@@ -88,8 +83,7 @@ public class TimeLogActivity extends AppCompatActivity {
                     builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //    eventID = id;
-                            //        deleteEvent(eventID);
+
                         }
                     });
                     AlertDialog alert = builder.create();

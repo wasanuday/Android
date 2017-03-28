@@ -1,0 +1,44 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:preference="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="NOTIFICATIONS"
+        >
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="key_notif_enable"
+            android:title="@string/pref_notif_enable_title"
+            android:summary="@string/notif_enable_summary"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="key_notif_sound"
+            android:title="@string/pref_notif_sound_title"
+            android:summary="@string/notif_sound_summary"/>
+    </PreferenceCategory>
+
+<PreferenceCategory android:title="NOTIFICATIONS TIME AND INTERVAL"
+   >
+    <a2dv606.androidproject.Settings.TimePreference
+        android:key="Key_start_time"
+        android:defaultValue="7"
+        android:title="Start time">
+    </a2dv606.androidproject.Settings.TimePreference>
+
+    <a2dv606.androidproject.Settings.TimePreference
+        android:key="Key_end_time"
+        android:defaultValue="7"
+        android:title="End time">
+    </a2dv606.androidproject.Settings.TimePreference>
+    <alobar.preference.NumberPickerPreference
+        android:enabled="false"
+        android:defaultValue="@integer/defualt_time_interval"
+        android:key="key_notif_interval_time"
+        android:title="@string/pref_notif_interval_time_title"
+        preference:maxValue="@integer/notif_time_interval_max_value"
+        preference:minValue="@integer/notif_time_interval_min_value"
+        preference:wrapSelectorWheel="false"
+        android:summary="@string/notif_time_interval_summary"/>
+
+</PreferenceCategory>
+
+
+</PreferenceScreen>

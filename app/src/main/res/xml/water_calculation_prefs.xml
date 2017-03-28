@@ -1,0 +1,36 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:preference="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="DIALY NEED MEASUREMENT "> </PreferenceCategory>
+    <ListPreference
+        android:key="key_gender"
+        android:title="@string/pref_gender_title"
+        android:shouldDisableView="true"
+        android:entries="@array/gender_names_array"
+        android:entryValues="@array/gender_values_array"
+        android:summary="@string/gender_str"
+        ></ListPreference>
+    <alobar.preference.NumberPickerPreference
+        android:key="key_weight_number"
+        android:title="@string/pref_weight_title"
+        preference:maxValue="@integer/weight_max_vlaue"
+        preference:minValue="@integer/weight_min_value"
+        preference:wrapSelectorWheel="false"
+        android:summary="@string/weight_summary"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="key_training"
+        android:title="@string/pref_training_title"
+        android:summary="@string/training_summary"/>
+
+    <alobar.preference.NumberPickerPreference
+        android:enabled="false"
+        android:defaultValue="@integer/water_recom_number_value"
+        android:key="key_water_recommendation"
+        android:title="@string/pref_water_need_title"
+        preference:maxValue="@integer/water_recom_number_max_value"
+        preference:minValue="@integer/water_recom_number_min_value"
+        preference:wrapSelectorWheel="false"
+        android:summary="@string/water_recom_summary"/>
+</PreferenceScreen>
