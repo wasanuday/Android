@@ -17,19 +17,19 @@
 
 <PreferenceCategory android:title="NOTIFICATIONS TIME AND INTERVAL"
    >
-    <a2dv606.androidproject.Settings.TimePreference
-        android:key="Key_start_time"
-        android:defaultValue="7"
-        android:title="Start time">
-    </a2dv606.androidproject.Settings.TimePreference>
+    <Preference
+        android:key="key_from_time"
+        android:summary=""
+        android:defaultValue="2"
+        android:title="From" />
+    <Preference
+        android:key="key_to_time"
+        android:summary=""
+        android:defaultValue="12"
+        android:title="To" />
 
-    <a2dv606.androidproject.Settings.TimePreference
-        android:key="Key_end_time"
-        android:defaultValue="7"
-        android:title="End time">
-    </a2dv606.androidproject.Settings.TimePreference>
     <alobar.preference.NumberPickerPreference
-        android:enabled="false"
+        android:enabled="true"
         android:defaultValue="@integer/defualt_time_interval"
         android:key="key_notif_interval_time"
         android:title="@string/pref_notif_interval_time_title"

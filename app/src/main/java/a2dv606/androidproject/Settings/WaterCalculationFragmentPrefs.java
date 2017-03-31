@@ -24,10 +24,10 @@ public class WaterCalculationFragmentPrefs extends PreferenceFragment
         super.onCreate(savedInstanceState);
                 addPreferencesFromResource(R.xml.water_calculation_prefs);
         // attach change listeners to the preference widgets
-   /*     findPreference(PREF_GENDER).setOnPreferenceChangeListener(this);
+        findPreference(PREF_GENDER).setOnPreferenceChangeListener(this);
         findPreference(PREF_WEIGHT_NUMBER).setOnPreferenceChangeListener(this);
         findPreference(PREF_TRAINING).setOnPreferenceChangeListener(this);
-        findPreference(PREF_WATER_RECOM).setOnPreferenceChangeListener(this);
+        findPreference(PREF_WATER_RECOM).setOnPreferenceChangeListener(this);/*
             // init the summary of the 'Give me a number' preference widget with its value
             int aNumber = getPreferenceManager().getSharedPreferences().getInt(PREF_WEIGHT_NUMBER, 0);
             Preference giveMeANumberPreference = findPreference(PREF_WEIGHT_NUMBER);
@@ -48,7 +48,7 @@ public class WaterCalculationFragmentPrefs extends PreferenceFragment
         switch (preference.getKey()) {
             case PREF_GENDER:
                 // This preference should always be persisted
-
+                preference.setSummary(newValue.toString());
                 return true;
             case PREF_WEIGHT_NUMBER:
                 //  findPreference(PREF_WATER_RECOM).setEnabled(true);
@@ -56,8 +56,10 @@ public class WaterCalculationFragmentPrefs extends PreferenceFragment
                 preference.setSummary(newValue.toString());
                 return true;
             case PREF_TRAINING:
+                preference.setSummary(newValue.toString());
                 return true;
             case PREF_WATER_RECOM:
+                preference.setSummary(newValue.toString());
                 // we want this preference to only be persisted when PREF_PERSIST_PREFERENCES is set to true.
                 //   int weight = getPreferenceManager().getSharedPreferences().getInt(PREF_WEIGHT_NUMBER,0);
                 //   boolean train=   getPreferenceManager().getSharedPreferences().getBoolean(PREF_TRAINING, false);

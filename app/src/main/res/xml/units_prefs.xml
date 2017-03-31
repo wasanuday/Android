@@ -29,14 +29,7 @@
         preference:minValue="@integer/water_recom_number_min_value"
         preference:wrapSelectorWheel="false"
         android:summary="1500 ml"/></PreferenceCategory>
-    <PreferenceCategory android:title="APP SOUNDS">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="key_sounds"
-            android:title="@string/pref_sounds_title"
-            android:summary="@string/sounds_summary">
-        </CheckBoxPreference>
-    </PreferenceCategory>
+
 
 
 

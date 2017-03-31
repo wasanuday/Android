@@ -9,9 +9,9 @@
     <!-- fragments headers -->
     <string name="water_calculation_settings_header_title">Daily Recommendation</string>
     <string name="water_calculation_settings_header_summary">Calculate how much water your body needs</string>
-    <string name="notif_settings_header_title">Notification</string>
+    <string name="notif_settings_header_title">Notifications and Sounds</string>
     <string name="notif_settings_header_summary">Enable Notifications</string>
-    <string name="glass_size_settings_header_title">Unit, Glasses size and Sounds</string>
+    <string name="glass_size_settings_header_title">Units and containers size</string>
     <string name="glass_size_settings_summary">Select unit, glasses size and enable sounds</string>
 
     <!-- fragments preferences title & summary  water calculation-->
@@ -26,14 +26,17 @@
     <string name="unit_summary">American</string>
 
     <!-- fragment preferences title and summary  notifications  -->
-    <string name="pref_notif_enable_title">Notification</string>
-    <string name="pref_notif_sound_title">Sound</string>
+    <string name="pref_notif_enable_title">Notifications</string>
+    <string name="pref_notif_sound_title">Sounds</string>
     <string name="pref_notif_interval_time_title">Time interval</string>
-    <string name="notif_enable_summary">disabled</string>
-    <string name="notif_sound_summary">disabled</string>
-    <string name="notif_time_interval_summary">j </string>
+    <string name="notif_enable_summary">Off</string>
+    <string name="notif_sound_summary">Off</string>
+    <string name="notif_time_interval_summary"> </string>
 
-
+<string name="ON">ON</string>
+    <string name="OFF">OFF</string>
+    <string name="AM"> AM</string>
+    <string name="PM"> PM</string>
     <!-- fragment preferences title and summary  sounds_prefs -->
     <string name="pref_sounds_title">Sounds</string>
     <string name="sounds_summary">disabled</string>

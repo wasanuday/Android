@@ -1,15 +1,25 @@
 package a2dv606.androidproject;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+
+import java.util.Calendar;
 
 import a2dv606.androidproject.WaterDrunkHistory.DateLogActivity;
 import a2dv606.androidproject.Settings.SettingsActivity;
@@ -22,6 +32,18 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     Dialog addDrinkdialog, numberBickerDialog;
     LinearLayout mainLayout;
     NumberPicker numberPicker;
+    private AppService service = null;
+
+    private ServiceConnection connection = new ServiceConnection() {
+        //@Override  // Called when connection is made
+        public void onServiceConnected(ComponentName cName, IBinder binder) {
+            service = ((AppService.AppBinder)binder).getService();
+        }
+        //@Override   //
+        public void onServiceDisconnected(ComponentName cName) {
+            service = null;
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +77,61 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         outlineButton.setOnClickListener(this);
         addDrink.setOnClickListener(this);
         setButton.setOnClickListener(this);
+        checkAppFirstTimeRun();
+      }
+
+    private void checkAppFirstTimeRun() {
+
+        // get shared preferences
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        // first time run?
+        if (pref.getBoolean("first_time_run", true)) {
+            System.out.println("first time lunched");
+            // start the preferences activity
+            setupAppDB();
+            startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+            //get the preferences editor
+            SharedPreferences.Editor editor = pref.edit();
+            // avoid for next run
+            editor.putBoolean("first_time_run", false);
+            editor.commit();
+        }
+
 
     }
+
+
+    private void setupAppDB() {
+
+        Calendar calendar = Calendar.getInstance();
+        /*  set calendar time the beganing of  day    */
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+            /* broadcast to db broadcast receiver   */
+        Intent mIntent = new Intent(getApplicationContext(),DBBroadcastReceiver.class);
+        /* put extra to setup app (0 am) */
+        PendingIntent pendingIntent = PendingIntent.
+                getBroadcast(getApplicationContext(),90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        /*repeat alarm every day at 0.1 am clock */
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY,pendingIntent);
+        System.out.println("db alarm setup");
+    }
+
+
+    private void bindToService(){
+        Intent intent = new Intent(getApplicationContext(),AppService.class);
+        MainActivity.this.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        System.out.println("Binding to SlowCountService");
+    }
+    private  void stopNotificationAlarm(){
+        if(service!=null){
+            service.stopNotificationAlarm();
+        }
+    }
+
 
     private void setNumberPickerFormat() {
         NumberPicker.Formatter formatter = new NumberPicker.Formatter() {
@@ -131,6 +206,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     }
 
     private void goTolChartActivity() {
+        stopNotificationAlarm();
     }
 
     private void goToLogActivity() {
@@ -142,4 +218,5 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         Log.i("value is",""+newVal);
     }
+
 }

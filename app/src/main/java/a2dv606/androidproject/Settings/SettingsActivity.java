@@ -1,5 +1,6 @@
 package a2dv606.androidproject.Settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,9 @@ import a2dv606.androidproject.R;
 public class SettingsActivity extends PreferenceActivity {
 
     static Toolbar bar ;
+    private static final int NotificationSettingsCode=1;
+    private int UnitsSettingsCode=2;
+    private int waterCalculationCode=3;
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -40,12 +44,22 @@ public class SettingsActivity extends PreferenceActivity {
                 WaterCalculationFragmentPrefs.class.getName().equals(fragmentName));
     }
 
-}
-     /*
-        getFragmentManager()
-                .beginTransaction()
-                .replace(android.R.id.content, new NotificationFragmentPreferences())
-                .commit();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case NotificationSettingsCode:
+                resetNotificationAlarm();
+                break;
+
+        }
+
     }
+
+    private void resetNotificationAlarm() {
+
+    }
+
+
 }
-*/
