@@ -35,11 +35,13 @@ android:layout_height="match_parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0.9"
+            android:id="@+id/add_drink_text"
             android:textColor="@color/colorPrimaryDark"
             android:padding="10dp"
             android:textSize="100sp"
 
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:phoneNumber="false" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,6 +49,7 @@ android:layout_height="match_parent"
             android:layout_marginStart="180dp"
             android:textSize="15sp"
             android:text="of 2 Litre"
+            android:id="@+id/choosen_drink_text"
             />
 
         <Button

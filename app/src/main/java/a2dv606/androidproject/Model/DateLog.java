@@ -2,6 +2,9 @@ package a2dv606.androidproject.Model;
 
 import android.os.Parcelable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -9,12 +12,18 @@ import java.util.Date;
  */
 
 public class DateLog  {
-    private int id;
+
+
+    private Long ID;
     private int waterNeed;
     private int waterDrunk;
-    private String date;
+    private static String date;
 
-    public String getDate() {
+
+    public static String getDate(){
+        DateFormat df = new SimpleDateFormat("EEE, MMM d, ''yy");
+        Date today = Calendar.getInstance().getTime();
+        date=df.format(today);
         return date;
     }
 
@@ -47,10 +56,17 @@ public class DateLog  {
         this.waterNeed = waterNeed;
     }
 
-    public DateLog(int waterNeed, int waterDrunk, String date){
+  /*  public DateLog(int waterNeed, int waterDrunk, String date){
 
         this.waterNeed=waterNeed;
         this.waterDrunk= waterDrunk;
         this.date= date;
+    }*/
+
+    public void setID(Long ID) {
+        this.ID =  ID;
+    }
+    public Long getID() {
+        return ID;
     }
 }

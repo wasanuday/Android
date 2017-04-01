@@ -15,25 +15,35 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import a2dv606.androidproject.Database.DrinkDataSource;
+import a2dv606.androidproject.Database.DrinkDbHelper;
+import a2dv606.androidproject.MainActivity;
 import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.R;
 
 public class DateLogActivity extends AppCompatActivity {
-  ArrayList<DateLog> values = new ArrayList<DateLog>();
+  List<DateLog> values ;
+    int waterDrunk;
     ArrayAdapter<DateLog> adapter;
-    private ListView listView;
+    DateLog dateLog;
+    private DrinkDataSource db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.date_log_activity);
         setTitle("History");
-        values.add(new DateLog(3000,1000,getDate()));
-        values.add(new DateLog(3000,2500,getDate()));
-        values.add(new DateLog(3000,2000,getDate()));
+
+        db = new DrinkDataSource(this);
+        db.open();
+        values = db.getAllDates();
 
 
-        listView = (ListView) findViewById(R.id.log_list);
+
+
+
+        ListView listView = (ListView) findViewById(R.id.log_list);
         adapter = new myListAdapter();
         listView.setAdapter(adapter);
 
@@ -53,19 +63,19 @@ public class DateLogActivity extends AppCompatActivity {
                 itemView = getLayoutInflater().inflate(
                         R.layout.date_log_raw, parent, false);
             }
-            final DateLog dateLog = values.get(position);
+             dateLog = values.get(position);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), TimeLogActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString(Commands.DateLogItem,dateLog.getDate());
+                    bundle.putString(Commands.DateLogItem, dateLog.getDate());
                     intent.putExtras(bundle);
                     startActivityForResult(intent, 0);
                 }
 
             });
-            ImageButton shareButton= (ImageButton)itemView.findViewById(R.id.forward);
+            ImageButton shareButton = (ImageButton) itemView.findViewById(R.id.forward);
 
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -76,23 +86,46 @@ public class DateLogActivity extends AppCompatActivity {
 
             TextView date = (TextView) itemView
                     .findViewById(R.id.date);
-           date.setText(dateLog.getDate());
+            date.setText(dateLog.getDate());
 
             TextView waterLog = (TextView) itemView
                     .findViewById(R.id.water_drunk);
 
-           int waterDrunk= dateLog.getWaterDrunk();
-            int waterNeed= dateLog.getWaterNeed();
-            waterLog.setText(dateLog.getWaterInLiter(waterDrunk)+"/"+ dateLog.getWaterInLiter(waterNeed)+"L");
+            waterDrunk = dateLog.getWaterDrunk();
+            int waterNeed = dateLog.getWaterNeed();
+            waterLog.setText(dateLog.getWaterInLiter(waterDrunk) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
+
+            Bundle bundle = getIntent().getExtras();
+            if(bundle!=null) {
+                int remove = bundle.getInt("remove");
+                db.updateDrinkingAmount(waterDrunk, remove);
+                waterLog.setText(dateLog.getWaterInLiter(waterDrunk) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
+            }
             return itemView;
         }
     }
+      protected void onActivityResult(int requestedCode, int resultCode,
+                                    Intent result) {
 
+          if (requestedCode == 0) {
+              if (resultCode == RESULT_OK) {
+                  int lastAmount = result.getIntExtra("add", 0);
+                  db.updateDrinkingAmount(waterDrunk, lastAmount);
+              }
+          }
 
-
-    private String getDate(){
-        DateFormat df = new SimpleDateFormat("EEE, MMM d, ''yy");
-        Date today = Calendar.getInstance().getTime();
-       return df.format(today);
+    if (requestedCode == 0) {
+        if (resultCode == DEFAULT_KEYS_DIALER) {
+            int remove = result.getIntExtra("remove", 0);
+            db.updateDrinkingAmount(waterDrunk, remove);
+        }
     }
+        /*if (requestedCode == 0) {
+            if (resultCode == CONTEXT_INCLUDE_CODE) {
+                int update = result.getIntExtra("update",0);
+                db.updateDrinkingAmount(waterDrunk, update);
+            }
+    }*/
+}
+
 }

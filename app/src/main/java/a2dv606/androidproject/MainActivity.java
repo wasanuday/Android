@@ -18,7 +18,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
+import a2dv606.androidproject.Database.DrinkDataSource;
+import a2dv606.androidproject.Model.DateLog;
+import a2dv606.androidproject.Model.TimeLog;
 import java.util.Calendar;
 
 import a2dv606.androidproject.WaterDrunkHistory.DateLogActivity;
@@ -32,6 +36,12 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     Dialog addDrinkdialog, numberBickerDialog;
     LinearLayout mainLayout;
     NumberPicker numberPicker;
+    TextView addDrinkTv,choosenAmountTv;
+    int glassSize=240;
+    int bottleSize=1500;
+    DrinkDataSource db;
+    TimeLog t;
+    int pickerValue=0;
     private AppService service = null;
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -48,6 +58,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
+        addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
+        choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
         addDrinkdialog = new Dialog(MainActivity.this);
         numberBickerDialog =new Dialog(MainActivity.this);
         addDrinkdialog.setContentView(R.layout.add_drink_dialog);
@@ -78,6 +90,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         addDrink.setOnClickListener(this);
         setButton.setOnClickListener(this);
         checkAppFirstTimeRun();
+
+
       }
 
     private void checkAppFirstTimeRun() {
@@ -96,6 +110,13 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
             editor.putBoolean("first_time_run", false);
             editor.commit();
         }
+
+
+        DateLog d = new DateLog();
+         t= new TimeLog();
+        db= new DrinkDataSource(this);
+        db.open();
+        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
 
 
     }
@@ -167,10 +188,17 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
                     showAddDrinkDialog();
                     break;
                 case R.id.water_bottle_button:
-                    addDrink();
+                    db.createTime(bottleSize,t.getDate(),t.getTime());
+                    db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),bottleSize);
+                    addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+                    addDrinkdialog.dismiss();
                     break;
                 case R.id.water_glass_button:
-                    addDrink();
+                    db.createTime(glassSize,t.getDate(),t.getTime());
+                    db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),glassSize);
+                    addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+                    addDrinkdialog.dismiss();
+                    break;
                 case R.id.cancel_button:
                     addDrinkdialog.dismiss();
                     break;
@@ -179,11 +207,18 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
                     showNumberPickerDialog();
                     break;
                 case R.id.set_button:
+                    db.createTime(pickerValue,t.getDate(),t.getTime());
+                    db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),pickerValue);
+                    addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
                     numberBickerDialog.dismiss();
     }
 }
 
     private void addDrink() {
+        db.createTime(glassSize,t.getDate(),t.getTime());
+       // db.create(glassSize,2000,t.getDate());
+        db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),glassSize);
+        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
     }
 
     private void showAddDrinkDialog() {
@@ -217,6 +252,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         Log.i("value is",""+newVal);
+        pickerValue= picker.getValue();
     }
+
 
 }

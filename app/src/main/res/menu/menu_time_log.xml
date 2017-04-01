@@ -5,7 +5,8 @@
 
     <item android:id="@+id/add_drink"
         android:icon="@drawable/plus_icon"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:title="" />
     <item android:id="@+id/sort_by_time_desc"
         android:title="Sort by time DESC"  ></item>
 
