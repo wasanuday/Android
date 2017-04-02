@@ -94,38 +94,25 @@ public class DateLogActivity extends AppCompatActivity {
             waterDrunk = dateLog.getWaterDrunk();
             int waterNeed = dateLog.getWaterNeed();
             waterLog.setText(dateLog.getWaterInLiter(waterDrunk) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
-
-            Bundle bundle = getIntent().getExtras();
-            if(bundle!=null) {
-                int remove = bundle.getInt("remove");
-                db.updateDrinkingAmount(waterDrunk, remove);
-                waterLog.setText(dateLog.getWaterInLiter(waterDrunk) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
-            }
             return itemView;
         }
     }
       protected void onActivityResult(int requestedCode, int resultCode,
                                     Intent result) {
-
           if (requestedCode == 0) {
               if (resultCode == RESULT_OK) {
                   int lastAmount = result.getIntExtra("add", 0);
                   db.updateDrinkingAmount(waterDrunk, lastAmount);
-              }
+
+               }
+
+           //   else if (resultCode == DEFAULT_KEYS_DIALER) {
+          //        int remove =  result.getIntExtra("remove", 0);
+          //        db.updateDrinkingAmount(waterDrunk, remove);
+
+        //      }
           }
 
-    if (requestedCode == 0) {
-        if (resultCode == DEFAULT_KEYS_DIALER) {
-            int remove = result.getIntExtra("remove", 0);
-            db.updateDrinkingAmount(waterDrunk, remove);
-        }
-    }
-        /*if (requestedCode == 0) {
-            if (resultCode == CONTEXT_INCLUDE_CODE) {
-                int update = result.getIntExtra("update",0);
-                db.updateDrinkingAmount(waterDrunk, update);
-            }
-    }*/
-}
+      }
 
 }

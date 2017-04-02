@@ -17,10 +17,10 @@ public class DateLog  {
     private Long ID;
     private int waterNeed;
     private int waterDrunk;
-    private static String date;
+    private  String date;
 
 
-    public static String getDate(){
+    public  String getDate(){
         DateFormat df = new SimpleDateFormat("EEE, MMM d, ''yy");
         Date today = Calendar.getInstance().getTime();
         date=df.format(today);
@@ -56,12 +56,7 @@ public class DateLog  {
         this.waterNeed = waterNeed;
     }
 
-  /*  public DateLog(int waterNeed, int waterDrunk, String date){
 
-        this.waterNeed=waterNeed;
-        this.waterDrunk= waterDrunk;
-        this.date= date;
-    }*/
 
     public void setID(Long ID) {
         this.ID =  ID;

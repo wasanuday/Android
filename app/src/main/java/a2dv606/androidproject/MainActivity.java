@@ -42,6 +42,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     DrinkDataSource db;
     TimeLog t;
     int pickerValue=0;
+    DateLog d;
     private AppService service = null;
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -60,35 +61,20 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         setContentView(R.layout.main_page);
         addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
         choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
+        mainLayout= (LinearLayout) findViewById(R.id.main_view);
         addDrinkdialog = new Dialog(MainActivity.this);
         numberBickerDialog =new Dialog(MainActivity.this);
-        addDrinkdialog.setContentView(R.layout.add_drink_dialog);
-        numberBickerDialog.setContentView(R.layout.number_picker_dialog);
-        numberPicker=(NumberPicker) numberBickerDialog.findViewById(R.id.numberPicker);
-        setButton = (Button) numberBickerDialog.findViewById(R.id.set_button);
 
+        initializeViews();
+
+        d = new DateLog();
+        t= new TimeLog();
+        db= new DrinkDataSource(this);
+        db.open();
+        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
         setNumberPickerFormat();
-        mainLayout= (LinearLayout) findViewById(R.id.main_view);
-        logButton =(ImageButton)findViewById(R.id.log_button);
-        chartButton =(ImageButton)findViewById(R.id.chart_button);
-        settingButton =(ImageButton)findViewById(R.id.setting_button);
-        outlineButton =(ImageButton)findViewById(R.id.outline_button);
-        addDrink =(Button)findViewById(R.id.add_drink_button);
-        otherSize = (Button) addDrinkdialog.findViewById(R.id.other_size_button);
-        cancel = (Button) addDrinkdialog.findViewById(R.id.cancel_button);
-         bottleButton= ( Button)addDrinkdialog.findViewById(R.id.water_bottle_button);
-        glassButton=  (Button) addDrinkdialog.findViewById(R.id.water_glass_button);
 
-        bottleButton.setOnClickListener(this);
-        glassButton.setOnClickListener(this);
-        cancel.setOnClickListener(this);
-        otherSize.setOnClickListener(this);
-        logButton.setOnClickListener(this);
-        chartButton.setOnClickListener(this);
-        settingButton.setOnClickListener(this);
-        outlineButton.setOnClickListener(this);
-        addDrink.setOnClickListener(this);
-        setButton.setOnClickListener(this);
+
         checkAppFirstTimeRun();
 
 
@@ -112,11 +98,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         }
 
 
-        DateLog d = new DateLog();
-         t= new TimeLog();
-        db= new DrinkDataSource(this);
-        db.open();
-        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+
 
 
     }
@@ -188,16 +170,10 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
                     showAddDrinkDialog();
                     break;
                 case R.id.water_bottle_button:
-                    db.createTime(bottleSize,t.getDate(),t.getTime());
-                    db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),bottleSize);
-                    addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
-                    addDrinkdialog.dismiss();
+                   addBottle();
                     break;
                 case R.id.water_glass_button:
-                    db.createTime(glassSize,t.getDate(),t.getTime());
-                    db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),glassSize);
-                    addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
-                    addDrinkdialog.dismiss();
+                    addGlass();
                     break;
                 case R.id.cancel_button:
                     addDrinkdialog.dismiss();
@@ -207,19 +183,33 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
                     showNumberPickerDialog();
                     break;
                 case R.id.set_button:
-                    db.createTime(pickerValue,t.getDate(),t.getTime());
-                    db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),pickerValue);
-                    addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
-                    numberBickerDialog.dismiss();
+                    addFromNumberPiker();
+                    break;
     }
 }
+    private void  addFromNumberPiker() {
+        db.createTime(pickerValue,t.getDate(),t.getTime());
+        db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),pickerValue);
+        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+        numberBickerDialog.dismiss();
+    }
 
-    private void addDrink() {
+    private void addGlass(){
         db.createTime(glassSize,t.getDate(),t.getTime());
-       // db.create(glassSize,2000,t.getDate());
+        //  db.create(240,2000,d.getDate());
         db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),glassSize);
         addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+        addDrinkdialog.dismiss();
     }
+
+    private void addBottle() {
+        db.createTime(bottleSize,t.getDate(),t.getTime());
+        db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),bottleSize);
+        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+        addDrinkdialog.dismiss();
+
+    }
+
 
     private void showAddDrinkDialog() {
         addDrinkdialog.setTitle("select container");
@@ -255,5 +245,32 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         pickerValue= picker.getValue();
     }
 
+
+    public void  initializeViews(){
+        addDrinkdialog.setContentView(R.layout.add_drink_dialog);
+        numberBickerDialog.setContentView(R.layout.number_picker_dialog);
+        numberPicker=(NumberPicker) numberBickerDialog.findViewById(R.id.numberPicker);
+        setButton = (Button) numberBickerDialog.findViewById(R.id.set_button);
+        logButton =(ImageButton)findViewById(R.id.log_button);
+        chartButton =(ImageButton)findViewById(R.id.chart_button);
+        settingButton =(ImageButton)findViewById(R.id.setting_button);
+        outlineButton =(ImageButton)findViewById(R.id.outline_button);
+        addDrink =(Button)findViewById(R.id.add_drink_button);
+        otherSize = (Button) addDrinkdialog.findViewById(R.id.other_size_button);
+        cancel = (Button) addDrinkdialog.findViewById(R.id.cancel_button);
+        bottleButton= ( Button)addDrinkdialog.findViewById(R.id.water_bottle_button);
+        glassButton=  (Button) addDrinkdialog.findViewById(R.id.water_glass_button);
+
+        bottleButton.setOnClickListener(this);
+        glassButton.setOnClickListener(this);
+        cancel.setOnClickListener(this);
+        otherSize.setOnClickListener(this);
+        logButton.setOnClickListener(this);
+        chartButton.setOnClickListener(this);
+        settingButton.setOnClickListener(this);
+        outlineButton.setOnClickListener(this);
+        addDrink.setOnClickListener(this);
+        setButton.setOnClickListener(this);
+    }
 
 }

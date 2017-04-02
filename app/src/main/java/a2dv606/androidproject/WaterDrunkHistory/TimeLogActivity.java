@@ -9,6 +9,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,15 +28,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
 import a2dv606.androidproject.Database.DrinkDataSource;
-import a2dv606.androidproject.MainActivity;
+import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;
 import a2dv606.androidproject.dialogs.TimePickerFragment;
@@ -53,9 +49,12 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     TimePicker timePicker;
     int glassSize = 240;
     int bottleSize=1500;
-    TimeLog t;
+    TimeLog timeLog=new TimeLog();
+    DateLog dateLog;
+    int removedValue=0;
     int ID=0;
     int pickerValue=0;
+    String sortBy;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -68,11 +67,11 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         String date = bundle.get(Commands.DateLogItem).toString();
         setTitle(date);
 
-         t = new TimeLog();
 
         db = new DrinkDataSource(this);
         db.open();
-        values = db.getAllTimes();
+
+        values = db.getAllTimes(sortBy);
 
         listView = (ListView) findViewById(R.id.time_log_list);
         adapter = new myListAdapter(this);
@@ -89,9 +88,9 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
         initializeViews();
 
-//        setNumberPickerFormat();
-        setNumberPickerFormat2();
 
+       //setNumberPickerFormat();
+        setNumberPickerFormat2();
 
     }
 
@@ -146,35 +145,20 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        int size=0;
         int id = view.getId();
         switch (id) {
             case R.id.water_bottle_button:
-                addDrinkdialog.dismiss();
-                showTimePickerDialog();
-                db.createTime(bottleSize,t.getDate(),t.getTime());
-                size=bottleSize;
+               addBottle();
                 break;
-
             case R.id.water_bottle_button2:
-                db.update(ID, bottleSize);
-                size=bottleSize;
-                addDrinkdialog2.dismiss();
+            addBottle2();
                 break;
-
             case R.id.water_glass_button:
-                addDrinkdialog.dismiss();
-                showTimePickerDialog();
-                db.createTime(glassSize,t.getDate(),t.getTime());
-                size=glassSize;
+              addGlass();
                 break;
-
             case R.id.water_glass_button2:
-                db.update( ID, glassSize);
-                size=glassSize;
-                addDrinkdialog2.dismiss();
+                addGlass2();
                 break;
-
             case R.id.cancel_button:
                 addDrinkdialog.dismiss();
                 break;
@@ -189,32 +173,55 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                 addDrinkdialog2.dismiss();
                 showNumberPickerDialog2();
                 break;
-
             case R.id.set_button:
-
-                db.createTime(pickerValue,t.getDate(),t.getTime());
-                size=pickerValue;
-                numberBickerDialog.dismiss();
+            addFromNumberPiker();
                 break;
             case R.id.set_button2:
-
-                db.update( ID, pickerValue);
-                size=pickerValue;
-                numberPickerDialog2.dismiss();
+               addFromNumberPiker2();
                 break;
         }
 
-        Intent intent = new Intent();
-        intent.putExtra("add", size);
-        setResult(RESULT_OK, intent);
-
-        intent.putExtra("update", size);
-        setResult(CONTEXT_INCLUDE_CODE, intent);
-
-
     }
 
+    private void  addFromNumberPiker() {
+        db.createTime(pickerValue, timeLog.getDate(), timeLog.getTime());
+        db.updateDrinkingAmount(db.getDrinkingAmount(), pickerValue);
+        numberBickerDialog.dismiss();
+    }
 
+    private void addGlass(){
+        db.createTime(glassSize, timeLog.getDate(), timeLog.getTime());
+        db.updateDrinkingAmount(db.getDrinkingAmount(), glassSize);
+        addDrinkdialog.dismiss();
+}
+
+    private void addBottle() {
+        db.createTime(bottleSize, timeLog.getDate(), timeLog.getTime());
+        db.updateDrinkingAmount(db.getDrinkingAmount(), bottleSize);
+        addDrinkdialog.dismiss();
+    }
+
+    private void  addFromNumberPiker2() {
+        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue);
+        db.update(ID,pickerValue);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), pickerValue);
+        numberPickerDialog2.dismiss();
+    }
+
+    private void addGlass2(){
+        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue);
+        db.update(ID,glassSize);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), glassSize);
+        addDrinkdialog.dismiss();
+
+    }
+    private void addBottle2() {
+        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue);
+        db.update(ID,bottleSize);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), bottleSize);
+        addDrinkdialog.dismiss();
+
+    }
 
 
 
@@ -263,11 +270,8 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR, hour);
         calendar.set(Calendar.MINUTE, minute);
-        t.setTime(String.valueOf(calendar.getTimeInMillis()));
-
-        Intent intent = new Intent();
-        intent.putExtra("result1", glassSize);
-        setResult(RESULT_OK, intent);
+        timeLog.setTime(String.valueOf(calendar.getTimeInMillis()));
+        showAddDrinkDialog();
 
     }
 
@@ -280,7 +284,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         }
 
         public View getView(final int position, View convertView, ViewGroup parent) {
-
+            removedValue=  values.get(position).getAmount();
             View itemView = convertView;
             if (itemView == null) {
                 itemView = getLayoutInflater().inflate(
@@ -313,12 +317,8 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             TimeLog time = values.get(position);
-                            Intent intent = new Intent();
                             int removedAmount= 0 - time.getAmount();
-                            intent.putExtra("remove",removedAmount);
-                            setResult(DEFAULT_KEYS_DIALER, intent);
-
-
+                            db.updateDrinkingAmount(db.getDrinkingAmount(), removedAmount);
                             db.delete(time);
                             adapter.remove(time);
                         }
@@ -343,27 +343,30 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_drink:
-                showAddDrinkDialog();
+                showTimePickerDialog();
                 return true;
 
             case R.id.sort_by_amount_asc:
-                db.sortByAmountAsc();
+                sortBy= db.sortByAmountAsc();
                 break;
 
             case R.id.sort_by_amount_desc:
-                db.sortByAmountDesc();
+                sortBy=  db.sortByAmountDesc();
                 break;
 
             case R.id.sort_by_time_ASC:
-                db.sortByTimeAsc();
+                sortBy=   db.sortByTimeAsc();
                 break;
 
             case R.id.sort_by_time_desc:
-                db.sortByTimeDesc();
+                sortBy=   db.sortByTimeDesc();
                 break;
-        }
+        }adapter.clear();
+        adapter.addAll(db.getAllTimes(sortBy));
+        listView.setAdapter(adapter);
         return super.onOptionsItemSelected(item);
     }
+
 
 
     private void initializeViews() {

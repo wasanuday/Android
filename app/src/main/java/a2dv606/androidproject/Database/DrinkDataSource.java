@@ -124,11 +124,11 @@ public class DrinkDataSource {
         return time;
     }
 
-    public List<TimeLog> getAllTimes() {
+    public List<TimeLog> getAllTimes(String sortBy) {
         List<TimeLog> timeLog = new ArrayList<TimeLog>();
 
         Cursor cursor = database.query(DrinkDbHelper.TIME_TABLE_NAME,
-                allTimeColumns, null, null, null, null, null);
+                allTimeColumns, null, null, null, null, sortBy);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -154,56 +154,11 @@ public class DrinkDataSource {
     }
 
 
-    public List<TimeLog> sortByTimeAsc() {
-        List<TimeLog> list = new ArrayList<TimeLog>();
-        Cursor cursor=database.query(DrinkDbHelper.TIME_TABLE_NAME, allTimeColumns, null,
-                null, null, null, DrinkDbHelper.COLUMN_TIME + " ASC ");
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            list.add(cursorToTimeLog(cursor));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return list;
-    }
 
-    public List<TimeLog> sortByTimeDesc() {
-        List<TimeLog> list = new ArrayList<TimeLog>();
-        Cursor cursor=database.query(DrinkDbHelper.TIME_TABLE_NAME, allTimeColumns, null,
-                null, null, null, DrinkDbHelper.COLUMN_TIME + " DESC ");
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            list.add(cursorToTimeLog(cursor));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return list;
-    }
 
-    public List<TimeLog> sortByAmountAsc() {
-        List<TimeLog> lists = new ArrayList<TimeLog>();
-        Cursor cursor=database.query(DrinkDbHelper.TIME_TABLE_NAME, allTimeColumns, null,
-                null, null, null, DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE + " ASC ");
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            TimeLog list = cursorToTimeLog(cursor);
-            lists.add(list);
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return lists;
-    }
-    public List<TimeLog> sortByAmountDesc() {
-        List<TimeLog> lists = new ArrayList<TimeLog>();
-        Cursor cursor=database.query(DrinkDbHelper.TIME_TABLE_NAME, allTimeColumns, null,
-                null, null, null, DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE + " DESC ");
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            TimeLog list = cursorToTimeLog(cursor);
-            lists.add(list);
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return lists;
-    }
+
+    public String  sortByTimeAsc(){return DrinkDbHelper.COLUMN_TIME + " ASC ";}
+    public String  sortByTimeDesc(){return DrinkDbHelper.COLUMN_TIME + " DESC ";}
+    public String sortByAmountDesc(){return DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE + " DESC ";}
+    public String sortByAmountAsc(){ return DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE + " ASC" ;}
 }
