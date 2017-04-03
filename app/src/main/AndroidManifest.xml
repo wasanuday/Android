@@ -3,6 +3,7 @@
     package="a2dv606.androidproject">
 
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -20,16 +21,25 @@
         <activity android:name=".WaterDrunkHistory.DateLogActivity" />
         <activity android:name=".WaterDrunkHistory.TimeLogActivity" />
         <activity android:name=".Settings.SettingsActivity" />
-        <activity android:name=".OutlinesFragments.OutlineActivity" />
+        <activity android:name=".OutlinesFragments.OutlineActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
 
         <receiver android:name=".Notifications.NotificationReciever" />
-
         <receiver android:name=".DBBroadcastReceiver" />
 
         <service
             android:name=".AppService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".WaterDrunkHistory.ChartActivity"></activity>
     </application>
 
 </manifest>

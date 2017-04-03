@@ -25,6 +25,7 @@ import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.Model.TimeLog;
 import java.util.Calendar;
 
+import a2dv606.androidproject.WaterDrunkHistory.ChartActivity;
 import a2dv606.androidproject.WaterDrunkHistory.DateLogActivity;
 import a2dv606.androidproject.Settings.SettingsActivity;
 import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
@@ -36,7 +37,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     Dialog addDrinkdialog, numberBickerDialog;
     LinearLayout mainLayout;
     NumberPicker numberPicker;
-    TextView addDrinkTv,choosenAmountTv;
+    public static  TextView addDrinkTv,choosenAmountTv;
     int glassSize=240;
     int bottleSize=1500;
     DrinkDataSource db;
@@ -196,7 +197,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
     private void addGlass(){
         db.createTime(glassSize,t.getDate(),t.getTime());
-        //  db.create(240,2000,d.getDate());
+         // db.create(240,2000,d.getDate());
         db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),glassSize);
         addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
         addDrinkdialog.dismiss();
@@ -207,9 +208,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),bottleSize);
         addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
         addDrinkdialog.dismiss();
-
     }
-
 
     private void showAddDrinkDialog() {
         addDrinkdialog.setTitle("select container");
@@ -232,6 +231,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
     private void goTolChartActivity() {
         stopNotificationAlarm();
+        Intent intent3 = new Intent(getApplicationContext(), ChartActivity.class);
+        startActivityForResult(intent3, 0);
     }
 
     private void goToLogActivity() {

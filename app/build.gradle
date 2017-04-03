@@ -26,4 +26,11 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:support-v13:+'
     testCompile 'junit:junit:4.12'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
 }
+
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
+

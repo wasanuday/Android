@@ -33,7 +33,7 @@
     <string name="notif_sound_summary">Off</string>
     <string name="notif_time_interval_summary"> </string>
 
-<string name="ON">ON</string>
+    <string name="ON">ON</string>
     <string name="OFF">OFF</string>
     <string name="AM"> AM</string>
     <string name="PM"> PM</string>
@@ -45,7 +45,6 @@
     <string name="sleep_review">1 glass of water before going to bed - avoids stroke or heart attack</string>
     <string name="shower_review">1 glass of water before taking a shower - helps lower blood pressure </string>
     <string name="meal_review">1 glass of water 30 before a meal - helps digestion</string>
-
 
 
 </resources>

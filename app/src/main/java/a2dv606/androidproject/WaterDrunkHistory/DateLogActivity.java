@@ -24,11 +24,13 @@ import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.R;
 
 public class DateLogActivity extends AppCompatActivity {
-  List<DateLog> values ;
+  static List<DateLog> values ;
     int waterDrunk;
-    ArrayAdapter<DateLog> adapter;
+    static ArrayAdapter<DateLog> adapter;
     DateLog dateLog;
-    private DrinkDataSource db;
+    TextView waterLog;
+    static ListView listView;
+    private static DrinkDataSource db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +41,7 @@ public class DateLogActivity extends AppCompatActivity {
         db.open();
         values = db.getAllDates();
 
-
-
-
-
-        ListView listView = (ListView) findViewById(R.id.log_list);
+        listView = (ListView) findViewById(R.id.log_list);
         adapter = new myListAdapter();
         listView.setAdapter(adapter);
 
@@ -88,7 +86,7 @@ public class DateLogActivity extends AppCompatActivity {
                     .findViewById(R.id.date);
             date.setText(dateLog.getDate());
 
-            TextView waterLog = (TextView) itemView
+            waterLog = (TextView) itemView
                     .findViewById(R.id.water_drunk);
 
             waterDrunk = dateLog.getWaterDrunk();
@@ -97,22 +95,10 @@ public class DateLogActivity extends AppCompatActivity {
             return itemView;
         }
     }
-      protected void onActivityResult(int requestedCode, int resultCode,
-                                    Intent result) {
-          if (requestedCode == 0) {
-              if (resultCode == RESULT_OK) {
-                  int lastAmount = result.getIntExtra("add", 0);
-                  db.updateDrinkingAmount(waterDrunk, lastAmount);
-
-               }
-
-           //   else if (resultCode == DEFAULT_KEYS_DIALER) {
-          //        int remove =  result.getIntExtra("remove", 0);
-          //        db.updateDrinkingAmount(waterDrunk, remove);
-
-        //      }
-          }
-
-      }
+    public static void reloadAdapter() {
+        adapter.clear();
+        adapter.addAll(db.getAllDates());
+        listView.setAdapter(adapter);
+    }
 
 }
