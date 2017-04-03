@@ -25,7 +25,7 @@ public class ChartActivity extends AppCompatActivity {
         setTitle("Weekly graph");
 
         setContentView(R.layout.activity_chart);
-        barChart = (BarChart) findViewById(R.id.chart);
+        barChart = (BarChart) findViewById(R.id.Chart);
 
         db = new DrinkDataSource(this);
         db.open();
