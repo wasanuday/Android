@@ -22,15 +22,17 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':alobar-preference')
+    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:support-v13:+'
-    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:support-v13:24.2.1'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
+    compile 'com.android.support:design:24.2.1'
 }
 
 repositories {
     maven { url "https://jitpack.io" }
 }
+
 
 

@@ -15,19 +15,17 @@ public class DateLog  {
 
 
     private Long ID;
-    private int waterNeed;
+    private static int waterNeed;
     private int waterDrunk;
-    private  String date;
+    private String date ;
 
 
-    public  String getDate(){
-        DateFormat df = new SimpleDateFormat("EEE, MMM d, ''yy");
-        Date today = Calendar.getInstance().getTime();
-        date=df.format(today);
+    public String getDate(){
+
         return date;
     }
 
-    public void setDate(String date) {
+    public  void setDate(String date) {
         this.date = date;
     }
 
@@ -40,7 +38,7 @@ public class DateLog  {
         this.waterDrunk = waterDrunk;
     }
 
-    public int getWaterNeed() {
+    public static int getWaterNeed() {
 
         return waterNeed;
     }

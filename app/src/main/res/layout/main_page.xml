@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/main_page_backgound"
->
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@ android:layout_height="match_parent"
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.9"
+            android:text="0%"
             android:id="@+id/add_drink_text"
             android:textColor="@color/colorPrimaryDark"
             android:padding="10dp"
@@ -71,14 +71,14 @@ android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
             android:paddingTop="30dp">
-             <ImageButton
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:id="@+id/log_button"
-                 android:src = "@drawable/history_icon"
-                 android:tint="@color/colorPrimaryDark"
-                 android:padding="10dp"
-                 android:background="@drawable/circle_button"
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/log_button"
+                android:src = "@drawable/history_icon"
+                android:tint="@color/colorPrimaryDark"
+                android:padding="10dp"
+                android:background="@drawable/circle_button"
                 />
             <ImageButton
                 android:layout_width="wrap_content"
@@ -91,15 +91,15 @@ android:layout_height="match_parent"
                 android:background="@drawable/circle_button"
                 />
             <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/setting_button"
-            android:src = "@drawable/setting_icon"
-            android:tint="@color/colorPrimaryDark"
-            android:padding="10dp"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/circle_button"
-            />
+                android:src = "@drawable/setting_icon"
+                android:tint="@color/colorPrimaryDark"
+                android:padding="10dp"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/circle_button"
+                />
         </LinearLayout>
 
 

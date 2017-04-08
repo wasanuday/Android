@@ -20,12 +20,18 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import a2dv606.androidproject.Database.DrinkDataSource;
 import a2dv606.androidproject.Model.DateLog;
-import a2dv606.androidproject.Model.TimeLog;
-import java.util.Calendar;
+import a2dv606.androidproject.R;
+import a2dv606.androidproject.Database.DrinkDataSource;
 
-import a2dv606.androidproject.WaterDrunkHistory.ChartActivity;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import a2dv606.androidproject.Chart.ChartActivity;
 import a2dv606.androidproject.WaterDrunkHistory.DateLogActivity;
 import a2dv606.androidproject.Settings.SettingsActivity;
 import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
@@ -41,9 +47,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     int glassSize=240;
     int bottleSize=1500;
     DrinkDataSource db;
-    TimeLog t;
     int pickerValue=0;
-    DateLog d;
+
     private AppService service = null;
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -68,11 +73,11 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
         initializeViews();
 
-        d = new DateLog();
-        t= new TimeLog();
+
         db= new DrinkDataSource(this);
         db.open();
-        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
+
         setNumberPickerFormat();
 
 
@@ -146,7 +151,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         }
     };
         numberPicker.setFormatter(formatter);
-        numberPicker.setMaxValue(300);numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(300);
+        numberPicker.setMinValue(0);
         numberPicker.setWrapSelectorWheel(false);
         numberPicker.setOnValueChangedListener(this);
     }
@@ -189,24 +195,27 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     }
 }
     private void  addFromNumberPiker() {
-        db.createTime(pickerValue,t.getDate(),t.getTime());
-        db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),pickerValue);
-        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+        db.createTime(pickerValue,getCurrentDate(),getCurrentTime());
+        db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),pickerValue);
+        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
         numberBickerDialog.dismiss();
     }
 
     private void addGlass(){
-        db.createTime(glassSize,t.getDate(),t.getTime());
-         // db.create(240,2000,d.getDate());
-        db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),glassSize);
-        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+       db.createTime(glassSize,getCurrentDate(),getCurrentTime());
+      // db.create(240,3300,getCurrentDate());
+        db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),glassSize);
+        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
         addDrinkdialog.dismiss();
     }
 
     private void addBottle() {
-        db.createTime(bottleSize,t.getDate(),t.getTime());
-        db.updateDrinkingAmount(Integer.valueOf(String.valueOf(addDrinkTv.getText())),bottleSize);
-        addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+        db.createTime(bottleSize,getCurrentDate(),getCurrentTime());
+        db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),bottleSize);
+        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
         addDrinkdialog.dismiss();
     }
 
@@ -243,9 +252,20 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         Log.i("value is",""+newVal);
-        pickerValue= picker.getValue();
+        pickerValue= picker.getValue()*5;
     }
 
+    public String getCurrentDate(){
+        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+      //  Date today = Calendar.getInstance().getTime();
+      return df.format(new Date());
+    }
+    public String getCurrentTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "HH:mm a", Locale.getDefault());
+
+        return dateFormat.format(new Date());
+    }
 
     public void  initializeViews(){
         addDrinkdialog.setContentView(R.layout.add_drink_dialog);

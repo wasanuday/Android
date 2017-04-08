@@ -1,16 +1,10 @@
 package a2dv606.androidproject.WaterDrunkHistory;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.PendingIntent;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,8 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -28,8 +20,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import a2dv606.androidproject.Database.DrinkDataSource;
 import a2dv606.androidproject.MainActivity;
 import a2dv606.androidproject.Model.DateLog;
@@ -43,19 +38,19 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     private ArrayAdapter<TimeLog> adapter;
     private ListView listView;
     private DrinkDataSource db;
-    TextView waterLog, date;
-    DateLog dateLog;
+    TextView waterLog, dateTv;
     NumberPicker numberPicker,numberPicker2;
     Dialog addDrinkdialog, addDrinkdialog2, numberpickerDialog,numberPickerDialog2;
     Button otherSize, cancel, glassButton, bottleButton, setButton,setButton2,otherSize2, cancel2, glassButton2, bottleButton2;
     TimePicker timePicker;
     int glassSize = 240;
     int bottleSize=1500;
-    TimeLog timeLog=new TimeLog();
     int removedValue=0;
     int ID=0;
-    int pickerValue=0;
+    int pickerValue;
     String sortBy;
+    int amountToInsert=0;
+    String date;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -65,14 +60,14 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
 
         Bundle bundle = getIntent().getExtras();
-        String date = bundle.get(Commands.DateLogItem).toString();
+        date = bundle.get(Commands.DateLogItem).toString();
         setTitle(date);
 
 
         db = new DrinkDataSource(this);
         db.open();
 
-        values = db.getAllTimes(sortBy);
+        values = db.getAllTimes( db.sortByTimeDesc(),date);
 
         listView = (ListView) findViewById(R.id.time_log_list);
         adapter = new myListAdapter(this);
@@ -105,7 +100,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         };
         numberPicker.setFormatter(formatter);
         numberPicker.setMaxValue(300);
-        numberPicker.setMinValue(1);
+        numberPicker.setMinValue(0);
         numberPicker.setWrapSelectorWheel(false);
         numberPicker.setOnValueChangedListener(this);
 
@@ -136,8 +131,8 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        pickerValue= picker.getValue();
-        Log.i("value is", "" + newVal);
+        pickerValue=picker.getValue()*5;
+                Log.i("value is", "" + newVal);
     }
 
     @Override
@@ -182,46 +177,46 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
 
     private void  addFromNumberPiker() {
-        db.createTime(pickerValue, timeLog.getDate(), timeLog.getTime());
-        db.updateDrinkingAmount(db.getDrinkingAmount(), pickerValue);
+        amountToInsert=pickerValue;
         numberpickerDialog.dismiss();
-        intiTextViews();
+        showTimePickerDialog();
+
     }
 
     private void addGlass(){
-        db.createTime(glassSize, timeLog.getDate(), timeLog.getTime());
-        db.updateDrinkingAmount(db.getDrinkingAmount(), glassSize);
+        amountToInsert=glassSize;
         addDrinkdialog.dismiss();
-        intiTextViews();
+        showTimePickerDialog();
+
 }
 
     private void addBottle() {
-        db.createTime(bottleSize, timeLog.getDate(), timeLog.getTime());
-        db.updateDrinkingAmount(db.getDrinkingAmount(), bottleSize);
+        amountToInsert=bottleSize;
         addDrinkdialog.dismiss();
-        intiTextViews();
+        showTimePickerDialog();
+
     }
 
     private void  addFromNumberPiker2() {
-        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue,date);
         db.update(ID,pickerValue);
-        db.updateDrinkingAmount(db.getDrinkingAmount(), pickerValue);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), pickerValue,date);
         numberPickerDialog2.dismiss();
         intiTextViews();
     }
 
     private void addGlass2(){
-        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue,date);
         db.update(ID,glassSize);
-        db.updateDrinkingAmount(db.getDrinkingAmount(), glassSize);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), glassSize,date);
         addDrinkdialog.dismiss();
         intiTextViews();
 
     }
     private void addBottle2() {
-        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue,date);
         db.update(ID,bottleSize);
-        db.updateDrinkingAmount(db.getDrinkingAmount(), bottleSize);
+        db.updateDrinkingAmount(db.getDrinkingAmount(), bottleSize,date);
         addDrinkdialog.dismiss();
         intiTextViews();
 
@@ -274,8 +269,31 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR, hour);
         calendar.set(Calendar.MINUTE, minute);
-        timeLog.setTime(String.valueOf(calendar.getTimeInMillis()));
-        showAddDrinkDialog();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm aa", Locale.getDefault());
+
+        Calendar now = Calendar.getInstance();
+        System.out.println(now +"wwwwwwwwwwwww"+calendar.getTime());
+        if(now.getTime().after(calendar.getTime())){
+
+            AlertDialog alertDialog = new AlertDialog.Builder(TimeLogActivity.this).create();
+            alertDialog.setTitle("warning !");
+            alertDialog.setMessage("This chosen time is more than the current time, please chose earlier time !");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }
+        else {
+            String addedTime = dateFormat.format(calendar.getTime());
+            db.createTime(amountToInsert, date, addedTime);
+            db.updateDrinkingAmount(db.getDrinkingAmount(), amountToInsert, date);
+            intiTextViews();
+            amountToInsert = 0;
+        }
+
 
     }
 
@@ -289,19 +307,20 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
         public View getView(final int position, View convertView, ViewGroup parent) {
             removedValue=  values.get(position).getAmount();
+
             View itemView = convertView;
             if (itemView == null) {
                 itemView = getLayoutInflater().inflate(
                         R.layout.time_log_raw, parent, false);
             }
-            final TimeLog timeLog = values.get(position);
 
-            date = (TextView) itemView.findViewById(R.id.time);
-            date.setText(timeLog.getTime());
+
+            dateTv = (TextView) itemView.findViewById(R.id.time);
+            dateTv.setText(values.get(position).getTime());
 
             waterLog = (TextView) itemView
                     .findViewById(R.id.amount);
-            waterLog.setText(timeLog.getAmount() + " ml");
+            waterLog.setText(values.get(position).getAmount() + " ml");
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -321,7 +340,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                         public void onClick(DialogInterface dialog, int which) {
                             TimeLog time = values.get(position);
                             int removedAmount= 0 - time.getAmount();
-                            db.updateDrinkingAmount(db.getDrinkingAmount(), removedAmount);
+                            db.updateDrinkingAmount(db.getDrinkingAmount(), removedAmount,date);
                             db.delete(time);
                             adapter.remove(time);
                             MainActivity.addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
@@ -348,7 +367,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_drink:
-                showTimePickerDialog();
+                showAddDrinkDialog();
                 return true;
 
             case R.id.sort_by_amount_asc:
@@ -367,17 +386,22 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                 sortBy=   db.sortByTimeDesc();
                 break;
         }
+        reloadAdapter();
         return super.onOptionsItemSelected(item);
+
     }
     private void reloadAdapter() {
         adapter.clear();
-        adapter.addAll(db.getAllTimes(sortBy));
+        adapter.addAll(db.getAllTimes(sortBy,date));
         listView.setAdapter(adapter);
     }
 
     private void intiTextViews(){
-        MainActivity.addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
-        reloadAdapter();
+        MainActivity.addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        MainActivity.choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
+        adapter.clear();
+        adapter.addAll(db.getAllTimes(db.sortByTimeDesc(),date));
+        listView.setAdapter(adapter);
         DateLogActivity.reloadAdapter();
     }
 

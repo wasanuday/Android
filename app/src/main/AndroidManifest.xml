@@ -39,7 +39,8 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".WaterDrunkHistory.ChartActivity"></activity>
+        <activity android:name=".Chart.ChartActivity"
+            android:background="@color/blue"/>
     </application>
 
 </manifest>

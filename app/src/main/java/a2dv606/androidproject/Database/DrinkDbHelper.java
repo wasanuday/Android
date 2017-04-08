@@ -20,7 +20,7 @@ public class DrinkDbHelper  extends SQLiteOpenHelper {
     public static final String COLUMN_TIME_DATE="date";
     public static final String COLUMN_TIME="time";
 
-    public static final String DATABASE_NAME = "drinkTime!!!.db";
+    public static final String DATABASE_NAME = "drinkTime8.db";
     public static final int DATABASE_VERSION = 1;
 
 
@@ -29,13 +29,14 @@ public class DrinkDbHelper  extends SQLiteOpenHelper {
             + " (" + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_WATER_NEED + " integer, "
             + COLUMN_WATER_DRUNK + " integer, "
-            + COLUMN_DATE + " text not null);";
+            + COLUMN_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP " +
+            ");";
 
     private static final String CREATE_TIME_TABLE = "create table " +TIME_TABLE_NAME
             + " (" + COLUMN_TIME_ID + " integer primary key autoincrement, "
             + COLUMN_WATER_DRUNK_ONCE + " integer, "
-            + COLUMN_TIME_DATE + " text , "
-            + COLUMN_TIME + " text not null);";
+            + COLUMN_TIME_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP , "
+            + COLUMN_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP);";
 
     public  DrinkDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
