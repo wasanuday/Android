@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import a2dv606.androidproject.Chart.ChartActivity;
+import a2dv606.androidproject.Settings.PreferenceKey;
 import a2dv606.androidproject.WaterDrunkHistory.DateLogActivity;
 import a2dv606.androidproject.Settings.SettingsActivity;
 import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
@@ -44,23 +45,11 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     LinearLayout mainLayout;
     NumberPicker numberPicker;
     public static  TextView addDrinkTv,choosenAmountTv;
-    int glassSize=240;
-    int bottleSize=1500;
+    private int glassSize;
+    private int bottleSize;
     DrinkDataSource db;
     int pickerValue=0;
 
-    private AppService service = null;
-
-    private ServiceConnection connection = new ServiceConnection() {
-        //@Override  // Called when connection is made
-        public void onServiceConnected(ComponentName cName, IBinder binder) {
-            service = ((AppService.AppBinder)binder).getService();
-        }
-        //@Override   //
-        public void onServiceDisconnected(ComponentName cName) {
-            service = null;
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,21 +59,31 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
         addDrinkdialog = new Dialog(MainActivity.this);
         numberBickerDialog =new Dialog(MainActivity.this);
-
-        initializeViews();
-
-
         db= new DrinkDataSource(this);
         db.open();
-        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
-
+        initializeViews();
+        loadContainerSizePrefs();
+        LoadWaterNeedPrefs();
         setNumberPickerFormat();
-
-
         checkAppFirstTimeRun();
 
-
       }
+
+    private int getWaterNeedFromPrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int waterNeed= prefs.getInt(PreferenceKey.PREF_WATER_RECOM,0);
+        return waterNeed;
+
+    }
+    private int LoadWaterNeedPrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int waterNeed= prefs.getInt(PreferenceKey.PREF_WATER_RECOM,0);
+        // update water need in  db.
+        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+ " ml"));
+        return waterNeed;
+
+    }
+
 
     private void checkAppFirstTimeRun() {
 
@@ -93,9 +92,10 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         // first time run?
         if (pref.getBoolean("first_time_run", true)) {
             System.out.println("first time lunched");
-            // start the preferences activity
-            setupAppDB();
-            startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+            db.create(0,getWaterNeedFromPrefs(),new Date().toString());
+            setupAppDBBroadcastReciever();
+
+            startActivityForResult(new Intent(getBaseContext(), SettingsActivity.class),0);
             //get the preferences editor
             SharedPreferences.Editor editor = pref.edit();
             // avoid for next run
@@ -108,15 +108,43 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
 
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+        switch (requestCode) {
+            case 0:
+                loadContainerSizePrefs();
+                db.updateWaterNeed(getWaterNeedFromPrefs());
+                break;
+        }
+
+    }
+
+    private void loadContainerSizePrefs() {
+        // db prefs
+   // update water need db.
+
+        // glass size prefs
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String glassSizeV=  prefs.getString(PreferenceKey.PREF_GLASS_SIZE,"");
+        String bottleSizeV=  prefs.getString(PreferenceKey.PREF_BOTTLE_SIZE, "");
+        glassSize = Integer.valueOf(glassSizeV);
+        bottleSize = Integer.valueOf(bottleSizeV);
+        glassButton.setText(glassSizeV+ " ml");
+        bottleButton.setText(bottleSizeV+ " ml");
 
 
-    private void setupAppDB() {
+    }
+
+    private void setupAppDBBroadcastReciever() {
 
         Calendar calendar = Calendar.getInstance();
-        /*  set calendar time the beganing of  day    */
-        calendar.set(Calendar.HOUR_OF_DAY,0);
+        /*  set calendar time the beganing of  day
+         *  */
+     //       calendar.add(Calendar.DAY_OF_YEAR, 1);
+            calendar.set(Calendar.HOUR_OF_DAY,0);
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
+
             /* broadcast to db broadcast receiver   */
         Intent mIntent = new Intent(getApplicationContext(),DBBroadcastReceiver.class);
         /* put extra to setup app (0 am) */
@@ -126,20 +154,10 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         /*repeat alarm every day at 0.1 am clock */
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY,pendingIntent);
-        System.out.println("db alarm setup");
+        System.out.println("db alarm setup"+ new Date());
     }
 
 
-    private void bindToService(){
-        Intent intent = new Intent(getApplicationContext(),AppService.class);
-        MainActivity.this.bindService(intent, connection, Context.BIND_AUTO_CREATE);
-        System.out.println("Binding to SlowCountService");
-    }
-    private  void stopNotificationAlarm(){
-        if(service!=null){
-            service.stopNotificationAlarm();
-        }
-    }
 
 
     private void setNumberPickerFormat() {
@@ -230,23 +248,22 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     }
 
     private void goToSettingActivity() {
-        startActivity(new Intent(this, SettingsActivity.class));
+        startActivityForResult(new Intent(this, SettingsActivity.class),0);
     }
 
     private void goToOutlineActivity() {
         Intent intent2 = new Intent(getApplicationContext(), OutlineActivity.class);
-        startActivityForResult(intent2, 0);
+        startActivity(intent2);
     }
 
     private void goTolChartActivity() {
-        stopNotificationAlarm();
         Intent intent3 = new Intent(getApplicationContext(), ChartActivity.class);
-        startActivityForResult(intent3, 0);
+        startActivity(intent3);
     }
 
     private void goToLogActivity() {
         Intent intent4 = new Intent(getApplicationContext(), DateLogActivity.class);
-        startActivityForResult(intent4, 0);
+        startActivity(intent4);
     }
 
     @Override

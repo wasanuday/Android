@@ -34,11 +34,6 @@
         <receiver android:name=".Notifications.NotificationReciever" />
         <receiver android:name=".DBBroadcastReceiver" />
 
-        <service
-            android:name=".AppService"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity android:name=".Chart.ChartActivity"
             android:background="@color/blue"/>
     </application>

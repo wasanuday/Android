@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +39,7 @@ public class DrinkDataSource {
 
 
     public DateLog create(int amount,int n,String d) {
+      if(! isCurrentDateExist(d)){
         ContentValues values = new ContentValues();
         values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
         values.put(DrinkDbHelper.COLUMN_WATER_NEED, n);
@@ -47,10 +49,36 @@ public class DrinkDataSource {
                 allDateColumns, DrinkDbHelper.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
-        DateLog newTime = cursorToDataLog(cursor);
+        DateLog newDateLog = cursorToDataLog(cursor);
         cursor.close();
-        return newTime;
+        return newDateLog;}
+        return null;
     }
+
+    private boolean isCurrentDateExist(String d) {
+
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = null;
+            try {
+                date = fmt.parse(d);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            fmt = new SimpleDateFormat("yyyy-MM-dd");
+           String dateStr =fmt.format(date);
+
+        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{DrinkDbHelper.COLUMN_DATE},DrinkDbHelper.COLUMN_TIME_DATE + " like '%"+dateStr+"%' ", null,null,null,null,null);
+     if(cursor.getCount()>0)
+         return true;
+        else
+         return false;
+    }
+
+    private int parseDate(String d) {
+        return 0;
+    }
+
     public void close() {
         dbHelper.close();
     }
@@ -69,6 +97,11 @@ public class DrinkDataSource {
         return database.update(DrinkDbHelper.Date_TABLE_NAME, cv,DrinkDbHelper.COLUMN_ID + "= (SELECT  MAX(" + DrinkDbHelper.COLUMN_ID + " ) from "+DrinkDbHelper.Date_TABLE_NAME+" )", null)>0;
     }
 
+    public boolean updateWaterNeed(int waterNeed ) {
+        ContentValues cv = new ContentValues();
+        cv.put(DrinkDbHelper.COLUMN_WATER_NEED, waterNeed);
+        return database.update(DrinkDbHelper.Date_TABLE_NAME, cv,DrinkDbHelper.COLUMN_ID + "= (SELECT  MAX(" + DrinkDbHelper.COLUMN_ID + " ) from "+DrinkDbHelper.Date_TABLE_NAME+" )", null)>0;
+    }
     public int getDrinkingAmount() {
         int waterAmount = 0;
 

@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/water_glass_button"
             android:padding="10dp"
-            android:text="240 ml"
             android:drawableTop="@drawable/water_glass_big"
             android:background="@drawable/drink_icon_backgorund"
             android:textColor="@color/colorPrimaryDark"
@@ -31,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/water_bottle_button"
-            android:text="1500 ml"
             android:drawableTop="@drawable/water_bottle_big"
             android:layout_marginLeft="10dp"
 
