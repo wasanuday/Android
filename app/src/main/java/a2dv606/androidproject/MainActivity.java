@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -53,7 +54,9 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     private int bottleSize;
     private DrinkDataSource db;
     private int pickerValue=0;
-    BroadcastReceiver updateUIReciver;
+    private BroadcastReceiver updateUIReciver;
+    private boolean soundEnable;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
         addDrinkdialog = new Dialog(MainActivity.this);
         numberBickerDialog =new Dialog(MainActivity.this);
+        mediaPlayer= MediaPlayer.create(this, R.raw.splash_water);
         initializeViews();
         setNumberPickerFormat();
 
@@ -110,6 +114,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     private void loadNotificationsPrefs() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean isNotEnable= prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
+        soundEnable= prefs.getBoolean(PreferenceKey.PREF_SOUND,false);
         Intent myIntent= new Intent(getApplicationContext(),DBBroadcastReceiver.class);
         if (isNotEnable){
             myIntent.putExtra("action","schedule_notifications");
@@ -214,6 +219,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         db.createTime(pickerValue,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),pickerValue);
          updateView();
+        if (soundEnable)
+            mediaPlayer.start();
         numberBickerDialog.dismiss();
     }
 
@@ -221,6 +228,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         db.createTime(glassSize,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),glassSize);
         updateView();
+        if (soundEnable)
+            mediaPlayer.start();
         addDrinkdialog.dismiss();
     }
 
@@ -228,6 +237,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         db.createTime(bottleSize,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),bottleSize);
          updateView();
+        if (soundEnable)
+            mediaPlayer.start();
         addDrinkdialog.dismiss();
     }
     private  void  updateView(){
