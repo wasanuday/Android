@@ -8,17 +8,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import java.util.Date;
+
 import a2dv606.androidproject.MainActivity;
 import a2dv606.androidproject.R;
 
-/**
- * Created by Abeer on 3/29/2017.
- */
 
 public class NotificationReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        System.out.println("not "+new Date());
+
 
         Intent repeatingIntent = new Intent(context, MainActivity.class);
         repeatingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

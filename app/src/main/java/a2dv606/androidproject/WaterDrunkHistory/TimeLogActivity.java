@@ -272,12 +272,12 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm aa", Locale.getDefault());
 
         Calendar now = Calendar.getInstance();
-        System.out.println(now +"wwwwwwwwwwwww"+calendar.getTime());
-        if(now.getTime().after(calendar.getTime())){
+
+        if(calendar.after(now)){
 
             AlertDialog alertDialog = new AlertDialog.Builder(TimeLogActivity.this).create();
             alertDialog.setTitle("warning !");
-            alertDialog.setMessage("This chosen time is more than the current time, please chose earlier time !");
+            alertDialog.setMessage("This chosen time is after than the current time, please chose earlier time !");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

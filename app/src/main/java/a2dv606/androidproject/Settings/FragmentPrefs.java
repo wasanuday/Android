@@ -15,6 +15,7 @@ import android.widget.TimePicker;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 import a2dv606.androidproject.R;
 
@@ -28,9 +29,8 @@ public class FragmentPrefs extends PreferenceFragment
     private SettingsActivity mActivity;
     private Context context;
     private Preference glassSizePref, bottleSizePref, intervalPref, soundPref,
-            notiEnablePref,fromTimePrf, toTimePref,weightPref,trainingPref,waterRecomPref;
+            notiEnablePref,fromTimePrf, weightPref,trainingPref,waterNeedPref;
     private Calendar fromC = Calendar.getInstance();
-    private Calendar toC = Calendar.getInstance();
 
 
 
@@ -43,17 +43,16 @@ public class FragmentPrefs extends PreferenceFragment
         soundPref= findPreference(PreferenceKey.PREF_SOUND);
         intervalPref=findPreference(PreferenceKey.PREF_INTERVAL);
         fromTimePrf =  findPreference(PreferenceKey.PREF_START_TIME);
-        toTimePref =  findPreference(PreferenceKey.PREF_END_TIME);
         weightPref =findPreference(PreferenceKey.PREF_WEIGHT_NUMBER);
         trainingPref= findPreference(PreferenceKey.PREF_TRAINING);
-        waterRecomPref = findPreference(PreferenceKey.PREF_WATER_RECOM);
+        waterNeedPref = findPreference(PreferenceKey.PREF_WATER_NEED);
         glassSizePref =  findPreference(PreferenceKey.PREF_GLASS_SIZE);
         bottleSizePref =  findPreference(PreferenceKey.PREF_BOTTLE_SIZE);
 
 
         trainingPref.setOnPreferenceChangeListener(this);
         weightPref.setOnPreferenceChangeListener(this);
-        waterRecomPref.setOnPreferenceChangeListener(this);
+        waterNeedPref.setOnPreferenceChangeListener(this);
         notiEnablePref.setOnPreferenceChangeListener(this);
         intervalPref.setOnPreferenceChangeListener(this);
         soundPref.setOnPreferenceChangeListener(this);
@@ -67,18 +66,15 @@ public class FragmentPrefs extends PreferenceFragment
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
             public boolean onPreferenceClick(Preference preference) {
-              showTimeDialog(PreferenceKey.FROM_KEY);
+                int hour = fromC.get(Calendar.HOUR_OF_DAY);
+                int minutes = fromC.get(Calendar.MINUTE);
+                TimePickerDialog datePickerDialog =
+                        new TimePickerDialog(getActivity(),timeFrom ,hour,minutes, true);
+                datePickerDialog.show();
                 return false;
             }
         });
-        toTimePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                showTimeDialog(PreferenceKey.TO_KEY);
-                return false;
-            }
-        });
+
 
     }
     @SuppressWarnings("deprecation")
@@ -97,71 +93,42 @@ public class FragmentPrefs extends PreferenceFragment
         int intervalNum = getPreferenceManager().getSharedPreferences().getInt(PreferenceKey.PREF_INTERVAL,2);
         int weight = getPreferenceManager().getSharedPreferences().getInt(PreferenceKey.PREF_WEIGHT_NUMBER, 0);
         boolean training= getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKey.PREF_TRAINING,false);
-        int water_reco= getPreferenceManager().getSharedPreferences().getInt(PreferenceKey.PREF_WATER_RECOM,0);
+        int water_reco= getPreferenceManager().getSharedPreferences().getInt(PreferenceKey.PREF_WATER_NEED,0);
         String glassSize = getPreferenceManager().getSharedPreferences().getString(PreferenceKey.PREF_GLASS_SIZE,"");
         String bottleSize = getPreferenceManager().getSharedPreferences().getString(PreferenceKey.PREF_BOTTLE_SIZE,"");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String from = sharedPreferences.getString(PreferenceKey.FROM_KEY,"");
-        String to = sharedPreferences.getString(PreferenceKey.TO_KEY,"");
-
+        String from = sharedPreferences.getString(PreferenceKey.FROM_KEY,"8:0");
 
         weightPref.setSummary(Integer.toString(weight)+" kg");
         trainingPref.setSummary(getString(training));
-        waterRecomPref.setSummary(Integer.toString(water_reco)+" ml");
+        waterNeedPref.setSummary(Integer.toString(water_reco)+" ml");
         glassSizePref.setSummary(glassSize+ " ml");
         bottleSizePref.setSummary(bottleSize+ " ml");
-        if(!from.equals(""))
-           fromTimePrf.setSummary(from+" am");
-        if (!to.equals(""))
-        toTimePref.setSummary(to+" pm");
+        fromTimePrf.setSummary(from);
         notiEnablePref.setSummary(getString(isNotifEnabled));
+        enableNotificationsPrefs(isNotifEnabled);
         soundPref.setSummary(getString(isSoundEnabled));
-        intervalPref.setSummary(Integer.toString(intervalNum)+" hours");
+        intervalPref.setSummary(Integer.toString(intervalNum)+" hour/s");
 
     }
 
 
-    private void showTimeDialog(String command) {
-        if (command.equals(PreferenceKey.FROM_KEY)){
-        int hour = fromC.get(Calendar.HOUR_OF_DAY);
-        int minutes = fromC.get(Calendar.MINUTE);
-          TimePickerDialog datePickerDialog =
-                  new TimePickerDialog(getActivity(),timeFrom ,hour,minutes, true);
-          datePickerDialog.show();
-        }
-        else if (command.equals(PreferenceKey.TO_KEY)){
-            int hour = toC.get(Calendar.HOUR_OF_DAY);
-            int minutes = toC.get(Calendar.MINUTE);
-            TimePickerDialog datePickerDialog =
-                    new TimePickerDialog(getActivity(),timeTo ,hour,minutes, true);
-            datePickerDialog.show();
 
-    }
-    }
+
     TimePickerDialog.OnTimeSetListener timeFrom = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
             fromC.set(Calendar.HOUR_OF_DAY,hourOfDay);
             fromC.set(Calendar.MINUTE,minute);
-            fromTimePrf.setSummary(String.valueOf(hourOfDay)+":"+String.valueOf(minute)+" am");
+            fromTimePrf.setSummary(String.valueOf(hourOfDay)+":"+String.valueOf(minute));
             setTimePref(PreferenceKey.FROM_KEY,String.valueOf(hourOfDay)+":"+String.valueOf(minute));
 
 
         }
 
     };
-    TimePickerDialog.OnTimeSetListener timeTo = new TimePickerDialog.OnTimeSetListener() {
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-            toC.set(Calendar.HOUR_OF_DAY,hourOfDay);
-            toC.set(Calendar.MINUTE,minute);
-            toTimePref.setSummary(String.valueOf(hourOfDay)+":"+String.valueOf(minute)+" pm");
-            setTimePref(PreferenceKey.TO_KEY,String.valueOf(hourOfDay)+":"+String.valueOf(minute));
-        }
-
-    };
     private  String getString(boolean b){
         if (b)
             return "ON";
@@ -171,6 +138,7 @@ public class FragmentPrefs extends PreferenceFragment
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
 
     }
 
@@ -184,7 +152,7 @@ public class FragmentPrefs extends PreferenceFragment
                   handleTrainingPrefs(newValue.toString(),preference);
                 return true;
 
-            case PreferenceKey.PREF_WATER_RECOM:
+            case PreferenceKey.PREF_WATER_NEED:
                 preference.setSummary(newValue.toString()+ " ml");
                 return true;
 
@@ -197,13 +165,14 @@ public class FragmentPrefs extends PreferenceFragment
                 return true;
 
             case PreferenceKey.PREF_IS_ENABLED:
-              setSwichPrefSummaries(newValue.toString(), preference);
+                enableNotificationsPrefs(newValue);
+                setSwitchPrefSummaries(newValue.toString(), preference);
                 return true;
             case PreferenceKey.PREF_SOUND:
-                setSwichPrefSummaries(newValue.toString(), preference);
+                setSwitchPrefSummaries(newValue.toString(), preference);
                 return true;
             case PreferenceKey.PREF_INTERVAL:
-                preference.setSummary(newValue.toString()+" hours");
+                preference.setSummary(newValue.toString()+" hour/s");
                 return true;
 
         }
@@ -211,27 +180,41 @@ public class FragmentPrefs extends PreferenceFragment
         return true;
     }
 
+    private void enableNotificationsPrefs(Object newValue) {
+
+            if(newValue.equals(true))
+            {
+                intervalPref.setEnabled(true);
+                fromTimePrf.setEnabled(true);
+            }
+            else{
+            intervalPref.setEnabled(false);
+            fromTimePrf.setEnabled(false);
+        }
+    }
+
+
     private void handleTrainingPrefs(String s, Preference preference) {
-        boolean value = Boolean.valueOf(s.toString());
+        boolean value = Boolean.valueOf(s);
         setTrainingToPref(value);
         int waterNeedValue =calculateWaterReco();
         setWaterRecomToPref(waterNeedValue);
         preference.setSummary(getString(value));
-        waterRecomPref.setSummary(String.valueOf(waterNeedValue));
+        waterNeedPref.setSummary(String.valueOf(waterNeedValue) +" ml");
     }
 
     private void handleWeightPref(String s, Preference preference) {
-        setWeightToPref(Integer.valueOf(s.toString()));
+        setWeightToPref(Integer.valueOf(s));
         int value =calculateWaterReco();
-        System.out.println(value);
         setWaterRecomToPref(value);
-        preference.setSummary(s.toString());
-        waterRecomPref.setSummary(String.valueOf(value));
+        preference.setSummary(s+" kg");
+        waterNeedPref.setSummary(String.valueOf(value) +" ml");
     }
 
-    private void setSwichPrefSummaries(String newValue, Preference preference) {
+    private void setSwitchPrefSummaries(String newValue, Preference preference) {
         if(newValue.equals("true"))
-            preference.setSummary("ON ");
+        {  preference.setSummary("ON ");
+        }
         else
             preference.setSummary("OFF ");
     }
@@ -242,7 +225,7 @@ public class FragmentPrefs extends PreferenceFragment
                 .getDefaultSharedPreferences(getActivity().getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(PreferenceKey.PREF_TRAINING, aBoolean);
-        editor.commit();
+        editor.apply();
     }
 
     private void setWeightToPref(int v) {
@@ -250,14 +233,14 @@ public class FragmentPrefs extends PreferenceFragment
                 .getDefaultSharedPreferences(getActivity().getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(PreferenceKey.PREF_WEIGHT_NUMBER, v);
-        editor.commit();
+        editor.apply();
     }
     private void setWaterRecomToPref(int v) {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getActivity().getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(PreferenceKey.PREF_WATER_RECOM, v);
-        editor.commit();
+        editor.putInt(PreferenceKey.PREF_WATER_NEED, v);
+        editor.apply();
     }
     private void setTimePref(String command, String str){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

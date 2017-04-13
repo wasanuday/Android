@@ -1,45 +1,22 @@
 <resources>
     <string name="app_name">AndroidProject</string>
-    <string name="gender_str">Select your gender</string>
-    <string name="activity_main_help_text">Use the overflow menu to navigate to Settings.</string>
+
     <!-- settings-->
     <string name="action_settings">Settings</string>
     <string name="activity_settings_title">Settings</string>
 
-    <!-- fragments headers -->
-    <string name="water_calculation_settings_header_title">Daily Recommendation</string>
-    <string name="water_calculation_settings_header_summary">Calculate how much water your body needs</string>
-    <string name="notif_settings_header_title">Notifications and Sounds</string>
-    <string name="notif_settings_header_summary">Enable Notifications</string>
-    <string name="glass_size_settings_header_title">Units and containers size</string>
-    <string name="glass_size_settings_summary">Select unit, glasses size and enable sounds</string>
 
     <!-- fragments preferences title & summary  water calculation-->
     <string name="pref_training_title">Training</string>
     <string name="pref_weight_title">Weight</string>
-    <string name="pref_water_need_title">Daily recommendation</string>
+    <string name="pref_water_need_title">Daily Need</string>
     <string name="pref_gender_title">Gender</string>
 
-    <string name="training_summary">Switch on if you are </string>
-    <string name="weight_summary">Write your weight</string>
-    <string name="water_recom_summary">click to edit</string>
-    <string name="unit_summary">American</string>
-
-    <!-- fragment preferences title and summary  notifications  -->
     <string name="pref_notif_enable_title">Notifications</string>
     <string name="pref_notif_sound_title">Sounds</string>
     <string name="pref_notif_interval_time_title">Time interval</string>
-    <string name="notif_enable_summary">Off</string>
-    <string name="notif_sound_summary">Off</string>
-    <string name="notif_time_interval_summary"> </string>
-
-    <string name="ON">ON</string>
-    <string name="OFF">OFF</string>
-    <string name="AM"> AM</string>
-    <string name="PM"> PM</string>
-    <!-- fragment preferences title and summary  sounds_prefs -->
     <string name="pref_sounds_title">Sounds</string>
-    <string name="sounds_summary">disabled</string>
+
 
     <string name="wake_up_review">2 glasses of water after waking up - helps activate internal organs</string>
     <string name="sleep_review">1 glass of water before going to bed - avoids stroke or heart attack</string>

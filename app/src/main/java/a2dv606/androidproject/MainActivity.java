@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import a2dv606.androidproject.Chart.ChartActivity;
 import a2dv606.androidproject.Settings.PreferenceKey;
@@ -39,94 +42,90 @@ import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
 
 public class MainActivity extends Activity  implements View.OnClickListener, NumberPicker.OnValueChangeListener {
 
-    ImageButton logButton, chartButton, settingButton,outlineButton;
-    Button addDrink, otherSize,cancel,glassButton,bottleButton, setButton;
-    Dialog addDrinkdialog, numberBickerDialog;
-    LinearLayout mainLayout;
-    NumberPicker numberPicker;
+    private ImageButton logButton, chartButton, settingButton,outlineButton;
+    private Button addDrink, otherSize,cancel,glassButton,bottleButton, setButton;
+    private Dialog addDrinkdialog, numberBickerDialog;
+    private LinearLayout mainLayout;
+    private NumberPicker numberPicker;
     public static  TextView addDrinkTv,choosenAmountTv;
+    private int waterNeed=2500;
     private int glassSize;
     private int bottleSize;
-    DrinkDataSource db;
-    int pickerValue=0;
+    private DrinkDataSource db;
+    private int pickerValue=0;
+    BroadcastReceiver updateUIReciver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db= new DrinkDataSource(this);
+        db.open();
+        checkAppFirstTimeRun();
         setContentView(R.layout.main_page);
-        addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
-        choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
         addDrinkdialog = new Dialog(MainActivity.this);
         numberBickerDialog =new Dialog(MainActivity.this);
-        db= new DrinkDataSource(this);
-        db.open();
         initializeViews();
-        loadContainerSizePrefs();
-        LoadWaterNeedPrefs();
         setNumberPickerFormat();
-        checkAppFirstTimeRun();
 
+        loadContainerSizePrefs();
+        loadWaterNeedPrefs();
+        registerUIBroadcastReceiver();
       }
-
-    private int getWaterNeedFromPrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int waterNeed= prefs.getInt(PreferenceKey.PREF_WATER_RECOM,0);
-        return waterNeed;
-
-    }
-    private int LoadWaterNeedPrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int waterNeed= prefs.getInt(PreferenceKey.PREF_WATER_RECOM,0);
-        // update water need in  db.
-        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+ " ml"));
-        return waterNeed;
-
-    }
-
 
     private void checkAppFirstTimeRun() {
 
-        // get shared preferences
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        // first time run?
         if (pref.getBoolean("first_time_run", true)) {
             System.out.println("first time lunched");
-            db.create(0,getWaterNeedFromPrefs(),new Date().toString());
-            setupAppDBBroadcastReciever();
-
+            db.create(0,waterNeed,DateHandler.getCurrentDate());
+            setupAppAlarm();
             startActivityForResult(new Intent(getBaseContext(), SettingsActivity.class),0);
-            //get the preferences editor
             SharedPreferences.Editor editor = pref.edit();
-            // avoid for next run
             editor.putBoolean("first_time_run", false);
             editor.commit();
         }
+    }
 
-
-
-
+    @Override
+    protected void onDestroy(){
+        unregisterReceiver(updateUIReciver);
+        super.onDestroy();
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
         switch (requestCode) {
             case 0:
                 loadContainerSizePrefs();
-                db.updateWaterNeed(getWaterNeedFromPrefs());
+                loadWaterNeedPrefs();
+                db.updateWaterNeed(waterNeed);
+                loadNotificationsPrefs();
                 break;
         }
 
     }
 
-    private void loadContainerSizePrefs() {
-        // db prefs
-   // update water need db.
-
-        // glass size prefs
+    private void loadNotificationsPrefs() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String glassSizeV=  prefs.getString(PreferenceKey.PREF_GLASS_SIZE,"");
-        String bottleSizeV=  prefs.getString(PreferenceKey.PREF_BOTTLE_SIZE, "");
+        boolean isNotEnable= prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
+        Intent myIntent= new Intent(getApplicationContext(),DBBroadcastReceiver.class);
+        if (isNotEnable){
+            myIntent.putExtra("action","schedule_notifications");
+            sendBroadcast(myIntent);
+        }else {
+            myIntent.putExtra("action","stop_notifications");
+            sendBroadcast(myIntent);
+        }
+
+
+    }
+
+    private void loadContainerSizePrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String glassSizeV=  prefs.getString(PreferenceKey.PREF_GLASS_SIZE,"250");
+        String bottleSizeV=  prefs.getString(PreferenceKey.PREF_BOTTLE_SIZE, "1500");
         glassSize = Integer.valueOf(glassSizeV);
         bottleSize = Integer.valueOf(bottleSizeV);
         glassButton.setText(glassSizeV+ " ml");
@@ -134,26 +133,25 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
 
     }
+    private void loadWaterNeedPrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        waterNeed= prefs.getInt(PreferenceKey.PREF_WATER_NEED,0);
+         updateView();
 
-    private void setupAppDBBroadcastReciever() {
-
+    }
+    private void setupAppAlarm() {
         Calendar calendar = Calendar.getInstance();
-        /*  set calendar time the beganing of  day
-         *  */
-     //       calendar.add(Calendar.DAY_OF_YEAR, 1);
-            calendar.set(Calendar.HOUR_OF_DAY,0);
-        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,1);
         calendar.set(Calendar.SECOND,0);
-
-            /* broadcast to db broadcast receiver   */
+       calendar.add(Calendar.DAY_OF_YEAR,1);
         Intent mIntent = new Intent(getApplicationContext(),DBBroadcastReceiver.class);
-        /* put extra to setup app (0 am) */
+        mIntent.putExtra("action","setup");
         PendingIntent pendingIntent = PendingIntent.
                 getBroadcast(getApplicationContext(),90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        /*repeat alarm every day at 0.1 am clock */
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY,pendingIntent);
+               AlarmManager.INTERVAL_DAY,pendingIntent);
         System.out.println("db alarm setup"+ new Date());
     }
 
@@ -213,28 +211,29 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     }
 }
     private void  addFromNumberPiker() {
-        db.createTime(pickerValue,getCurrentDate(),getCurrentTime());
+        db.createTime(pickerValue,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),pickerValue);
-        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
-        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
+         updateView();
         numberBickerDialog.dismiss();
     }
 
     private void addGlass(){
-       db.createTime(glassSize,getCurrentDate(),getCurrentTime());
-      // db.create(240,3300,getCurrentDate());
+        db.createTime(glassSize,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),glassSize);
-        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
-        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
+        updateView();
         addDrinkdialog.dismiss();
     }
 
     private void addBottle() {
-        db.createTime(bottleSize,getCurrentDate(),getCurrentTime());
+        db.createTime(bottleSize,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),bottleSize);
-        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
-        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
+         updateView();
         addDrinkdialog.dismiss();
+    }
+    private  void  updateView(){
+        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+" ml"));
+
     }
 
     private void showAddDrinkDialog() {
@@ -268,21 +267,9 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        Log.i("value is",""+newVal);
         pickerValue= picker.getValue()*5;
     }
 
-    public String getCurrentDate(){
-        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-      //  Date today = Calendar.getInstance().getTime();
-      return df.format(new Date());
-    }
-    public String getCurrentTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "HH:mm a", Locale.getDefault());
-
-        return dateFormat.format(new Date());
-    }
 
     public void  initializeViews(){
         addDrinkdialog.setContentView(R.layout.add_drink_dialog);
@@ -298,6 +285,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         cancel = (Button) addDrinkdialog.findViewById(R.id.cancel_button);
         bottleButton= ( Button)addDrinkdialog.findViewById(R.id.water_bottle_button);
         glassButton=  (Button) addDrinkdialog.findViewById(R.id.water_glass_button);
+        addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
+        choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
 
         bottleButton.setOnClickListener(this);
         glassButton.setOnClickListener(this);
@@ -309,6 +298,18 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         outlineButton.setOnClickListener(this);
         addDrink.setOnClickListener(this);
         setButton.setOnClickListener(this);
+    }
+
+    private void registerUIBroadcastReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.update.db.action");
+        updateUIReciver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateView();
+            }
+        };
+        registerReceiver(updateUIReciver,filter);
     }
 
 }

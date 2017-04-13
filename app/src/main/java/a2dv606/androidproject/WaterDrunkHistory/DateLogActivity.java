@@ -64,7 +64,7 @@ public class DateLogActivity extends AppCompatActivity {
         }
 
         public View getView(final int position, View convertView, ViewGroup parent) {
-            // make sure we have a view to work with (may have been given null)
+
             View itemView = convertView;
             if (itemView == null) {
                 itemView = getLayoutInflater().inflate(
@@ -92,7 +92,7 @@ public class DateLogActivity extends AppCompatActivity {
             });
 
              dateTv = (TextView) itemView.findViewById(R.id.date);
-             dateTv.setText(dateFormat(values.get(position).getDate()));
+            dateTv.setText(dateFormat(values.get(position).getDate()));
 
             waterLog = (TextView) itemView.findViewById(R.id.water_drunk);
             waterDrunk = values.get(position).getWaterDrunk();
@@ -108,6 +108,7 @@ public class DateLogActivity extends AppCompatActivity {
     }
 
     public String dateFormat(String date)  {
+        System.out.println(date);
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date d = null;
         try {

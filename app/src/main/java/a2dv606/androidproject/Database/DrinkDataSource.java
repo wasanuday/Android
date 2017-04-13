@@ -39,7 +39,7 @@ public class DrinkDataSource {
 
 
     public DateLog create(int amount,int n,String d) {
-      if(! isCurrentDateExist(d)){
+    //  if(! isCurrentDateExist(d)){
         ContentValues values = new ContentValues();
         values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
         values.put(DrinkDbHelper.COLUMN_WATER_NEED, n);
@@ -51,8 +51,9 @@ public class DrinkDataSource {
         cursor.moveToFirst();
         DateLog newDateLog = cursorToDataLog(cursor);
         cursor.close();
-        return newDateLog;}
-        return null;
+        return newDateLog;
+    //}
+     //   return null;
     }
 
     private boolean isCurrentDateExist(String d) {
@@ -129,7 +130,9 @@ public class DrinkDataSource {
             waterNeed = cursor.getInt(cursor.getColumnIndex( DrinkDbHelper.COLUMN_WATER_NEED));
         }
         cursor.close();
-        return getDrinkingAmount()*100/waterNeed;
+        if(waterNeed!=0)
+          return getDrinkingAmount()*100/waterNeed;
+        return 0;
 
 
 

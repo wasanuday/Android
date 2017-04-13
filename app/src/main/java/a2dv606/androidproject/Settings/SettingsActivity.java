@@ -12,13 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import java.util.Calendar;
-import java.util.List;
-
-import a2dv606.androidproject.DBBroadcastReceiver;
-import a2dv606.androidproject.NotificationBroadcastReceiver;
 import a2dv606.androidproject.R;
 
 public class SettingsActivity extends PreferenceActivity {
