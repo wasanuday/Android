@@ -5,17 +5,13 @@ import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,21 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import a2dv606.androidproject.Model.DateLog;
-import a2dv606.androidproject.R;
 import a2dv606.androidproject.Database.DrinkDataSource;
 
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import a2dv606.androidproject.Chart.ChartActivity;
 import a2dv606.androidproject.Settings.PreferenceKey;
-import a2dv606.androidproject.WaterDrunkHistory.DateLogActivity;
+import a2dv606.androidproject.WaterDrankHistory.DateLogActivity;
 import a2dv606.androidproject.Settings.SettingsActivity;
 import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
 
@@ -115,7 +105,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean isNotEnable= prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
         soundEnable= prefs.getBoolean(PreferenceKey.PREF_SOUND,false);
-        Intent myIntent= new Intent(getApplicationContext(),DBBroadcastReceiver.class);
+        Intent myIntent= new Intent(getApplicationContext(),AppBroadcastReceiver.class);
         if (isNotEnable){
             myIntent.putExtra("action","schedule_notifications");
             sendBroadcast(myIntent);
@@ -149,8 +139,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         calendar.set(Calendar.HOUR_OF_DAY,0);
         calendar.set(Calendar.MINUTE,1);
         calendar.set(Calendar.SECOND,0);
-       calendar.add(Calendar.DAY_OF_YEAR,1);
-        Intent mIntent = new Intent(getApplicationContext(),DBBroadcastReceiver.class);
+        calendar.add(Calendar.DAY_OF_YEAR,1);
+        Intent mIntent = new Intent(getApplicationContext(),AppBroadcastReceiver.class);
         mIntent.putExtra("action","setup");
         PendingIntent pendingIntent = PendingIntent.
                 getBroadcast(getApplicationContext(),90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -313,7 +303,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
     private void registerUIBroadcastReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.update.db.action");
+        filter.addAction("com.update.view.action");
         updateUIReciver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

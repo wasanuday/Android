@@ -6,20 +6,21 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import java.util.Date;
 
 import a2dv606.androidproject.MainActivity;
 import a2dv606.androidproject.R;
+import a2dv606.androidproject.Settings.PreferenceKey;
 
 
 public class NotificationReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("not "+new Date());
-
 
         Intent repeatingIntent = new Intent(context, MainActivity.class);
         repeatingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -28,15 +29,19 @@ public class NotificationReciever extends BroadcastReceiver {
         Notification.Builder builder =setupNotification(context);
         builder.setContentIntent(pendingIntent);
         notificationManager.notify(100, builder.build());
-        Toast.makeText(context,"notification alarm fired",Toast.LENGTH_LONG).show();
-
     }
 
     private  Notification.Builder setupNotification(Context context) {
         Notification.Builder builder = new Notification.Builder(context);
         builder.setSmallIcon(R.drawable.drop_notification_icon) .setContentTitle("Water Tracker")
-                .setContentText("Time to drink water")
+                .setContentText("It is time to drink water")
                 .setContentInfo("add a drink!").setAutoCancel(true);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean soundEnable= prefs.getBoolean(PreferenceKey.PREF_SOUND,false);
+
+        if(soundEnable)
+        {   builder.setDefaults(Notification.DEFAULT_SOUND);}
      return builder;
 
     }

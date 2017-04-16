@@ -22,7 +22,7 @@ import static android.content.Context.ALARM_SERVICE;
  * Created by Abeer on 3/29/2017.
  */
 
-public class DBBroadcastReceiver extends BroadcastReceiver {
+public class AppBroadcastReceiver extends BroadcastReceiver {
 
      private DrinkDataSource db;
     private Context mContext;
@@ -62,16 +62,18 @@ public class DBBroadcastReceiver extends BroadcastReceiver {
         db= new DrinkDataSource(mContext);
         db.open();
         db.create(0,waterNeed,DateHandler.getCurrentDate());
+        System.out.println("db alarm fired "+ DateHandler.getCurrentDate());
+        System.out.println("new record inserted: "+new Date()+" water need: "+waterNeed+" Water drank: "+0);
 
         Intent local = new Intent();
-        local.setAction("com.update.db.action");
+        local.setAction("com.update.view.action");
         mContext.sendBroadcast(local);
 
     }
 
 
     private void scheduleNotificationAlarm() {
-
+        System.out.println("notifications sech");
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(mContext);
              String from = prefs.getString(PreferenceKey.FROM_KEY,"");
              int interval = prefs.getInt(PreferenceKey.PREF_INTERVAL,2);
@@ -87,7 +89,6 @@ public class DBBroadcastReceiver extends BroadcastReceiver {
         calendar.set(Calendar.HOUR_OF_DAY,Integer.valueOf(hr));
         calendar.set(Calendar.MINUTE,Integer.valueOf(mt));
         calendar.set(Calendar.SECOND,0);
-
         Intent mIntent = new Intent(mContext,NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,101,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)mContext.getSystemService(ALARM_SERVICE);

@@ -1,7 +1,5 @@
-package a2dv606.androidproject.WaterDrunkHistory;
+package a2dv606.androidproject.WaterDrankHistory;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,29 +10,19 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 import a2dv606.androidproject.Database.DrinkDataSource;
-import a2dv606.androidproject.Database.DrinkDbHelper;
-import a2dv606.androidproject.MainActivity;
+import a2dv606.androidproject.DateHandler;
 import a2dv606.androidproject.Model.DateLog;
-import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;
 
 public class DateLogActivity extends AppCompatActivity {
-  static List<DateLog> values ;
-    int waterDrunk;
+    static List<DateLog> values ;
+    private int waterDrank, waterNeed;
     static ArrayAdapter<DateLog> adapter;
-    DateLog dateLog;
-    TextView waterLog,dateTv;
+    private DateLog dateLog;
+    private TextView waterLog,dateTv;
     static ListView listView;
     private static DrinkDataSource db;
     @Override
@@ -76,7 +64,7 @@ public class DateLogActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), TimeLogActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString(Commands.DateLogItem,dateFormat(values.get(position).getDate()));
+                    bundle.putString(Commands.DateLogItem,DateHandler.getDateFormat(values.get(position).getDate()));
                     intent.putExtras(bundle);
                     startActivityForResult(intent, 0);
                 }
@@ -87,17 +75,23 @@ public class DateLogActivity extends AppCompatActivity {
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    String text =  "I've just been reminded to drink " +dateLog.getWaterInLiter(waterDrank)
+                            +  " of " + dateLog.getWaterInLiter(waterNeed) + "L by Daily Water Tracker!";
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT,text);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
                 }
             });
 
              dateTv = (TextView) itemView.findViewById(R.id.date);
-            dateTv.setText(dateFormat(values.get(position).getDate()));
+            dateTv.setText(DateHandler.getDateFormat(values.get(position).getDate()));
 
             waterLog = (TextView) itemView.findViewById(R.id.water_drunk);
-            waterDrunk = values.get(position).getWaterDrunk();
-            int waterNeed =values.get(position).getWaterNeed();
-            waterLog.setText(dateLog.getWaterInLiter(waterDrunk) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
+            waterDrank = values.get(position).getWaterDrunk();
+            waterNeed =values.get(position).getWaterNeed();
+            waterLog.setText(dateLog.getWaterInLiter(waterDrank) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
             return itemView;
         }
     }
@@ -105,20 +99,6 @@ public class DateLogActivity extends AppCompatActivity {
         adapter.clear();
         adapter.addAll(db.getAllDates());
         listView.setAdapter(adapter);
-    }
-
-    public String dateFormat(String date)  {
-        System.out.println(date);
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = null;
-        try {
-            d = fmt.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        fmt = new SimpleDateFormat("yyyy-MM-dd");
-        return fmt.format(d);
     }
 
     }

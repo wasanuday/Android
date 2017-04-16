@@ -1,4 +1,4 @@
-package a2dv606.androidproject.WaterDrunkHistory;
+package a2dv606.androidproject.WaterDrankHistory;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,11 +18,9 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import a2dv606.androidproject.Database.DrinkDataSource;
@@ -272,12 +270,11 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm aa", Locale.getDefault());
 
         Calendar now = Calendar.getInstance();
-
         if(calendar.after(now)){
 
             AlertDialog alertDialog = new AlertDialog.Builder(TimeLogActivity.this).create();
             alertDialog.setTitle("warning !");
-            alertDialog.setMessage("This chosen time is after than the current time, please chose earlier time !");
+            alertDialog.setMessage("This chosen time is after the current time, please chose earlier time !");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
