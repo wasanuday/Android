@@ -28,9 +28,11 @@ public class DateLogActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         setContentView(R.layout.date_log_activity);
         setTitle("History");
-
+        System.out.println("hereeeee in 2");
 
         db = new DrinkDataSource(this);
         db.open();
@@ -44,7 +46,11 @@ public class DateLogActivity extends AppCompatActivity {
 
 
     }
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
     private class myListAdapter extends ArrayAdapter<DateLog> {
 
         public myListAdapter() {

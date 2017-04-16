@@ -31,7 +31,7 @@ public class DateHandler {
             e.printStackTrace();
         }
 
-        fmt = new SimpleDateFormat("yyyy-MMM-dd");
+        fmt = new SimpleDateFormat("yyyy-MM-dd");
         return fmt.format(d);
     }
 

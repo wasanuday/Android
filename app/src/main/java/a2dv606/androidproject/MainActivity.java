@@ -53,6 +53,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         super.onCreate(savedInstanceState);
         db= new DrinkDataSource(this);
         db.open();
+        System.out.println("hereeeee in 1");
         checkAppFirstTimeRun();
         setContentView(R.layout.main_page);
         mainLayout= (LinearLayout) findViewById(R.id.main_view);

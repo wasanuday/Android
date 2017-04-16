@@ -53,6 +53,8 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         setContentView(R.layout.time_log_activity);
 
 
@@ -79,7 +81,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         numberpickerDialog = new Dialog(this);
         numberPickerDialog2 = new Dialog(this);
 
-
+        System.out.println("hereeeee in 3");
         initializeViews();
 
         setNumberPickerFormat();
@@ -87,7 +89,11 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     }
 
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
     private void setNumberPickerFormat() {
         NumberPicker.Formatter formatter = new NumberPicker.Formatter() {
             @Override
