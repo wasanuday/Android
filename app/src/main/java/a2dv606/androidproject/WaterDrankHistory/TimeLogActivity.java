@@ -346,7 +346,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                             db.updateDrinkingAmount(db.getDrinkingAmount(), removedAmount,date);
                             db.delete(time);
                             adapter.remove(time);
-                            MainActivity.addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+                            MainActivity.circleProgress.setProgress(db.getDrinkingAmount());
                             DateLogActivity.reloadAdapter();
                         }
                     });
@@ -400,7 +400,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     }
 
     private void intiTextViews(){
-        MainActivity.addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        MainActivity.circleProgress.setProgress(db.getDrinkingAmount());
         MainActivity.choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
         adapter.clear();
         adapter.addAll(db.getAllTimes(db.sortByTimeDesc(),date));

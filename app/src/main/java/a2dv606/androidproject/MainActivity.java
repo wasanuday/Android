@@ -19,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.github.lzyzsd.circleprogress.CircleProgress;
+import com.github.lzyzsd.circleprogress.DonutProgress;
+
 import a2dv606.androidproject.Database.DrinkDataSource;
 
 
@@ -38,7 +41,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     private Dialog addDrinkdialog, numberBickerDialog;
     private LinearLayout mainLayout;
     private NumberPicker numberPicker;
-    public static  TextView addDrinkTv,choosenAmountTv;
+    public static  DonutProgress circleProgress;
+    public static  TextView choosenAmountTv;
     private int waterNeed=2500;
     private int glassSize;
     private int bottleSize;
@@ -59,6 +63,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
         addDrinkdialog = new Dialog(MainActivity.this);
         numberBickerDialog =new Dialog(MainActivity.this);
+        circleProgress = (DonutProgress) findViewById(R.id.donut_progress);
         mediaPlayer= MediaPlayer.create(this, R.raw.splash_water);
         initializeViews();
         setNumberPickerFormat();
@@ -233,7 +238,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         addDrinkdialog.dismiss();
     }
     private  void  updateView(){
-        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+     //   addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        circleProgress.setProgress(db.getTotalDrink());
         choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+" ml"));
 
     }
@@ -287,7 +293,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         cancel = (Button) addDrinkdialog.findViewById(R.id.cancel_button);
         bottleButton= ( Button)addDrinkdialog.findViewById(R.id.water_bottle_button);
         glassButton=  (Button) addDrinkdialog.findViewById(R.id.water_glass_button);
-        addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
+     //   addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
         choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
 
         bottleButton.setOnClickListener(this);

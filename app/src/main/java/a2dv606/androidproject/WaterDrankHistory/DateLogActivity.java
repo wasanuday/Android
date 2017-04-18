@@ -10,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.github.lzyzsd.circleprogress.CircleProgress;
+
 import java.util.List;
 
 import a2dv606.androidproject.Database.DrinkDataSource;
@@ -23,7 +25,9 @@ public class DateLogActivity extends AppCompatActivity {
     static ArrayAdapter<DateLog> adapter;
     private DateLog dateLog;
     private TextView waterLog,dateTv;
+    private CircleProgress circleProgress;
     static ListView listView;
+
     private static DrinkDataSource db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public class DateLogActivity extends AppCompatActivity {
         values = db.getAllDates();
 
         listView = (ListView) findViewById(R.id.log_list);
+
         adapter = new myListAdapter();
         listView.setAdapter(adapter);
 
@@ -78,6 +83,7 @@ public class DateLogActivity extends AppCompatActivity {
             });
             ImageButton shareButton = (ImageButton) itemView.findViewById(R.id.forward);
 
+
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -90,13 +96,14 @@ public class DateLogActivity extends AppCompatActivity {
                     startActivity(sendIntent);
                 }
             });
-
+            circleProgress = (CircleProgress) itemView.findViewById(R.id.circle_progress);
              dateTv = (TextView) itemView.findViewById(R.id.date);
             dateTv.setText(DateHandler.getDateFormat(values.get(position).getDate()));
 
             waterLog = (TextView) itemView.findViewById(R.id.water_drunk);
             waterDrank = values.get(position).getWaterDrunk();
             waterNeed =values.get(position).getWaterNeed();
+            circleProgress.setProgress(30);
             waterLog.setText(dateLog.getWaterInLiter(waterDrank) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
             return itemView;
         }
