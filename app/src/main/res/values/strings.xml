@@ -8,7 +8,7 @@
 
     <!-- fragments preferences title & summary  water calculation-->
     <string name="pref_training_title">Training</string>
-    <string name="pref_weight_title">Weight</string>
+    <string name="pref_weight_title">Weight (kg)</string>
     <string name="pref_water_need_title">Daily Need</string>
     <string name="pref_gender_title">Gender</string>
 

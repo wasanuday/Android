@@ -5,17 +5,13 @@ import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,21 +19,18 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import a2dv606.androidproject.Model.DateLog;
-import a2dv606.androidproject.R;
+import com.github.lzyzsd.circleprogress.CircleProgress;
+import com.github.lzyzsd.circleprogress.DonutProgress;
+
 import a2dv606.androidproject.Database.DrinkDataSource;
 
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import a2dv606.androidproject.Chart.ChartActivity;
 import a2dv606.androidproject.Settings.PreferenceKey;
-import a2dv606.androidproject.WaterDrunkHistory.DateLogActivity;
+import a2dv606.androidproject.WaterDrankHistory.DateLogActivity;
 import a2dv606.androidproject.Settings.SettingsActivity;
 import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
 
@@ -48,7 +41,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     private Dialog addDrinkdialog, numberBickerDialog;
     private LinearLayout mainLayout;
     private NumberPicker numberPicker;
-    public static  TextView addDrinkTv,choosenAmountTv;
+    public static  DonutProgress circleProgress;
+    public static  TextView choosenAmountTv;
     private int waterNeed=2500;
     private int glassSize;
     private int bottleSize;
@@ -63,11 +57,13 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         super.onCreate(savedInstanceState);
         db= new DrinkDataSource(this);
         db.open();
+        System.out.println("hereeeee in 1");
         checkAppFirstTimeRun();
         setContentView(R.layout.main_page);
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
         addDrinkdialog = new Dialog(MainActivity.this);
         numberBickerDialog =new Dialog(MainActivity.this);
+        circleProgress = (DonutProgress) findViewById(R.id.donut_progress);
         mediaPlayer= MediaPlayer.create(this, R.raw.splash_water);
         initializeViews();
         setNumberPickerFormat();
@@ -115,7 +111,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean isNotEnable= prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
         soundEnable= prefs.getBoolean(PreferenceKey.PREF_SOUND,false);
-        Intent myIntent= new Intent(getApplicationContext(),DBBroadcastReceiver.class);
+        Intent myIntent= new Intent(getApplicationContext(),AppBroadcastReceiver.class);
         if (isNotEnable){
             myIntent.putExtra("action","schedule_notifications");
             sendBroadcast(myIntent);
@@ -149,8 +145,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         calendar.set(Calendar.HOUR_OF_DAY,0);
         calendar.set(Calendar.MINUTE,1);
         calendar.set(Calendar.SECOND,0);
-       calendar.add(Calendar.DAY_OF_YEAR,1);
-        Intent mIntent = new Intent(getApplicationContext(),DBBroadcastReceiver.class);
+        calendar.add(Calendar.DAY_OF_YEAR,1);
+        Intent mIntent = new Intent(getApplicationContext(),AppBroadcastReceiver.class);
         mIntent.putExtra("action","setup");
         PendingIntent pendingIntent = PendingIntent.
                 getBroadcast(getApplicationContext(),90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -242,7 +238,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         addDrinkdialog.dismiss();
     }
     private  void  updateView(){
-        addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+     //   addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        circleProgress.setProgress(db.getTotalDrink());
         choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+" ml"));
 
     }
@@ -296,7 +293,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         cancel = (Button) addDrinkdialog.findViewById(R.id.cancel_button);
         bottleButton= ( Button)addDrinkdialog.findViewById(R.id.water_bottle_button);
         glassButton=  (Button) addDrinkdialog.findViewById(R.id.water_glass_button);
-        addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
+     //   addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
         choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
 
         bottleButton.setOnClickListener(this);
@@ -313,7 +310,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
     private void registerUIBroadcastReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.update.db.action");
+        filter.addAction("com.update.view.action");
         updateUIReciver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

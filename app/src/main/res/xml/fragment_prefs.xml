@@ -10,6 +10,7 @@
         android:icon="@drawable/weight_icon"
         preference:maxValue="@integer/weight_max_vlaue"
         preference:minValue="@integer/weight_min_value"
+        android:summary="Add your weight!"
         preference:wrapSelectorWheel="false"
        />
 

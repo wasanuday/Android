@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -13,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.List;
 
 import a2dv606.androidproject.OutlinesFragments.adviceFragment;
 import a2dv606.androidproject.R;
@@ -66,12 +70,14 @@ public class OutlineActivity extends Activity {
     private class  shareWith implements View.OnClickListener {
         @Override
         public void onClick(View arg0) {
-            Intent msgIntent = new Intent(Intent.ACTION_SENDTO);
-            msgIntent.setType("text/plain");
-            msgIntent.setData(Uri.parse("smsto:"));
-            msgIntent.putExtra(android.content.Intent.EXTRA_TEXT, "hallo");
-            Intent intentChooser = Intent.createChooser(msgIntent,"Share with");
-            startActivity(intentChooser);
+
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+
+
         }}
 
     private class MyPagerAdapter extends FragmentPagerAdapter {

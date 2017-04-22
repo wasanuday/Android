@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_page_backgound"
-    >
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/main_page_backgound">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +14,6 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:id="@+id/outline_button"
             android:layout_gravity="right"
             android:src = "@drawable/info"
@@ -31,24 +30,22 @@
             android:paddingTop="60dp"
             android:textSize="20sp"
             android:layout_gravity="center_horizontal"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0%"
-            android:id="@+id/add_drink_text"
-            android:textColor="@color/colorPrimaryDark"
-            android:padding="10dp"
-            android:textSize="100sp"
 
+        <com.github.lzyzsd.circleprogress.DonutProgress
+            android:id="@+id/donut_progress"
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center"
-            android:phoneNumber="false" />
+            custom:donut_finished_color="@color/colorPrimaryDark"
+            custom:donut_text_size="50sp"
+            custom:donut_text_color="@color/colorPrimaryDark"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimaryDark"
             android:layout_marginStart="180dp"
             android:textSize="15sp"
-            android:text="of 2 Litre"
             android:id="@+id/choosen_drink_text"
             />
 

@@ -98,8 +98,8 @@ public class FragmentPrefs extends PreferenceFragment
         String bottleSize = getPreferenceManager().getSharedPreferences().getString(PreferenceKey.PREF_BOTTLE_SIZE,"");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String from = sharedPreferences.getString(PreferenceKey.FROM_KEY,"8:0");
-
-        weightPref.setSummary(Integer.toString(weight)+" kg");
+          if(weight!=0)
+             weightPref.setSummary(Integer.toString(weight)+" kg");
         trainingPref.setSummary(getString(training));
         waterNeedPref.setSummary(Integer.toString(water_reco)+" ml");
         glassSizePref.setSummary(glassSize+ " ml");
@@ -168,9 +168,11 @@ public class FragmentPrefs extends PreferenceFragment
                 enableNotificationsPrefs(newValue);
                 setSwitchPrefSummaries(newValue.toString(), preference);
                 return true;
+
             case PreferenceKey.PREF_SOUND:
                 setSwitchPrefSummaries(newValue.toString(), preference);
                 return true;
+
             case PreferenceKey.PREF_INTERVAL:
                 preference.setSummary(newValue.toString()+" hour/s");
                 return true;
@@ -198,7 +200,7 @@ public class FragmentPrefs extends PreferenceFragment
         boolean value = Boolean.valueOf(s);
         setTrainingToPref(value);
         int waterNeedValue =calculateWaterReco();
-        setWaterRecomToPref(waterNeedValue);
+        setWaterNeedToPref(waterNeedValue);
         preference.setSummary(getString(value));
         waterNeedPref.setSummary(String.valueOf(waterNeedValue) +" ml");
     }
@@ -206,7 +208,7 @@ public class FragmentPrefs extends PreferenceFragment
     private void handleWeightPref(String s, Preference preference) {
         setWeightToPref(Integer.valueOf(s));
         int value =calculateWaterReco();
-        setWaterRecomToPref(value);
+        setWaterNeedToPref(value);
         preference.setSummary(s+" kg");
         waterNeedPref.setSummary(String.valueOf(value) +" ml");
     }
@@ -235,7 +237,7 @@ public class FragmentPrefs extends PreferenceFragment
         editor.putInt(PreferenceKey.PREF_WEIGHT_NUMBER, v);
         editor.apply();
     }
-    private void setWaterRecomToPref(int v) {
+    private void setWaterNeedToPref(int v) {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getActivity().getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
@@ -253,11 +255,11 @@ public class FragmentPrefs extends PreferenceFragment
     private int calculateWaterReco() {
         int weight = getPreferenceManager().getSharedPreferences().getInt(PreferenceKey.PREF_WEIGHT_NUMBER, 0);
         boolean training= getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKey.PREF_TRAINING,false);
-        double waterRecom= weight/ 0.030 ;
+        double waterNeed= weight/ 0.030 ;
         if (training)
-            waterRecom= waterRecom+300;
+            waterNeed= waterNeed+300;
 
-        return (int)waterRecom;
+        return (int)waterNeed;
 
 
 

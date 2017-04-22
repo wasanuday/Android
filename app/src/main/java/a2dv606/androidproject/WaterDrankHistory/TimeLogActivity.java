@@ -1,4 +1,4 @@
-package a2dv606.androidproject.WaterDrunkHistory;
+package a2dv606.androidproject.WaterDrankHistory;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,11 +18,9 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import a2dv606.androidproject.Database.DrinkDataSource;
@@ -55,6 +53,8 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         setContentView(R.layout.time_log_activity);
 
 
@@ -81,7 +81,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         numberpickerDialog = new Dialog(this);
         numberPickerDialog2 = new Dialog(this);
 
-
+        System.out.println("hereeeee in 3");
         initializeViews();
 
         setNumberPickerFormat();
@@ -89,7 +89,11 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     }
 
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
     private void setNumberPickerFormat() {
         NumberPicker.Formatter formatter = new NumberPicker.Formatter() {
             @Override
@@ -272,12 +276,11 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm aa", Locale.getDefault());
 
         Calendar now = Calendar.getInstance();
-
         if(calendar.after(now)){
 
             AlertDialog alertDialog = new AlertDialog.Builder(TimeLogActivity.this).create();
             alertDialog.setTitle("warning !");
-            alertDialog.setMessage("This chosen time is after than the current time, please chose earlier time !");
+            alertDialog.setMessage("This chosen time is after the current time, please chose earlier time !");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -343,7 +346,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                             db.updateDrinkingAmount(db.getDrinkingAmount(), removedAmount,date);
                             db.delete(time);
                             adapter.remove(time);
-                            MainActivity.addDrinkTv.setText(String.valueOf(db.getDrinkingAmount()));
+                            MainActivity.circleProgress.setProgress(db.getDrinkingAmount());
                             DateLogActivity.reloadAdapter();
                         }
                     });
@@ -397,7 +400,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     }
 
     private void intiTextViews(){
-        MainActivity.addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
+        MainActivity.circleProgress.setProgress(db.getDrinkingAmount());
         MainActivity.choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
         adapter.clear();
         adapter.addAll(db.getAllTimes(db.sortByTimeDesc(),date));

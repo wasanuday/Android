@@ -22,7 +22,7 @@ public class SettingsActivity extends PreferenceActivity {
             @Override
             protected void onCreate(final Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
-           LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+                LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
                 bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
                 root.addView(bar, 0); // insert at top
                 bar.setNavigationOnClickListener(new View.OnClickListener() {

@@ -11,15 +11,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".WaterDrunkHistory.DateLogActivity" />
-        <activity android:name=".WaterDrunkHistory.TimeLogActivity" />
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".WaterDrankHistory.DateLogActivity" />
+        <activity android:name=".WaterDrankHistory.TimeLogActivity" />
         <activity android:name=".Settings.SettingsActivity" />
         <activity android:name=".OutlinesFragments.OutlineActivity">
             <intent-filter>
@@ -32,10 +26,19 @@
         </activity>
 
         <receiver android:name=".Notifications.NotificationReciever" />
-        <receiver android:name=".DBBroadcastReceiver" />
+        <receiver android:name=".AppBroadcastReceiver" />
 
-        <activity android:name=".Chart.ChartActivity"
-            android:background="@color/blue"/>
+        <activity
+            android:name=".Chart.ChartActivity"
+            android:background="@color/blue" />
+        <activity android:name=".SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Main2Activity"></activity>
     </application>
 
 </manifest>
