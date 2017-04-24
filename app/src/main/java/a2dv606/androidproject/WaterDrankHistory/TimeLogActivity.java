@@ -5,6 +5,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -21,13 +26,18 @@ import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import a2dv606.androidproject.AppBroadcastReceiver;
 import a2dv606.androidproject.Database.DrinkDataSource;
+import a2dv606.androidproject.DateHandler;
 import a2dv606.androidproject.MainActivity;
 import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;
+import a2dv606.androidproject.Settings.PreferenceKey;
 import a2dv606.androidproject.dialogs.TimePickerFragment;
 
 public class TimeLogActivity extends AppCompatActivity  implements View.OnClickListener, NumberPicker.OnValueChangeListener , TimePickerFragment.OnTimePickedListener {
@@ -41,14 +51,17 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     Dialog addDrinkdialog, addDrinkdialog2, numberpickerDialog,numberPickerDialog2;
     Button otherSize, cancel, glassButton, bottleButton, setButton,setButton2,otherSize2, cancel2, glassButton2, bottleButton2;
     TimePicker timePicker;
-    int glassSize = 240;
-    int bottleSize=1500;
+    int glassSize;
+    int bottleSize;
+    String containerTyp=null;
     int removedValue=0;
     int ID=0;
     int pickerValue;
     String sortBy;
     int amountToInsert=0;
     String date;
+    private boolean soundEnable;
+    private MediaPlayer mediaPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -73,6 +86,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         adapter = new myListAdapter(this);
         adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
+        mediaPlayer= MediaPlayer.create(this, R.raw.splash_water);
 
 
 
@@ -81,11 +95,41 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         numberpickerDialog = new Dialog(this);
         numberPickerDialog2 = new Dialog(this);
 
-        System.out.println("hereeeee in 3");
+
         initializeViews();
+        loadContainerSizePrefs();
+        loadNotificationsPrefs();
 
         setNumberPickerFormat();
         setNumberPickerFormat2();
+
+
+    }
+
+    private void loadNotificationsPrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean isNotEnable = prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED, true);
+        soundEnable = prefs.getBoolean(PreferenceKey.PREF_SOUND, false);
+        Intent myIntent = new Intent(getApplicationContext(), AppBroadcastReceiver.class);
+        if (isNotEnable) {
+            myIntent.putExtra("action", "schedule_notifications");
+            sendBroadcast(myIntent);
+        } else {
+            myIntent.putExtra("action", "stop_notifications");
+            sendBroadcast(myIntent);
+        }
+    }
+    private void loadContainerSizePrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String glassSizeV=  prefs.getString(PreferenceKey.PREF_GLASS_SIZE,"250");
+        String bottleSizeV=  prefs.getString(PreferenceKey.PREF_BOTTLE_SIZE, "1500");
+        glassSize = Integer.valueOf(glassSizeV);
+        bottleSize = Integer.valueOf(bottleSizeV);
+        glassButton.setText(glassSizeV+ " ml");
+        bottleButton.setText(bottleSizeV+ " ml");
+        glassButton2.setText(glassSizeV+ " ml");
+        bottleButton2.setText(bottleSizeV+ " ml");
+
 
     }
 
@@ -182,6 +226,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     private void  addFromNumberPiker() {
         amountToInsert=pickerValue;
+        containerTyp="other";
         numberpickerDialog.dismiss();
         showTimePickerDialog();
 
@@ -189,6 +234,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     private void addGlass(){
         amountToInsert=glassSize;
+        containerTyp="glass";
         addDrinkdialog.dismiss();
         showTimePickerDialog();
 
@@ -196,32 +242,40 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     private void addBottle() {
         amountToInsert=bottleSize;
+        containerTyp="bottle";
         addDrinkdialog.dismiss();
         showTimePickerDialog();
 
     }
 
     private void  addFromNumberPiker2() {
-        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue,date);
-        db.update(ID,pickerValue);
-        db.updateDrinkingAmount(db.getDrinkingAmount(), pickerValue,date);
+        db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
+        db.update(ID,pickerValue,"other");
+        db.updateDrinkingAmount(db.getDrinkingAmount(date), pickerValue,date);
+        if (soundEnable)
+            mediaPlayer.start();
         numberPickerDialog2.dismiss();
         intiTextViews();
     }
 
     private void addGlass2(){
-        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue,date);
-        db.update(ID,glassSize);
-        db.updateDrinkingAmount(db.getDrinkingAmount(), glassSize,date);
-        addDrinkdialog.dismiss();
+        db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
+        db.update(ID,glassSize,"glass");
+        db.updateDrinkingAmount(db.getDrinkingAmount(date), glassSize,date);
+        if (soundEnable)
+            mediaPlayer.start();
+        addDrinkdialog2.dismiss();
         intiTextViews();
+
 
     }
     private void addBottle2() {
-        db.updateDrinkingAmount(db.getDrinkingAmount(), 0- removedValue,date);
-        db.update(ID,bottleSize);
-        db.updateDrinkingAmount(db.getDrinkingAmount(), bottleSize,date);
-        addDrinkdialog.dismiss();
+        db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
+        db.update(ID,bottleSize,"bottle");
+        db.updateDrinkingAmount(db.getDrinkingAmount(date), bottleSize,date);
+        if (soundEnable)
+            mediaPlayer.start();
+        addDrinkdialog2.dismiss();
         intiTextViews();
 
     }
@@ -276,7 +330,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm aa", Locale.getDefault());
 
         Calendar now = Calendar.getInstance();
-        if(calendar.after(now)){
+        if(date.equals(DateHandler.getCurrentFormedDate())&&calendar.after(now)){
 
             AlertDialog alertDialog = new AlertDialog.Builder(TimeLogActivity.this).create();
             alertDialog.setTitle("warning !");
@@ -291,8 +345,10 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         }
         else {
             String addedTime = dateFormat.format(calendar.getTime());
-            db.createTime(amountToInsert, date, addedTime);
-            db.updateDrinkingAmount(db.getDrinkingAmount(), amountToInsert, date);
+            db.createTime(amountToInsert,containerTyp, date, addedTime);
+            db.updateDrinkingAmount(db.getDrinkingAmount(date), amountToInsert, date);
+            if (soundEnable)
+                mediaPlayer.start();
             intiTextViews();
             amountToInsert = 0;
         }
@@ -321,6 +377,14 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
             dateTv = (TextView) itemView.findViewById(R.id.time);
             dateTv.setText(values.get(position).getTime());
 
+            ImageView typ = (ImageView) itemView.findViewById(R.id.containerTyp);
+            if(values.get(position).getContainerTyp().equals("glass"))
+            typ.setImageDrawable(getResources().getDrawable(R.drawable.water_glass));
+            if (values.get(position).getContainerTyp().equals("bottle"))
+                typ.setImageDrawable(getResources().getDrawable(R.drawable.water_bottle));
+            if (values.get(position).getContainerTyp().equals("other"))
+                typ.setImageDrawable(getResources().getDrawable(R.drawable.icon_water_drop));
+
             waterLog = (TextView) itemView
                     .findViewById(R.id.amount);
             waterLog.setText(values.get(position).getAmount() + " ml");
@@ -343,11 +407,12 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                         public void onClick(DialogInterface dialog, int which) {
                             TimeLog time = values.get(position);
                             int removedAmount= 0 - time.getAmount();
-                            db.updateDrinkingAmount(db.getDrinkingAmount(), removedAmount,date);
+                            db.updateDrinkingAmount(db.getDrinkingAmount(date), removedAmount,date);
                             db.delete(time);
-                            adapter.remove(time);
-                            MainActivity.circleProgress.setProgress(db.getDrinkingAmount());
-                            DateLogActivity.reloadAdapter();
+                         //   adapter.remove(time);
+                           // MainActivity.circleProgress.setProgress(db.getDrinkingAmount());
+                            //DateLogActivity.reloadAdapter();
+                            intiTextViews();
                         }
                     });
                     AlertDialog alert = builder.create();
@@ -400,8 +465,10 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     }
 
     private void intiTextViews(){
-        MainActivity.circleProgress.setProgress(db.getDrinkingAmount());
+        MainActivity.circleProgress.setProgress(db.getTotalDrink());
         MainActivity.choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
+
+
         adapter.clear();
         adapter.addAll(db.getAllTimes(db.sortByTimeDesc(),date));
         listView.setAdapter(adapter);

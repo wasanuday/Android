@@ -98,12 +98,13 @@ public class DateLogActivity extends AppCompatActivity {
             });
             circleProgress = (CircleProgress) itemView.findViewById(R.id.circle_progress);
              dateTv = (TextView) itemView.findViewById(R.id.date);
-            dateTv.setText(DateHandler.getDateFormat(values.get(position).getDate()));
+            dateTv.setText(DateHandler.dateFormat(values.get(position).getDate()));
 
             waterLog = (TextView) itemView.findViewById(R.id.water_drunk);
             waterDrank = values.get(position).getWaterDrunk();
             waterNeed =values.get(position).getWaterNeed();
-            circleProgress.setProgress(30);
+
+            circleProgress.setProgress(waterDrank*100/waterNeed);
             waterLog.setText(dateLog.getWaterInLiter(waterDrank) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
             return itemView;
         }

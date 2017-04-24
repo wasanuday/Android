@@ -15,7 +15,10 @@
             android:src="@drawable/water_glass"
             android:padding="10dp"
             android:layout_marginLeft="10dp"
-            android:background="@drawable/circle_button"/>
+            android:background="@drawable/circle_button"
+            android:id="@+id/containerTyp"
+            android:maxHeight="20dp"
+            android:maxWidth="20dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

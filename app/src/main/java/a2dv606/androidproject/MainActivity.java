@@ -9,14 +9,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.CircleProgress;
@@ -38,7 +44,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
     private ImageButton logButton, chartButton, settingButton,outlineButton;
     private Button addDrink, otherSize,cancel,glassButton,bottleButton, setButton;
-    private Dialog addDrinkdialog, numberBickerDialog;
+    private Dialog addDrinkdialog, numberBickerDialog,congratulationDialog;
     private LinearLayout mainLayout;
     private NumberPicker numberPicker;
     public static  DonutProgress circleProgress;
@@ -49,6 +55,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     private DrinkDataSource db;
     private int pickerValue=0;
     private BroadcastReceiver updateUIReciver;
+    private String glass="glass";
+    private String bottle="bottle";
     private boolean soundEnable;
     private MediaPlayer mediaPlayer;
 
@@ -63,6 +71,8 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
         addDrinkdialog = new Dialog(MainActivity.this);
         numberBickerDialog =new Dialog(MainActivity.this);
+        congratulationDialog = new Dialog(MainActivity.this);
+        congratulationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         circleProgress = (DonutProgress) findViewById(R.id.donut_progress);
         mediaPlayer= MediaPlayer.create(this, R.raw.splash_water);
         initializeViews();
@@ -202,6 +212,9 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
                 case R.id.cancel_button:
                     addDrinkdialog.dismiss();
                     break;
+                case R.id.imageView2:
+                    congratulationDialog.dismiss();
+                   break;
                 case R.id.other_size_button:
                     addDrinkdialog.dismiss();
                     showNumberPickerDialog();
@@ -212,7 +225,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     }
 }
     private void  addFromNumberPiker() {
-        db.createTime(pickerValue,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
+        db.createTime(pickerValue,"other",DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),pickerValue);
          updateView();
         if (soundEnable)
@@ -221,7 +234,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     }
 
     private void addGlass(){
-        db.createTime(glassSize,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
+        db.createTime(glassSize,glass,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),glassSize);
         updateView();
         if (soundEnable)
@@ -230,19 +243,22 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     }
 
     private void addBottle() {
-        db.createTime(bottleSize,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
+        db.createTime(bottleSize,bottle,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),bottleSize);
          updateView();
         if (soundEnable)
             mediaPlayer.start();
         addDrinkdialog.dismiss();
     }
-    private  void  updateView(){
+   private void  updateView(){
      //   addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
-        circleProgress.setProgress(db.getTotalDrink());
-        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+" ml"));
+       circleProgress.setProgress(db.getTotalDrink());
+       choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+" ml"));
+       if (db.getTotalDrink()==100)
+           congratulationDialog.show();
 
-    }
+      // if (db.getTotalDrink()>=100)   circleProgress.setProgress(100);
+}
 
     private void showAddDrinkDialog() {
         addDrinkdialog.setTitle("select container");
@@ -281,6 +297,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
     public void  initializeViews(){
         addDrinkdialog.setContentView(R.layout.add_drink_dialog);
+        congratulationDialog.setContentView(R.layout.congratulation_dialog);
         numberBickerDialog.setContentView(R.layout.number_picker_dialog);
         numberPicker=(NumberPicker) numberBickerDialog.findViewById(R.id.numberPicker);
         setButton = (Button) numberBickerDialog.findViewById(R.id.set_button);
@@ -295,10 +312,12 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         glassButton=  (Button) addDrinkdialog.findViewById(R.id.water_glass_button);
      //   addDrinkTv=(TextView) findViewById(R.id.add_drink_text);
         choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
+        ImageView CongCancel = (ImageView) congratulationDialog.findViewById(R.id.imageView2);
 
         bottleButton.setOnClickListener(this);
         glassButton.setOnClickListener(this);
         cancel.setOnClickListener(this);
+        CongCancel.setOnClickListener(this);
         otherSize.setOnClickListener(this);
         logButton.setOnClickListener(this);
         chartButton.setOnClickListener(this);

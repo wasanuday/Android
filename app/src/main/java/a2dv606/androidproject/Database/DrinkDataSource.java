@@ -27,7 +27,7 @@ public class DrinkDataSource {
     private String[] allDateColumns = {DrinkDbHelper.COLUMN_ID,
             DrinkDbHelper.COLUMN_WATER_NEED, DrinkDbHelper.COLUMN_WATER_DRUNK ,DrinkDbHelper.COLUMN_DATE};
 
-    private String[] allTimeColumns = {DrinkDbHelper.COLUMN_TIME_ID ,DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE ,DrinkDbHelper.COLUMN_TIME_DATE,DrinkDbHelper.COLUMN_TIME};
+    private String[] allTimeColumns = {DrinkDbHelper.COLUMN_TIME_ID ,DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE,DrinkDbHelper.COLUMN_TYP ,DrinkDbHelper.COLUMN_TIME_DATE,DrinkDbHelper.COLUMN_TIME};
 
     public DrinkDataSource(Context context) {
         dbHelper = new DrinkDbHelper(context);
@@ -39,7 +39,7 @@ public class DrinkDataSource {
 
 
     public DateLog create(int amount,int n,String d) {
-    //  if(! isCurrentDateExist(d)){
+     if(! isCurrentDateExist(d)){
         ContentValues values = new ContentValues();
         values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
         values.put(DrinkDbHelper.COLUMN_WATER_NEED, n);
@@ -52,8 +52,8 @@ public class DrinkDataSource {
         DateLog newDateLog = cursorToDataLog(cursor);
         cursor.close();
         return newDateLog;
-    //}
-     //   return null;
+    }
+       return null;
     }
 
     private boolean isCurrentDateExist(String d) {
@@ -84,11 +84,11 @@ public class DrinkDataSource {
         dbHelper.close();
     }
 
-    public boolean updateDrinkingAmount(int waterDrunk, int amount ,String date) {
+    public int updateDrinkingAmount(int waterDrunk, int amount ,String date) {
         waterDrunk = waterDrunk + amount;
         ContentValues cv = new ContentValues();
         cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK, waterDrunk);
-        return database.update(DrinkDbHelper.Date_TABLE_NAME, cv,DrinkDbHelper.COLUMN_DATE + " like '%"+date+"%' ",null)>0;
+        return database.update(DrinkDbHelper.Date_TABLE_NAME, cv,DrinkDbHelper.COLUMN_DATE + " like '%"+date+"%' ",null);
     }
 
     public boolean updateCurrentDrinkingAmount(int waterDrunk, int amount ) {
@@ -105,10 +105,23 @@ public class DrinkDataSource {
     }
     public int getDrinkingAmount() {
         int waterAmount = 0;
-
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 new String[]{DrinkDbHelper.COLUMN_ID,
                         DrinkDbHelper.COLUMN_WATER_DRUNK, DrinkDbHelper.COLUMN_WATER_NEED}, null, null, null, null, DrinkDbHelper.COLUMN_ID + " DESC", " 1");
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            waterAmount = cursor.getInt(cursor.getColumnIndex(DrinkDbHelper.COLUMN_WATER_DRUNK));
+        }
+        cursor.close();
+        return waterAmount;
+    }
+
+    public int getDrinkingAmount(String date) {
+        int waterAmount = 0;
+
+        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
+                new String[]{DrinkDbHelper.COLUMN_ID,
+                        DrinkDbHelper.COLUMN_WATER_DRUNK, DrinkDbHelper.COLUMN_WATER_NEED}, DrinkDbHelper.COLUMN_DATE + " like '%"+date+"%' ", null, null, null, null, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             waterAmount = cursor.getInt(cursor.getColumnIndex(DrinkDbHelper.COLUMN_WATER_DRUNK));
@@ -166,9 +179,10 @@ public class DrinkDataSource {
         return date;
     }
 
-    public TimeLog createTime(int amount,String date,String time) {
+    public TimeLog createTime(int amount,String typ,String date,String time) {
         ContentValues values = new ContentValues();
         values.put(DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE, amount);
+        values.put(DrinkDbHelper.COLUMN_TYP, typ);
         values.put(DrinkDbHelper.COLUMN_TIME_DATE, date);
         values.put(DrinkDbHelper.COLUMN_TIME, time);
         long insertId = database.insert(DrinkDbHelper.TIME_TABLE_NAME, null, values);
@@ -184,8 +198,9 @@ public class DrinkDataSource {
         TimeLog time = new TimeLog();
         time.setID(cursor.getLong(0));
         time.setAmount(cursor.getInt(1));
-        time.setDate(cursor.getString(2));
-        time.setTime(cursor.getString(3));
+        time.setContainerTyp(cursor.getString(2));
+        time.setDate(cursor.getString(3));
+        time.setTime(cursor.getString(4));
         return time;
     }
 
@@ -211,9 +226,10 @@ public class DrinkDataSource {
                 DrinkDbHelper.COLUMN_TIME_ID + "=" + id, null);
     }
 
-    public boolean update(int ID, int waterDrunk) {
+    public boolean update(int ID, int waterDrunk,String containerTyp) {
         ContentValues cv = new ContentValues();
         cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE, waterDrunk);
+        cv.put(DrinkDbHelper.COLUMN_TYP, containerTyp);
         return database.update(DrinkDbHelper.TIME_TABLE_NAME, cv,
                 DrinkDbHelper.COLUMN_TIME_ID + "=" + ID, null) > 0;
     }
@@ -223,7 +239,6 @@ public class DrinkDataSource {
 
         Cursor cursor = database.query(DrinkDbHelper.TIME_TABLE_NAME,
            allTimeColumns , DrinkDbHelper.COLUMN_DATE + " BETWEEN datetime('now', 'start of day') AND datetime('now', 'localtime')", null, null, null, null);
-
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

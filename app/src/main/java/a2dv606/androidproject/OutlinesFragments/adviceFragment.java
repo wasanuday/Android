@@ -2,13 +2,14 @@ package a2dv606.androidproject.OutlinesFragments;
 
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import a2dv606.androidproject.R;
 
 
@@ -16,7 +17,8 @@ public class adviceFragment extends Fragment {
 
     final static String Review="review";
     final static String image="image";
-    private ViewGroup rootView;
+     ViewGroup rootView;
+     TextView tv;
 
 
 
@@ -33,6 +35,7 @@ public class adviceFragment extends Fragment {
         newFragment.setArguments(args);
         return newFragment;
     }
+
 
 
 
@@ -59,12 +62,26 @@ public class adviceFragment extends Fragment {
             bImage = args.getInt(image);
 
         }
-
-        ((TextView) rootView.findViewById(R.id.review_view)).setText(bReview);
-        ((ImageView) rootView.findViewById(R.id.image_view)).setImageResource(bImage);
+        Button share = (Button)rootView.findViewById(R.id.shareBtn);
+        share.setOnClickListener(new  shareWith());
+        tv= (TextView)rootView.findViewById(R.id.review_view);
+        ImageView iv= (ImageView)rootView.findViewById(R.id.image_view);
+        tv.setText(bReview);
+        iv.setImageResource(bImage);
 
     }
+    private class  shareWith implements View.OnClickListener {
+        @Override
+        public void onClick(View arg0) {
 
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, tv.getText());
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+
+
+        }}
 
 }
 

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,21 +23,23 @@ import a2dv606.androidproject.OutlinesFragments.adviceFragment;
 import a2dv606.androidproject.R;
 
 
-public class OutlineActivity extends Activity {
+public class OutlineActivity extends AppCompatActivity {
     private   TextView pageMun;
+    private PagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_outline);
-        Button share = (Button) findViewById(R.id.shareBtn);
 
-        share.setOnClickListener(new  shareWith());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         pageMun = (TextView) findViewById(R.id.pageNum);
         // Instantiate a ViewPager and a PagerAdapter.
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
 
-        final PagerAdapter pagerAdapter = new MyPagerAdapter(getFragmentManager());
+        pagerAdapter = new MyPagerAdapter(getFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -58,27 +61,11 @@ public class OutlineActivity extends Activity {
             }
         });
 
-        ImageView cancel = (ImageView) findViewById(R.id.cancel_icon);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              finish();
-            }
-        });
+
+
 
     }
-    private class  shareWith implements View.OnClickListener {
-        @Override
-        public void onClick(View arg0) {
 
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-            sendIntent.setType("text/plain");
-            startActivity(sendIntent);
-
-
-        }}
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
         Fragment[] fragments = new Fragment[4];
@@ -106,10 +93,12 @@ public class OutlineActivity extends Activity {
         public int getCount() {
             return fragments.length;
         }
+    }
 
-
-
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
 

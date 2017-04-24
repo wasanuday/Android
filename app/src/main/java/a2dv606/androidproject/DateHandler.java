@@ -34,5 +34,74 @@ public class DateHandler {
         fmt = new SimpleDateFormat("yyyy-MM-dd");
         return fmt.format(d);
     }
+    public static String getCurrentFormedDate(){
+        return  new SimpleDateFormat( "yyyy-MM-dd").format(new Date());
+    }
 
+    public static String dayFormat(String date) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = null;
+        try {
+            d = fmt.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        fmt = new SimpleDateFormat("EEE");
+        return fmt.format(d);
+
+    }
+
+    public static String monthFormat(String date) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = null;
+        try {
+            d = fmt.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        fmt = new SimpleDateFormat("MMM");
+        return fmt.format(d);
+
+    }
+    public static String mAndYFormat(String date) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = null;
+        try {
+            d = fmt.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        fmt = new SimpleDateFormat("MMM/yyyy");
+        return fmt.format(d);
+
+    }
+    public static String dAndmFormat(String date) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = null;
+        try {
+            d = fmt.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        fmt = new SimpleDateFormat("d MMM");
+        return fmt.format(d);
+
+    }
+    public static String dateFormat(String date) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = null;
+        try {
+            d = fmt.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        fmt = new SimpleDateFormat("EEE, MMM d, ''yy");
+        return fmt.format(d);
+
+    }
 }

@@ -12,6 +12,17 @@ public class TimeLog {
     private String time;
     private int amount;
     private String date;
+    private String containerTyp;
+
+    public String getContainerTyp() {
+        return containerTyp;
+    }
+
+    public void setContainerTyp(String containerTyp) {
+        this.containerTyp = containerTyp;
+    }
+
+
 
 
     public String getDate() {

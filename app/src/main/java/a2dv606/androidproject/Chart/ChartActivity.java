@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import a2dv606.androidproject.Database.DrinkDataSource;
+import a2dv606.androidproject.DateHandler;
 import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;
@@ -41,6 +42,8 @@ public class ChartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         setTitle("Daily history");
 
         db = new DrinkDataSource(this);
@@ -55,10 +58,10 @@ public class ChartActivity extends AppCompatActivity {
         TextView drinkInMonth=(TextView) findViewById(R.id.textView3);
         TextView drinkInYear=(TextView) findViewById(R.id.textView4);
 
-        drinkInDay.setText("Total drink for today :"+dayFormat(db.getday()));
+        drinkInDay.setText("Total drink for today :"+DateHandler.dayFormat(db.getday()));
         drinkInWeek.setText("Total drink for last week");
-        drinkInMonth.setText("Total drink from "+ dAndmFormat(db.getmonth())+"-"+dAndmFormat(db.getday()));
-        drinkInYear.setText("Total drink from "+monthFormat(db.getYear())+"-"+mAndYFormat(db.getday()));
+        drinkInMonth.setText("Total drink from "+ DateHandler.dAndmFormat(db.getmonth())+"-"+DateHandler.dAndmFormat(db.getday()));
+        drinkInYear.setText("Total drink from "+DateHandler.monthFormat(db.getYear())+"-"+DateHandler.mAndYFormat(db.getday()));
 
 
 
@@ -106,13 +109,11 @@ public class ChartActivity extends AppCompatActivity {
 
         mothBarChart.getXAxis().setDrawGridLines(false);
         mBarDataSet.setDrawValues(false);
-        mothBarChart.getAxisRight().setDrawTopYLabelEntry(false);
         mothBarChart.getAxisRight().setDrawAxisLine(false);
         mothBarChart.getAxisRight().setDrawLimitLinesBehindData(false);
         mothBarChart.getAxisRight().setDrawAxisLine(false);
         mothBarChart.getAxisRight().setDrawGridLines(false);
 
-        mothBarChart.getAxisLeft().setDrawTopYLabelEntry(false);
         mothBarChart.getAxisLeft().setDrawAxisLine(false);
         mothBarChart.getAxisLeft().setDrawLimitLinesBehindData(false);
         mothBarChart.getAxisLeft().setDrawAxisLine(false);
@@ -121,13 +122,12 @@ public class ChartActivity extends AppCompatActivity {
 
         weekBarChart.getXAxis().setDrawGridLines(false);
         weekBarDataSet.setDrawValues(false);
-        weekBarChart.getAxisRight().setDrawTopYLabelEntry(false);
         weekBarChart.getAxisRight().setDrawAxisLine(false);
         weekBarChart.getAxisRight().setDrawLimitLinesBehindData(false);
         weekBarChart.getAxisRight().setDrawAxisLine(false);
         weekBarChart.getAxisRight().setDrawGridLines(false);
 
-        weekBarChart.getAxisLeft().setDrawTopYLabelEntry(false);
+
         weekBarChart.getAxisLeft().setDrawAxisLine(false);
         weekBarChart.getAxisLeft().setDrawLimitLinesBehindData(false);
         weekBarChart.getAxisLeft().setDrawAxisLine(false);
@@ -135,13 +135,12 @@ public class ChartActivity extends AppCompatActivity {
 
         dayBarChart.getXAxis().setDrawGridLines(false);
         barDataSet.setDrawValues(false);
-        dayBarChart.getAxisRight().setDrawTopYLabelEntry(false);
         dayBarChart.getAxisRight().setDrawAxisLine(false);
         dayBarChart.getAxisRight().setDrawLimitLinesBehindData(false);
         dayBarChart.getAxisRight().setDrawAxisLine(false);
         dayBarChart.getAxisRight().setDrawGridLines(false);
 
-        dayBarChart.getAxisLeft().setDrawTopYLabelEntry(false);
+
         dayBarChart.getAxisLeft().setDrawAxisLine(false);
         dayBarChart.getAxisLeft().setDrawLimitLinesBehindData(false);
         dayBarChart.getAxisLeft().setDrawAxisLine(false);
@@ -192,7 +191,7 @@ public class ChartActivity extends AppCompatActivity {
     private List<String> getXAxisYearValues() {
         ArrayList<String> xAxis = new ArrayList<>();
         for (int i = 0; i < yearValues.size(); i++) {
-            xAxis.add(monthFormat(yearValues.get(i).getDate()));
+            xAxis.add(DateHandler.monthFormat(yearValues.get(i).getDate()));
         }
         return xAxis;
     }
@@ -200,7 +199,7 @@ public class ChartActivity extends AppCompatActivity {
     private List<String> getXAxisMonthValues() {
         ArrayList<String> xAxis = new ArrayList<>();
         for (int i = 0; i < monthValues.size(); i++) {
-            xAxis.add(dayFormat(monthValues.get(i).getDate()));
+            xAxis.add(DateHandler.dayFormat(monthValues.get(i).getDate()));
         }
         return xAxis;
     }
@@ -217,7 +216,7 @@ public class ChartActivity extends AppCompatActivity {
     private List<String> getXAxisWeekValues() {
         ArrayList<String> xAxis = new ArrayList<>();
         for (int i = 0; i < weekValues.size(); i++) {
-            xAxis.add(dayFormat(weekValues.get(i).getDate()));
+            xAxis.add(DateHandler.dayFormat(weekValues.get(i).getDate()));
         }
         return xAxis;
     }
@@ -250,61 +249,12 @@ public class ChartActivity extends AppCompatActivity {
         return yAxis;
     }
 
-
-
-    public String dayFormat(String date) {
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = null;
-        try {
-            d = fmt.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        fmt = new SimpleDateFormat("EEE");
-        return fmt.format(d);
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
-    public String monthFormat(String date) {
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = null;
-        try {
-            d = fmt.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        fmt = new SimpleDateFormat("MMM");
-        return fmt.format(d);
-
-    }
-    public String mAndYFormat(String date) {
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = null;
-        try {
-            d = fmt.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        fmt = new SimpleDateFormat("MMM/yyyy");
-        return fmt.format(d);
-
-    }
-    public String dAndmFormat(String date) {
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = null;
-        try {
-            d = fmt.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        fmt = new SimpleDateFormat("d MMM");
-        return fmt.format(d);
-
-    }
 
 }
 

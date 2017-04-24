@@ -19,16 +19,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true" />
 
-    <Button
-        android:layout_width="168dp"
-        android:layout_height="50dp"
-        android:text=" Share advice"
-        android:id="@+id/shareBtn"
-        android:layout_gravity="bottom|center_horizontal"
-        android:background="@drawable/round_corner"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="90dp" />
+
 
     <TextView
         android:layout_width="90dp"
@@ -37,17 +28,5 @@
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/pager"
         android:text="1/4" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/cancel_icon"
-        android:src="@drawable/returntomain"
-        android:maxHeight="10dp"
-        android:maxWidth="10dp"
-        android:layout_alignTop="@+id/pager"
-        android:layout_alignEnd="@+id/pager"
-        android:layout_toEndOf="@+id/shareBtn"
-        android:layout_alignBottom="@+id/pageNum" />
 
 </RelativeLayout>
