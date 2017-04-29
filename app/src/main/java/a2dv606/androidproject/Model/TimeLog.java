@@ -22,22 +22,13 @@ public class TimeLog {
         this.containerTyp = containerTyp;
     }
 
-
-
-
-    public String getDate() {
-        return date;
-
-    }
+    public String getDate() {return date;}
 
     public void setDate(String date) {
         this.date = date;
     }
 
-    public int getAmount() {
-
-        return amount;
-    }
+    public int getAmount() {return amount;}
 
     public void setAmount(int amount) {
         this.amount = amount;

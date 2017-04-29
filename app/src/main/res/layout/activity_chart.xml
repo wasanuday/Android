@@ -35,26 +35,24 @@
                     android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:weightSum="1">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="349dp"
-                        android:layout_height="53dp"
+                        android:layout_width="354dp"
+                        android:layout_height="73dp"
                         android:id="@+id/textView"
                         android:layout_gravity="center_horizontal"
                         android:textStyle="bold"
                         android:textSize="20dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/blue"
-                        android:layout_weight="0.40" />
+                        />
 
                     <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/day_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="336dp"
-                        android:layout_weight="0.17" />
-                   />
+                        android:id="@+id/day_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    />
                 </LinearLayout>
 
                 <LinearLayout
@@ -63,20 +61,19 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="349dp"
-                        android:layout_height="30dp"
+                        android:layout_width="354dp"
+                        android:layout_height="73dp"
                         android:id="@+id/textView2"
                         android:layout_gravity="center_horizontal"
                         android:textStyle="bold"
                         android:textSize="20dp"
                         android:gravity="center_vertical"
-                        android:textColor="@color/blue"
-                        android:layout_weight="0.50" />
+                        android:textColor="@color/blue" />
 
                     <com.github.mikephil.charting.charts.BarChart
                         android:id="@+id/week_chart"
                         android:layout_width="match_parent"
-                        android:layout_height="410dp" />
+                        android:layout_height="match_parent" />
                     />
                 </LinearLayout>
 
@@ -86,20 +83,19 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="349dp"
-                        android:layout_height="30dp"
+                        android:layout_width="354dp"
+                        android:layout_height="73dp"
                         android:id="@+id/textView3"
                         android:layout_gravity="center_horizontal"
                         android:textStyle="bold"
                         android:textSize="20dp"
                         android:gravity="center_vertical"
-                        android:textColor="@color/blue"
-                        android:layout_weight="0.50" />
+                        android:textColor="@color/blue" />
 
                     <com.github.mikephil.charting.charts.BarChart
                         android:id="@+id/month_chart"
                         android:layout_width="match_parent"
-                        android:layout_height="410dp" />
+                        android:layout_height="match_parent" />
                     />
                 </LinearLayout>
 
@@ -109,21 +105,20 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="349dp"
-                        android:layout_height="30dp"
+                        android:layout_width="354dp"
+                        android:layout_height="73dp"
                         android:id="@+id/textView4"
                         android:layout_gravity="center_horizontal"
                         android:textStyle="bold"
                         android:textSize="20dp"
                         android:gravity="center_vertical"
-                        android:textColor="@color/blue"
-                        android:layout_weight="0.50" />
+                        android:textColor="@color/blue" />
 
 
                     <com.github.mikephil.charting.charts.BarChart
                         android:id="@+id/year_chart"
                         android:layout_width="match_parent"
-                        android:layout_height="410dp" />
+                        android:layout_height="match_parent" />
                     />
                 </LinearLayout>
             </FrameLayout>

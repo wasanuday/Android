@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidProject</string>
+    <string name="app_name">Water Tracker</string>
 
     <!-- settings-->
     <string name="action_settings">Settings</string>

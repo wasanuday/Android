@@ -5,12 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +24,8 @@ public class DrinkDataSource {
     private String[] allDateColumns = {DrinkDbHelper.COLUMN_ID,
             DrinkDbHelper.COLUMN_WATER_NEED, DrinkDbHelper.COLUMN_WATER_DRUNK ,DrinkDbHelper.COLUMN_DATE};
 
-    private String[] allTimeColumns = {DrinkDbHelper.COLUMN_TIME_ID ,DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE,DrinkDbHelper.COLUMN_TYP ,DrinkDbHelper.COLUMN_TIME_DATE,DrinkDbHelper.COLUMN_TIME};
+    private String[] allTimeColumns = {DrinkDbHelper.COLUMN_TIME_ID,
+            DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE,DrinkDbHelper.COLUMN_TYP ,DrinkDbHelper.COLUMN_TIME_DATE,DrinkDbHelper.COLUMN_TIME};
 
     public DrinkDataSource(Context context) {
         dbHelper = new DrinkDbHelper(context);
@@ -38,7 +36,7 @@ public class DrinkDataSource {
     }
 
 
-    public DateLog create(int amount,int n,String d) {
+    public DateLog createDate(int amount,int n,String d) {
      if(! isCurrentDateExist(d)){
         ContentValues values = new ContentValues();
         values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
@@ -57,7 +55,6 @@ public class DrinkDataSource {
     }
 
     private boolean isCurrentDateExist(String d) {
-
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = null;
             try {
@@ -65,19 +62,14 @@ public class DrinkDataSource {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
             fmt = new SimpleDateFormat("yyyy-MM-dd");
-           String dateStr =fmt.format(date);
-
-        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{DrinkDbHelper.COLUMN_DATE},DrinkDbHelper.COLUMN_TIME_DATE + " like '%"+dateStr+"%' ", null,null,null,null,null);
-     if(cursor.getCount()>0)
-         return true;
-        else
-         return false;
-    }
-
-    private int parseDate(String d) {
-        return 0;
+            String dateStr =fmt.format(date);
+            Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{DrinkDbHelper.COLUMN_DATE},
+                    DrinkDbHelper.COLUMN_TIME_DATE + " like '%"+dateStr+"%' ", null,null,null,null,null);
+            if(cursor.getCount()>0)
+            return true;
+            else
+            return false;
     }
 
     public void close() {
@@ -118,7 +110,6 @@ public class DrinkDataSource {
 
     public int getDrinkingAmount(String date) {
         int waterAmount = 0;
-
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 new String[]{DrinkDbHelper.COLUMN_ID,
                         DrinkDbHelper.COLUMN_WATER_DRUNK, DrinkDbHelper.COLUMN_WATER_NEED}, DrinkDbHelper.COLUMN_DATE + " like '%"+date+"%' ", null, null, null, null, null);
@@ -131,31 +122,22 @@ public class DrinkDataSource {
     }
 
     public int getTotalDrink() {
-
         int  waterNeed=0;
-
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 new String[]{DrinkDbHelper.COLUMN_ID,
                         DrinkDbHelper.COLUMN_WATER_NEED}, null, null, null, null, DrinkDbHelper.COLUMN_ID + " DESC", " 1");
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-
             waterNeed = cursor.getInt(cursor.getColumnIndex( DrinkDbHelper.COLUMN_WATER_NEED));
         }
         cursor.close();
         if(waterNeed!=0)
           return getDrinkingAmount()*100/waterNeed;
         return 0;
-
-
-
     }
-
-
 
     public List<DateLog> getAllDates() {
         List<DateLog> dateLog = new ArrayList<DateLog>();
-
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 allDateColumns  , null, null, null, null,DrinkDbHelper.COLUMN_ID+" DESC");
 
@@ -220,13 +202,13 @@ public class DrinkDataSource {
         return timeLog;
     }
 
-    public void delete(TimeLog data) {
+    public void deleteDrink(TimeLog data) {
         Long id = data.getID();
         database.delete(DrinkDbHelper.TIME_TABLE_NAME,
                 DrinkDbHelper.COLUMN_TIME_ID + "=" + id, null);
     }
 
-    public boolean update(int ID, int waterDrunk,String containerTyp) {
+    public boolean updateDrink(int ID, int waterDrunk,String containerTyp) {
         ContentValues cv = new ContentValues();
         cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE, waterDrunk);
         cv.put(DrinkDbHelper.COLUMN_TYP, containerTyp);
@@ -234,9 +216,47 @@ public class DrinkDataSource {
                 DrinkDbHelper.COLUMN_TIME_ID + "=" + ID, null) > 0;
     }
 
-    public ArrayList<TimeLog>getdrinkByDay(){
-        ArrayList<TimeLog> timeLog = new ArrayList<TimeLog>();
 
+
+    public String getYear() {
+        String date = null;
+        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{
+                DrinkDbHelper.COLUMN_DATE },  DrinkDbHelper.COLUMN_DATE +" BETWEEN datetime('now', 'start of year') AND datetime('now', 'localtime')", null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
+        }
+        cursor.close();
+        return date;
+    }
+
+    public String getMonth() {
+        String date = null;
+        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{
+                DrinkDbHelper.COLUMN_DATE },  DrinkDbHelper.COLUMN_DATE +" BETWEEN datetime('now', 'start of month') AND datetime('now', 'localtime')", null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
+        }
+        cursor.close();
+        return date;
+
+    }
+    public String getWeek() {
+        String date = null;
+        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{
+                DrinkDbHelper.COLUMN_DATE },  DrinkDbHelper.COLUMN_DATE +" BETWEEN datetime('now', '-7 days') AND datetime('now', 'localtime')", null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
+        }
+        cursor.close();
+        return date;
+
+    }
+
+    public ArrayList<TimeLog>getDrinkByDay(){
+        ArrayList<TimeLog> timeLog = new ArrayList<TimeLog>();
         Cursor cursor = database.query(DrinkDbHelper.TIME_TABLE_NAME,
            allTimeColumns , DrinkDbHelper.COLUMN_DATE + " BETWEEN datetime('now', 'start of day') AND datetime('now', 'localtime')", null, null, null, null);
 
@@ -258,7 +278,6 @@ public class DrinkDataSource {
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 allDateColumns , DrinkDbHelper.COLUMN_DATE + " BETWEEN datetime('now', '-7 days') AND datetime('now', 'localtime')", null, null, null, null);
 
-
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             DateLog task = cursorToDataLog(cursor);
@@ -270,61 +289,17 @@ public class DrinkDataSource {
         return dateLog;
     }
 
-    public String getYear() {
-        String date = null;
-        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{
-            DrinkDbHelper.COLUMN_DATE },  DrinkDbHelper.COLUMN_DATE +" BETWEEN datetime('now', 'start of year') AND datetime('now', 'localtime')", null, null, null, null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-           date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
 
-
-        }
-        cursor.close();
-        return date;
-
-    }
-    public String getmonth() {
-        String date = null;
-        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{
-                DrinkDbHelper.COLUMN_DATE },  DrinkDbHelper.COLUMN_DATE +" BETWEEN datetime('now', 'start of month') AND datetime('now', 'localtime')", null, null, null, null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
-
-
-        }
-        cursor.close();
-        return date;
-
-    }
-    public String getWeek() {
-        String date = null;
-        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{
-                DrinkDbHelper.COLUMN_DATE },  DrinkDbHelper.COLUMN_DATE +" BETWEEN datetime('now', '-7 days') AND datetime('now', 'localtime')", null, null, null, null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
-
-
-        }
-        cursor.close();
-        return date;
-
-    }
-    public String getday() {
+    public String getCurrentDay() {
         String date = null;
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{
                 DrinkDbHelper.COLUMN_DATE },  DrinkDbHelper.COLUMN_DATE + " BETWEEN datetime('now', 'start of day') AND datetime('now', 'localtime')", null, null, null, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
-
-
         }
         cursor.close();
         return date;
-
     }
 
 
@@ -348,7 +323,6 @@ public class DrinkDataSource {
         ArrayList<DateLog> dateLog = new ArrayList<DateLog>();
        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String[]{DrinkDbHelper.COLUMN_ID,
                DrinkDbHelper.COLUMN_WATER_NEED, "SUM("+DrinkDbHelper.COLUMN_WATER_DRUNK+")" ,DrinkDbHelper.COLUMN_DATE},DrinkDbHelper.COLUMN_DATE+ " BETWEEN datetime('now', 'start of year') AND datetime('now', 'localtime')", null, " strftime('%m',"+DrinkDbHelper.COLUMN_DATE+")", null, null);
-
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

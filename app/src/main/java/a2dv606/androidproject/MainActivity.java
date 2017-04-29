@@ -59,6 +59,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     private String bottle="bottle";
     private boolean soundEnable;
     private MediaPlayer mediaPlayer;
+    public boolean gotBefore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (pref.getBoolean("first_time_run", true)) {
             System.out.println("first time lunched");
-            db.create(0,waterNeed,DateHandler.getCurrentDate());
+            db.createDate(0,waterNeed,DateHandler.getCurrentDate());
             setupAppAlarm();
             startActivityForResult(new Intent(getBaseContext(), SettingsActivity.class),0);
             SharedPreferences.Editor editor = pref.edit();
@@ -254,11 +255,25 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
      //   addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
        circleProgress.setProgress(db.getTotalDrink());
        choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+" ml"));
-       if (db.getTotalDrink()==100)
-           congratulationDialog.show();
-
-      // if (db.getTotalDrink()>=100)   circleProgress.setProgress(100);
+       if (db.getTotalDrink()>=100) {
+           circleProgress.setProgress(100);
+           if (isFirstTime()) {
+               congratulationDialog.show();
+           }
+       }
 }
+    public boolean isFirstTime()
+    {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        gotBefore = preferences.getBoolean("gotBefore", false);
+        if (!gotBefore) {
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("gotBefore", true);
+            editor.commit();
+        }
+        return !gotBefore;
+    }
 
     private void showAddDrinkDialog() {
         addDrinkdialog.setTitle("select container");

@@ -47,9 +47,9 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     private ListView listView;
     private DrinkDataSource db;
     TextView waterLog, dateTv;
-    NumberPicker numberPicker,numberPicker2;
-    Dialog addDrinkdialog, addDrinkdialog2, numberpickerDialog,numberPickerDialog2;
-    Button otherSize, cancel, glassButton, bottleButton, setButton,setButton2,otherSize2, cancel2, glassButton2, bottleButton2;
+    NumberPicker numberPicker,updateNumberPicker;
+    Dialog addDrinkdialog, updateDrinkDialog, numberpickerDialog,updateNumberPickerDialog;
+    Button otherSize, cancel, glassButton, bottleButton, setButton,setButtonInUpdateDialog,updateToOtherSize, cancelUpdateDialog, glassButtonInUpdateDialog, bottleButtonInUpdateDialog;
     TimePicker timePicker;
     int glassSize;
     int bottleSize;
@@ -91,9 +91,9 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
 
         addDrinkdialog = new Dialog(this);
-        addDrinkdialog2 = new Dialog(this);
+        updateDrinkDialog = new Dialog(this);
         numberpickerDialog = new Dialog(this);
-        numberPickerDialog2 = new Dialog(this);
+        updateNumberPickerDialog = new Dialog(this);
 
 
         initializeViews();
@@ -101,7 +101,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         loadNotificationsPrefs();
 
         setNumberPickerFormat();
-        setNumberPickerFormat2();
+        setNumberPickerFormatInUpdateDialog();
 
 
     }
@@ -127,8 +127,8 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         bottleSize = Integer.valueOf(bottleSizeV);
         glassButton.setText(glassSizeV+ " ml");
         bottleButton.setText(bottleSizeV+ " ml");
-        glassButton2.setText(glassSizeV+ " ml");
-        bottleButton2.setText(bottleSizeV+ " ml");
+        glassButtonInUpdateDialog.setText(glassSizeV+ " ml");
+        bottleButtonInUpdateDialog.setText(bottleSizeV+ " ml");
 
 
     }
@@ -157,7 +157,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     }
 
-    private void setNumberPickerFormat2() {
+    private void setNumberPickerFormatInUpdateDialog() {
         NumberPicker.Formatter formatter = new NumberPicker.Formatter() {
             @Override
             public String format(int value) {
@@ -167,11 +167,11 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         };
 
 
-        numberPicker2.setFormatter(formatter);
-        numberPicker2.setMaxValue(300);
-        numberPicker2.setMinValue(1);
-        numberPicker2.setWrapSelectorWheel(false);
-        numberPicker2.setOnValueChangedListener(this);
+        updateNumberPicker.setFormatter(formatter);
+        updateNumberPicker.setMaxValue(300);
+        updateNumberPicker.setMinValue(1);
+        updateNumberPicker.setWrapSelectorWheel(false);
+        updateNumberPicker.setOnValueChangedListener(this);
 
     }
 
@@ -191,33 +191,33 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                addBottle();
                 break;
             case R.id.water_bottle_button2:
-            addBottle2();
+                updateToBottle();
                 break;
             case R.id.water_glass_button:
               addGlass();
                 break;
             case R.id.water_glass_button2:
-                addGlass2();
+                updateToGlass();
                 break;
             case R.id.cancel_button:
                 addDrinkdialog.dismiss();
                 break;
             case R.id.cancel_button2:
-                addDrinkdialog2.dismiss();
+                updateDrinkDialog.dismiss();
                 break;
             case R.id.other_size_button:
                 addDrinkdialog.dismiss();
                 showNumberPickerDialog();
                 break;
             case R.id.other_size_button2:
-                addDrinkdialog2.dismiss();
-                showNumberPickerDialog2();
+                updateDrinkDialog.dismiss();
+                showNumberPickerDialogToUpdate();
                 break;
             case R.id.set_button:
             addFromNumberPiker();
                 break;
             case R.id.set_button2:
-               addFromNumberPiker2();
+                updateFromNumberPiker();
                 break;
         }
 
@@ -248,34 +248,34 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     }
 
-    private void  addFromNumberPiker2() {
+    private void  updateFromNumberPiker() {
         db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
-        db.update(ID,pickerValue,"other");
+        db.updateDrink(ID,pickerValue,"other");
         db.updateDrinkingAmount(db.getDrinkingAmount(date), pickerValue,date);
         if (soundEnable)
             mediaPlayer.start();
-        numberPickerDialog2.dismiss();
+        updateNumberPickerDialog.dismiss();
         intiTextViews();
     }
 
-    private void addGlass2(){
+    private void updateToGlass(){
         db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
-        db.update(ID,glassSize,"glass");
+        db.updateDrink(ID,glassSize,"glass");
         db.updateDrinkingAmount(db.getDrinkingAmount(date), glassSize,date);
         if (soundEnable)
             mediaPlayer.start();
-        addDrinkdialog2.dismiss();
+        updateDrinkDialog.dismiss();
         intiTextViews();
 
 
     }
-    private void addBottle2() {
+    private void updateToBottle() {
         db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
-        db.update(ID,bottleSize,"bottle");
+        db.updateDrink(ID,bottleSize,"bottle");
         db.updateDrinkingAmount(db.getDrinkingAmount(date), bottleSize,date);
         if (soundEnable)
             mediaPlayer.start();
-        addDrinkdialog2.dismiss();
+        updateDrinkDialog.dismiss();
         intiTextViews();
 
     }
@@ -288,9 +288,9 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         addDrinkdialog.show();
     }
 
-    private void showAddDrinkDialog2() {
-        addDrinkdialog2.setTitle("select container");
-        addDrinkdialog2.show();
+    private void showUpdateDrinkDialog() {
+        updateDrinkDialog.setTitle("select container");
+        updateDrinkDialog.show();
     }
 
 
@@ -300,9 +300,9 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         numberpickerDialog.show();
     }
 
-    private void showNumberPickerDialog2() {
-        numberPickerDialog2.setTitle("select size");
-        numberPickerDialog2.show();
+    private void showNumberPickerDialogToUpdate() {
+        updateNumberPickerDialog.setTitle("select size");
+        updateNumberPickerDialog.show();
     }
     public void showTimePickerDialog() {
 
@@ -398,7 +398,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                            ID= (int) values.get(position).getID();
-                            showAddDrinkDialog2();
+                            showUpdateDrinkDialog();
                         }
                     });
 
@@ -408,10 +408,9 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                             TimeLog time = values.get(position);
                             int removedAmount= 0 - time.getAmount();
                             db.updateDrinkingAmount(db.getDrinkingAmount(date), removedAmount,date);
-                            db.delete(time);
-                         //   adapter.remove(time);
-                           // MainActivity.circleProgress.setProgress(db.getDrinkingAmount());
-                            //DateLogActivity.reloadAdapter();
+                            db.deleteDrink(time);
+
+
                             intiTextViews();
                         }
                     });
@@ -477,38 +476,38 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     private void initializeViews() {
         addDrinkdialog.setContentView(R.layout.add_drink_dialog);
-        addDrinkdialog2.setContentView(R.layout.update_drink_dialog);
+        updateDrinkDialog.setContentView(R.layout.update_drink_dialog);
         numberpickerDialog.setContentView(R.layout.number_picker_dialog);
         numberPicker = (NumberPicker) numberpickerDialog.findViewById(R.id.numberPicker);
-        numberPickerDialog2.setContentView(R.layout.numberpicker_dialog_update);
-        numberPicker2 = (NumberPicker) numberPickerDialog2.findViewById(R.id.numberPicker2);
+        updateNumberPickerDialog.setContentView(R.layout.numberpicker_dialog_update);
+        updateNumberPicker = (NumberPicker) updateNumberPickerDialog.findViewById(R.id.numberPicker2);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
 
         setButton = (Button) numberpickerDialog.findViewById(R.id.set_button);
-        setButton2 = (Button) numberPickerDialog2.findViewById(R.id.set_button2);
+        setButtonInUpdateDialog = (Button) updateNumberPickerDialog.findViewById(R.id.set_button2);
         otherSize = (Button) addDrinkdialog.findViewById(R.id.other_size_button);
         cancel = (Button) addDrinkdialog.findViewById(R.id.cancel_button);
         bottleButton = (Button) addDrinkdialog.findViewById(R.id.water_bottle_button);
         glassButton = (Button) addDrinkdialog.findViewById(R.id.water_glass_button);
 
 
-        otherSize2 = (Button) addDrinkdialog2.findViewById(R.id.other_size_button2);
-        cancel2 = (Button) addDrinkdialog2.findViewById(R.id.cancel_button2);
-        bottleButton2 = (Button) addDrinkdialog2.findViewById(R.id.water_bottle_button2);
-        glassButton2 = (Button) addDrinkdialog2.findViewById(R.id.water_glass_button2);
+        updateToOtherSize = (Button) updateDrinkDialog.findViewById(R.id.other_size_button2);
+        cancelUpdateDialog = (Button) updateDrinkDialog.findViewById(R.id.cancel_button2);
+        bottleButtonInUpdateDialog = (Button) updateDrinkDialog.findViewById(R.id.water_bottle_button2);
+        glassButtonInUpdateDialog = (Button) updateDrinkDialog.findViewById(R.id.water_glass_button2);
 
 
         bottleButton.setOnClickListener(this);
         glassButton.setOnClickListener(this);
         cancel.setOnClickListener(this);
         setButton.setOnClickListener(this);
-        setButton2.setOnClickListener(this);
+        setButtonInUpdateDialog.setOnClickListener(this);
         otherSize.setOnClickListener(this);
 
-        bottleButton2.setOnClickListener(this);
-        glassButton2.setOnClickListener(this);
-        cancel2.setOnClickListener(this);
-        otherSize2.setOnClickListener(this);
+        bottleButtonInUpdateDialog.setOnClickListener(this);
+        glassButtonInUpdateDialog.setOnClickListener(this);
+        cancelUpdateDialog.setOnClickListener(this);
+        updateToOtherSize.setOnClickListener(this);
     }
 
 }

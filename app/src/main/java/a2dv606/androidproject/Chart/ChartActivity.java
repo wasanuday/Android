@@ -48,7 +48,7 @@ public class ChartActivity extends AppCompatActivity {
 
         db = new DrinkDataSource(this);
         db.open();
-        dayValues = db.getdrinkByDay();
+        dayValues = db.getDrinkByDay();
         weekValues = db.getDrinkByWeek();
         monthValues = db.getDrinkByMonth();
         yearValues = db.getDrinkByYear();
@@ -58,10 +58,10 @@ public class ChartActivity extends AppCompatActivity {
         TextView drinkInMonth=(TextView) findViewById(R.id.textView3);
         TextView drinkInYear=(TextView) findViewById(R.id.textView4);
 
-        drinkInDay.setText("Total drink for today :"+DateHandler.dayFormat(db.getday()));
+        drinkInDay.setText("Total drink for today :"+DateHandler.dayFormat(db.getCurrentDay()));
         drinkInWeek.setText("Total drink for last week");
-        drinkInMonth.setText("Total drink from "+ DateHandler.dAndmFormat(db.getmonth())+"-"+DateHandler.dAndmFormat(db.getday()));
-        drinkInYear.setText("Total drink from "+DateHandler.monthFormat(db.getYear())+"-"+DateHandler.mAndYFormat(db.getday()));
+        drinkInMonth.setText("Total drink from "+ DateHandler.dAndmFormat(db.getMonth())+"-"+DateHandler.dAndmFormat(db.getCurrentDay()));
+        drinkInYear.setText("Total drink from "+DateHandler.monthFormat(db.getYear())+"-"+DateHandler.mAndYFormat(db.getCurrentDay()));
 
 
 

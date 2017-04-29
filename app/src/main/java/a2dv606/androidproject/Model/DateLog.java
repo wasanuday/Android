@@ -20,28 +20,19 @@ public class DateLog  {
     private String date ;
 
 
-    public String getDate(){
-
-        return date;
-    }
+    public String getDate(){return date;}
 
     public  void setDate(String date) {
         this.date = date;
     }
 
-    public int getWaterDrunk() {
-
-        return waterDrunk;
-    }
+    public int getWaterDrunk() {return waterDrunk;}
 
     public void setWaterDrunk(int waterDrunk) {
         this.waterDrunk = waterDrunk;
     }
 
-    public static int getWaterNeed() {
-
-        return waterNeed;
-    }
+    public static int getWaterNeed() {return waterNeed;}
 
     public Double getWaterInLiter(int water){
     double w= (double) water;

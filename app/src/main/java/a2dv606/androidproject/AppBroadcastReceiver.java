@@ -61,7 +61,7 @@ public class AppBroadcastReceiver extends BroadcastReceiver {
         int waterNeed= prefs.getInt(PreferenceKey.PREF_WATER_NEED,0);
         db= new DrinkDataSource(mContext);
         db.open();
-        db.create(0,waterNeed,DateHandler.getCurrentDate());
+        db.createDate(0,waterNeed,DateHandler.getCurrentDate());
         System.out.println("db alarm fired "+ DateHandler.getCurrentDate());
         System.out.println("new record inserted: "+new Date()+" water need: "+waterNeed+" Water drank: "+0);
 
