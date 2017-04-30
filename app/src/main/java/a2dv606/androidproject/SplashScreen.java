@@ -2,8 +2,9 @@ package a2dv606.androidproject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import a2dv606.androidproject.MainWindow.MainActivity;
 
 import static java.lang.Thread.sleep;
 

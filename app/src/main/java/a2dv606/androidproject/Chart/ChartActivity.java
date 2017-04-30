@@ -1,7 +1,5 @@
 package a2dv606.androidproject.Chart;
 
-import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TabHost;
@@ -12,15 +10,11 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import a2dv606.androidproject.Database.DrinkDataSource;
-import a2dv606.androidproject.DateHandler;
+import a2dv606.androidproject.MainWindow.DateHandler;
 import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;

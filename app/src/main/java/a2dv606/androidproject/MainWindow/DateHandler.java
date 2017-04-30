@@ -1,4 +1,4 @@
-package a2dv606.androidproject;
+package a2dv606.androidproject.MainWindow;
 
 import android.util.Log;
 

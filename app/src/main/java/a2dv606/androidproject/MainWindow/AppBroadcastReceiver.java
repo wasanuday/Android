@@ -1,4 +1,4 @@
-package a2dv606.androidproject;
+package a2dv606.androidproject.MainWindow;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -17,7 +17,6 @@ import a2dv606.androidproject.Notifications.NotificationReciever;
 import a2dv606.androidproject.Settings.PreferenceKey;
 
 import static android.content.Context.ALARM_SERVICE;
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Abeer on 3/29/2017.
@@ -70,7 +69,7 @@ public class AppBroadcastReceiver extends BroadcastReceiver {
         int waterNeed= prefs.getInt(PreferenceKey.PREF_WATER_NEED,0);
         db= new DrinkDataSource(mContext);
         db.open();
-        db.createDateLog(0,waterNeed,DateHandler.getCurrentDate());
+        db.createDateLog(0,waterNeed, DateHandler.getCurrentDate());
         System.out.println("db alarm fired "+ DateHandler.getCurrentDate());
         System.out.println("new record inserted: "+new Date()+" water need: "+waterNeed+" Water drank: "+0);
 

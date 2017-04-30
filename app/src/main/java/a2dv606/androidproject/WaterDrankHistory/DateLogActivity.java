@@ -15,7 +15,7 @@ import com.github.lzyzsd.circleprogress.CircleProgress;
 import java.util.List;
 
 import a2dv606.androidproject.Database.DrinkDataSource;
-import a2dv606.androidproject.DateHandler;
+import a2dv606.androidproject.MainWindow.DateHandler;
 import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.R;
 

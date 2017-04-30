@@ -8,11 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
-import java.util.Date;
-
-import a2dv606.androidproject.MainActivity;
+import a2dv606.androidproject.MainWindow.MainActivity;
 import a2dv606.androidproject.R;
 import a2dv606.androidproject.Settings.PreferenceKey;
 
