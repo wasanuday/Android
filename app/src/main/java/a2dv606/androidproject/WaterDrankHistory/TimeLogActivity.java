@@ -51,15 +51,15 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     Dialog addDrinkdialog, updateDrinkDialog, numberpickerDialog,updateNumberPickerDialog;
     Button otherSize, cancel, glassButton, bottleButton, setButton,setButtonInUpdateDialog,updateToOtherSize, cancelUpdateDialog, glassButtonInUpdateDialog, bottleButtonInUpdateDialog;
     TimePicker timePicker;
-    int glassSize;
-    int bottleSize;
-    String containerTyp=null;
-    int removedValue=0;
-    int ID=0;
-    int pickerValue;
-    String sortBy;
-    int amountToInsert=0;
-    String date;
+    private int glassSize;
+    private int bottleSize;
+    private String containerTyp=null;
+   private int removedValue=0;
+    private int ID=0;
+    private int pickerValue;
+    private String sortBy;
+    private int amountToInsert=0;
+    private String date;
     private boolean soundEnable;
     private MediaPlayer mediaPlayer;
     @Override
@@ -80,7 +80,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         db = new DrinkDataSource(this);
         db.open();
 
-        values = db.getAllTimes( db.sortByTimeDesc(),date);
+        values = db.getAllTimeLogs( db.sortByTimeDesc(),date);
 
         listView = (ListView) findViewById(R.id.time_log_list);
         adapter = new myListAdapter(this);
@@ -98,7 +98,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
         initializeViews();
         loadContainerSizePrefs();
-        loadNotificationsPrefs();
+        loadSoundsPrefs();
 
         setNumberPickerFormat();
         setNumberPickerFormatInUpdateDialog();
@@ -106,18 +106,10 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
     }
 
-    private void loadNotificationsPrefs() {
+    private void loadSoundsPrefs() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean isNotEnable = prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED, true);
         soundEnable = prefs.getBoolean(PreferenceKey.PREF_SOUND, false);
-        Intent myIntent = new Intent(getApplicationContext(), AppBroadcastReceiver.class);
-        if (isNotEnable) {
-            myIntent.putExtra("action", "schedule_notifications");
-            sendBroadcast(myIntent);
-        } else {
-            myIntent.putExtra("action", "stop_notifications");
-            sendBroadcast(myIntent);
-        }
+
     }
     private void loadContainerSizePrefs() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -180,7 +172,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         pickerValue=picker.getValue()*5;
-                Log.i("value is", "" + newVal);
+
     }
 
     @Override
@@ -249,34 +241,34 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     }
 
     private void  updateFromNumberPiker() {
-        db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
-        db.updateDrink(ID,pickerValue,"other");
-        db.updateDrinkingAmount(db.getDrinkingAmount(date), pickerValue,date);
-        if (soundEnable)
-            mediaPlayer.start();
+        db.updateConsumedWaterInDateLog( - removedValue,date);
+        db.updateTimeLog(ID,pickerValue,"other");
+        db.updateConsumedWaterInDateLog(pickerValue,date);
+        playSound();
         updateNumberPickerDialog.dismiss();
-        intiTextViews();
+        updateViews();
     }
 
+
+
     private void updateToGlass(){
-        db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
-        db.updateDrink(ID,glassSize,"glass");
-        db.updateDrinkingAmount(db.getDrinkingAmount(date), glassSize,date);
-        if (soundEnable)
-            mediaPlayer.start();
+        db.updateConsumedWaterInDateLog(-removedValue,date);
+        db.updateTimeLog(ID,glassSize,"glass");
+        db.updateConsumedWaterInDateLog( glassSize,date);
+         playSound();
         updateDrinkDialog.dismiss();
-        intiTextViews();
+        updateViews();
 
 
     }
     private void updateToBottle() {
-        db.updateDrinkingAmount(db.getDrinkingAmount(date), 0- removedValue,date);
-        db.updateDrink(ID,bottleSize,"bottle");
-        db.updateDrinkingAmount(db.getDrinkingAmount(date), bottleSize,date);
-        if (soundEnable)
-            mediaPlayer.start();
+      int v=  db.updateConsumedWaterInDateLog(- removedValue,date);
+        System.out.println("******************** "+v);
+        db.updateTimeLog(ID,bottleSize,"bottle");
+        db.updateConsumedWaterInDateLog( bottleSize,date);
+        playSound();
         updateDrinkDialog.dismiss();
-        intiTextViews();
+        updateViews();
 
     }
 
@@ -333,8 +325,8 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         if(date.equals(DateHandler.getCurrentFormedDate())&&calendar.after(now)){
 
             AlertDialog alertDialog = new AlertDialog.Builder(TimeLogActivity.this).create();
-            alertDialog.setTitle("warning !");
-            alertDialog.setMessage("This chosen time is after the current time, please chose earlier time !");
+            alertDialog.setTitle("Error !");
+            alertDialog.setMessage("This chosen time is after the current time, please chose a valid time !");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -345,11 +337,10 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         }
         else {
             String addedTime = dateFormat.format(calendar.getTime());
-            db.createTime(amountToInsert,containerTyp, date, addedTime);
-            db.updateDrinkingAmount(db.getDrinkingAmount(date), amountToInsert, date);
-            if (soundEnable)
-                mediaPlayer.start();
-            intiTextViews();
+            db.createTimeLog(amountToInsert,containerTyp, date, addedTime);
+            db.updateConsumedWaterInDateLog( amountToInsert, date);
+             playSound();
+            updateViews();
             amountToInsert = 0;
         }
 
@@ -365,7 +356,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         }
 
         public View getView(final int position, View convertView, ViewGroup parent) {
-            removedValue=  values.get(position).getAmount();
+
 
             View itemView = convertView;
             if (itemView == null) {
@@ -397,7 +388,9 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                     builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            removedValue=  values.get(position).getAmount();
                            ID= (int) values.get(position).getID();
+
                             showUpdateDrinkDialog();
                         }
                     });
@@ -406,12 +399,10 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             TimeLog time = values.get(position);
-                            int removedAmount= 0 - time.getAmount();
-                            db.updateDrinkingAmount(db.getDrinkingAmount(date), removedAmount,date);
-                            db.deleteDrink(time);
-
-
-                            intiTextViews();
+                            int removedAmount= - time.getAmount();
+                            db.updateConsumedWaterInDateLog(removedAmount,date);
+                            db.deleteTimeLog(time);
+                            updateViews();
                         }
                     });
                     AlertDialog alert = builder.create();
@@ -459,17 +450,20 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     }
     private void reloadAdapter() {
         adapter.clear();
-        adapter.addAll(db.getAllTimes(sortBy,date));
+        adapter.addAll(db.getAllTimeLogs(sortBy,date));
         listView.setAdapter(adapter);
     }
 
-    private void intiTextViews(){
-        MainActivity.circleProgress.setProgress(db.getTotalDrink());
-        MainActivity.choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+ DateLog.getWaterNeed()));
-
+    private void updateViews(){
+        MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+ DateLog.getWaterNeed()));
+        int preValue = db.getConsumedPercentage();
+        if(preValue>=100)
+        {  MainActivity.circleProgress.setProgress(100);}
+        else
+        {   MainActivity.circleProgress.setProgress(db.getConsumedPercentage());}
 
         adapter.clear();
-        adapter.addAll(db.getAllTimes(db.sortByTimeDesc(),date));
+        adapter.addAll(db.getAllTimeLogs(db.sortByTimeDesc(),date));
         listView.setAdapter(adapter);
         DateLogActivity.reloadAdapter();
     }
@@ -508,6 +502,10 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         glassButtonInUpdateDialog.setOnClickListener(this);
         cancelUpdateDialog.setOnClickListener(this);
         updateToOtherSize.setOnClickListener(this);
+    }
+    private void playSound() {
+        if (soundEnable)
+            mediaPlayer.start();
     }
 
 }

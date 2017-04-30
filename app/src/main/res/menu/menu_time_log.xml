@@ -14,8 +14,8 @@
         android:title="Sort by time ASC"  ></item>
 
     <item android:id="@+id/sort_by_amount_desc"
-        android:title="Sort by water drunk DESC"  ></item>
+        android:title="Sort by water drank DESC"  ></item>
     <item android:id="@+id/sort_by_amount_asc"
-        android:title="Sort by water drunk ASC"  ></item>
+        android:title="Sort by water drank ASC"  ></item>
 
 </menu>

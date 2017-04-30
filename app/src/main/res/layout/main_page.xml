@@ -38,6 +38,9 @@
             android:layout_marginTop="10dp"
             android:layout_gravity="center"
             custom:donut_finished_color="@color/colorPrimaryDark"
+            custom:donut_unfinished_stroke_width="5dp"
+            custom:donut_unfinished_color="@color/blue"
+            custom:donut_finished_stroke_width="10dp"
             custom:donut_text_size="50sp"
             custom:donut_text_color="@color/colorPrimaryDark"/>
         <TextView

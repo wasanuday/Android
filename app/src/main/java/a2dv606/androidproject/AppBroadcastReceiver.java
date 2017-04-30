@@ -17,6 +17,7 @@ import a2dv606.androidproject.Notifications.NotificationReciever;
 import a2dv606.androidproject.Settings.PreferenceKey;
 
 import static android.content.Context.ALARM_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Abeer on 3/29/2017.
@@ -24,23 +25,25 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class AppBroadcastReceiver extends BroadcastReceiver {
 
-     private DrinkDataSource db;
+    private DrinkDataSource db;
     private Context mContext;
-    private final String ACTION_SETUP = "setup";
-    private final String ACTION_SCHEDULE = "schedule_notifications";
-    private final String ACTION_STOP= "stop_notifications";
+    final static String ACTION_SETUP = "setup";
+    final static String ACTION_SCHEDULE = "schedule_notifications";
+    final static String ACTION_STOP= "stop_notifications";
+    final static String EXTRA="action";
 
 
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getExtras().getString("action");
+        String action = intent.getExtras().getString(EXTRA);
         mContext =context;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean isNotiEnable= prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
         switch (action){
             case ACTION_SETUP:
                 insertDateLog();
+                updateCongDialogPref();
                   if(isNotiEnable)
                       scheduleNotificationAlarm();
                 break;
@@ -54,6 +57,12 @@ public class AppBroadcastReceiver extends BroadcastReceiver {
 
     }
 
+    private void updateCongDialogPref() {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("show_dialog", true);
+            editor.commit();
+    }
 
 
     private void insertDateLog() {
@@ -61,7 +70,7 @@ public class AppBroadcastReceiver extends BroadcastReceiver {
         int waterNeed= prefs.getInt(PreferenceKey.PREF_WATER_NEED,0);
         db= new DrinkDataSource(mContext);
         db.open();
-        db.createDate(0,waterNeed,DateHandler.getCurrentDate());
+        db.createDateLog(0,waterNeed,DateHandler.getCurrentDate());
         System.out.println("db alarm fired "+ DateHandler.getCurrentDate());
         System.out.println("new record inserted: "+new Date()+" water need: "+waterNeed+" Water drank: "+0);
 
@@ -73,18 +82,15 @@ public class AppBroadcastReceiver extends BroadcastReceiver {
 
 
     private void scheduleNotificationAlarm() {
-        System.out.println("notifications sech");
+
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(mContext);
-             String from = prefs.getString(PreferenceKey.FROM_KEY,"");
+             String from = prefs.getString(PreferenceKey.FROM_KEY,"8:0");
              int interval = prefs.getInt(PreferenceKey.PREF_INTERVAL,2);
              String[] values= from.split(":");
               String hr= values[0];
               String mt= values[1];
 
         Calendar calendar = Calendar.getInstance();
-        /*
-        set start on time for the repeating alarm
-         */
         Calendar now =Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY,Integer.valueOf(hr));
         calendar.set(Calendar.MINUTE,Integer.valueOf(mt));
@@ -92,7 +98,6 @@ public class AppBroadcastReceiver extends BroadcastReceiver {
         Intent mIntent = new Intent(mContext,NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,101,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)mContext.getSystemService(ALARM_SERVICE);
-        /*  set repeating time to every 2 hr  */
         long time= calendar.getTimeInMillis() ;
         if(calendar.before(now)){
             time = System.currentTimeMillis()+500000;}

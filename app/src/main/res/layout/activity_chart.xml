@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Chart.ChartActivity"
     android:background="@color/blue">
@@ -12,7 +13,8 @@
         android:layout_height="match_parent"
         android:id="@+id/tabHost"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,6 +37,10 @@
                     android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:orientation="vertical">
 
                     <TextView
@@ -44,6 +50,7 @@
                         android:layout_gravity="center_horizontal"
                         android:textStyle="bold"
                         android:textSize="20dp"
+                        android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/blue"
                         />
@@ -59,6 +66,10 @@
                     android:id="@+id/linearLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="354dp"
@@ -67,6 +78,7 @@
                         android:layout_gravity="center_horizontal"
                         android:textStyle="bold"
                         android:textSize="20dp"
+                        android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/blue" />
 
@@ -81,12 +93,17 @@
                     android:id="@+id/linearLayout3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="354dp"
                         android:layout_height="73dp"
                         android:id="@+id/textView3"
                         android:layout_gravity="center_horizontal"
+                        android:paddingLeft="10dp"
                         android:textStyle="bold"
                         android:textSize="20dp"
                         android:gravity="center_vertical"
@@ -103,11 +120,16 @@
                     android:id="@+id/linearLayout4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="354dp"
                         android:layout_height="73dp"
                         android:id="@+id/textView4"
+                        android:paddingLeft="10dp"
                         android:layout_gravity="center_horizontal"
                         android:textStyle="bold"
                         android:textSize="20dp"

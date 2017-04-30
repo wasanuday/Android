@@ -20,13 +20,13 @@ import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.R;
 
 public class DateLogActivity extends AppCompatActivity {
-    static List<DateLog> values ;
     private int waterDrank, waterNeed;
-    static ArrayAdapter<DateLog> adapter;
     private DateLog dateLog;
     private TextView waterLog,dateTv;
     private CircleProgress circleProgress;
     static ListView listView;
+    static List<DateLog> values ;
+    static ArrayAdapter<DateLog> adapter;
 
     private static DrinkDataSource db;
     @Override
@@ -42,7 +42,7 @@ public class DateLogActivity extends AppCompatActivity {
         db.open();
 
         dateLog= new DateLog();
-        values = db.getAllDates();
+        values = db.getAllDateLogs();
 
         listView = (ListView) findViewById(R.id.log_list);
 
@@ -97,21 +97,27 @@ public class DateLogActivity extends AppCompatActivity {
                 }
             });
             circleProgress = (CircleProgress) itemView.findViewById(R.id.circle_progress);
-             dateTv = (TextView) itemView.findViewById(R.id.date);
+            dateTv = (TextView) itemView.findViewById(R.id.date);
             dateTv.setText(DateHandler.dateFormat(values.get(position).getDate()));
 
             waterLog = (TextView) itemView.findViewById(R.id.water_drunk);
             waterDrank = values.get(position).getWaterDrunk();
             waterNeed =values.get(position).getWaterNeed();
-
-            circleProgress.setProgress(waterDrank*100/waterNeed);
             waterLog.setText(dateLog.getWaterInLiter(waterDrank) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
+
+            int preValue= waterDrank*100/waterNeed;
+
+            if(preValue>=100)
+             circleProgress.setProgress(100);
+            else
+             circleProgress.setProgress(preValue);
+
             return itemView;
         }
     }
     public static void reloadAdapter() {
         adapter.clear();
-        adapter.addAll(db.getAllDates());
+        adapter.addAll(db.getAllDateLogs());
         listView.setAdapter(adapter);
     }
 

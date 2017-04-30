@@ -72,28 +72,28 @@ public class ChartActivity extends AppCompatActivity {
 
 
         dayBarChart = (BarChart) findViewById(R.id.day_chart);
-        BarDataSet barDataSet = new BarDataSet(getYAxisValues(), "Water consuming by ml");
+        BarDataSet barDataSet = new BarDataSet(getYAxisValues(), "The consumed water in ml");
         BarData barData = new BarData(getXAxisValues(), barDataSet);
         dayBarChart.setData(barData);
-        dayBarChart.setDescription("Daily history of water drinking");
+        dayBarChart.setDescription("");
 
         weekBarChart = (BarChart) findViewById(R.id.week_chart);
-        BarDataSet weekBarDataSet = new BarDataSet(getYAxisWeekValues(), "Water consuming by ml");
+        BarDataSet weekBarDataSet = new BarDataSet(getYAxisWeekValues(), "The consumed water in ml");
         BarData weekBarData = new BarData(getXAxisWeekValues(), weekBarDataSet);
         weekBarChart.setData(weekBarData);
-        weekBarChart.setDescription("Daily history of water drinking");
+        weekBarChart.setDescription("");
 
         mothBarChart = (BarChart) findViewById(R.id.month_chart);
-        BarDataSet mBarDataSet = new BarDataSet(getYAxisMonthValues(), "Water consuming by ml");
+        BarDataSet mBarDataSet = new BarDataSet(getYAxisMonthValues(), "The consumed water in ml");
         BarData mBarData = new BarData(getXAxisMonthValues(), mBarDataSet);
         mothBarChart.setData(mBarData);
-        mothBarChart.setDescription("Daily history of water drinking");
+        mothBarChart.setDescription("");
 
         yearBarChart = (BarChart) findViewById(R.id.year_chart);
-        BarDataSet yBarDataSet = new BarDataSet(getYAxisYearValues(), "Water consuming by ml");
+        BarDataSet yBarDataSet = new BarDataSet(getYAxisYearValues(),"The consumed water in ml");
         BarData yBarData = new BarData(getXAxisYearValues(), yBarDataSet);
         yearBarChart.setData(yBarData);
-        yearBarChart.setDescription("Daily history of water drinking");
+        yearBarChart.setDescription("");
         yearBarChart.getXAxis().setDrawGridLines(false);
         yBarDataSet.setDrawValues(false);
         yearBarChart.getAxisRight().setDrawLimitLinesBehindData(false);

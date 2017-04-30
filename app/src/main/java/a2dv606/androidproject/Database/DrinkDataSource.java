@@ -36,7 +36,7 @@ public class DrinkDataSource {
     }
 
 
-    public DateLog createDate(int amount,int n,String d) {
+    public DateLog createDateLog(int amount,int n,String d) {
      if(! isCurrentDateExist(d)){
         ContentValues values = new ContentValues();
         values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
@@ -76,26 +76,27 @@ public class DrinkDataSource {
         dbHelper.close();
     }
 
-    public int updateDrinkingAmount(int waterDrunk, int amount ,String date) {
-        waterDrunk = waterDrunk + amount;
+    public int updateConsumedWaterInDateLog( int removedAmount ,String date) {
+        int TotalDrank = getConsumedAmount(date) + removedAmount;
+        System.out.println("total consumed "+TotalDrank);
         ContentValues cv = new ContentValues();
-        cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK, waterDrunk);
+        cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK, TotalDrank);
         return database.update(DrinkDbHelper.Date_TABLE_NAME, cv,DrinkDbHelper.COLUMN_DATE + " like '%"+date+"%' ",null);
     }
 
-    public boolean updateCurrentDrinkingAmount(int waterDrunk, int amount ) {
-        waterDrunk = waterDrunk + amount;
+    public boolean updateConsumedWaterForTodayDateLog( int amount ) {
+       int consumed = geConsumedWaterForToadyDateLog() + amount;
         ContentValues cv = new ContentValues();
-        cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK, waterDrunk);
+        cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK, consumed);
         return database.update(DrinkDbHelper.Date_TABLE_NAME, cv,DrinkDbHelper.COLUMN_ID + "= (SELECT  MAX(" + DrinkDbHelper.COLUMN_ID + " ) from "+DrinkDbHelper.Date_TABLE_NAME+" )", null)>0;
     }
 
-    public boolean updateWaterNeed(int waterNeed ) {
+    public boolean updateWaterNeedForTodayDateLog(int waterNeed ) {
         ContentValues cv = new ContentValues();
         cv.put(DrinkDbHelper.COLUMN_WATER_NEED, waterNeed);
         return database.update(DrinkDbHelper.Date_TABLE_NAME, cv,DrinkDbHelper.COLUMN_ID + "= (SELECT  MAX(" + DrinkDbHelper.COLUMN_ID + " ) from "+DrinkDbHelper.Date_TABLE_NAME+" )", null)>0;
     }
-    public int getDrinkingAmount() {
+    public int geConsumedWaterForToadyDateLog() {
         int waterAmount = 0;
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 new String[]{DrinkDbHelper.COLUMN_ID,
@@ -108,20 +109,21 @@ public class DrinkDataSource {
         return waterAmount;
     }
 
-    public int getDrinkingAmount(String date) {
-        int waterAmount = 0;
+    public int getConsumedAmount(String date) {
+        int consumed = 0;
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 new String[]{DrinkDbHelper.COLUMN_ID,
                         DrinkDbHelper.COLUMN_WATER_DRUNK, DrinkDbHelper.COLUMN_WATER_NEED}, DrinkDbHelper.COLUMN_DATE + " like '%"+date+"%' ", null, null, null, null, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            waterAmount = cursor.getInt(cursor.getColumnIndex(DrinkDbHelper.COLUMN_WATER_DRUNK));
+            consumed = cursor.getInt(cursor.getColumnIndex(DrinkDbHelper.COLUMN_WATER_DRUNK));
+            System.out.println("consumed "+consumed);
         }
         cursor.close();
-        return waterAmount;
+        return consumed;
     }
 
-    public int getTotalDrink() {
+    public int getConsumedPercentage() {
         int  waterNeed=0;
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 new String[]{DrinkDbHelper.COLUMN_ID,
@@ -132,11 +134,11 @@ public class DrinkDataSource {
         }
         cursor.close();
         if(waterNeed!=0)
-          return getDrinkingAmount()*100/waterNeed;
+          return geConsumedWaterForToadyDateLog()*100/waterNeed;
         return 0;
     }
 
-    public List<DateLog> getAllDates() {
+    public List<DateLog> getAllDateLogs() {
         List<DateLog> dateLog = new ArrayList<DateLog>();
         Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
                 allDateColumns  , null, null, null, null,DrinkDbHelper.COLUMN_ID+" DESC");
@@ -161,7 +163,7 @@ public class DrinkDataSource {
         return date;
     }
 
-    public TimeLog createTime(int amount,String typ,String date,String time) {
+    public TimeLog createTimeLog (int amount,String typ,String date,String time) {
         ContentValues values = new ContentValues();
         values.put(DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE, amount);
         values.put(DrinkDbHelper.COLUMN_TYP, typ);
@@ -186,7 +188,7 @@ public class DrinkDataSource {
         return time;
     }
 
-    public List<TimeLog> getAllTimes(String sortBy,String date) {
+    public List<TimeLog> getAllTimeLogs(String sortBy,String date) {
         List<TimeLog> timeLog = new ArrayList<TimeLog>();
         Cursor cursor = database.query(DrinkDbHelper.TIME_TABLE_NAME,
                 allTimeColumns,DrinkDbHelper.COLUMN_TIME_DATE + " like '%"+date+"%' ", null,null,null,sortBy,null);
@@ -202,15 +204,15 @@ public class DrinkDataSource {
         return timeLog;
     }
 
-    public void deleteDrink(TimeLog data) {
+    public void deleteTimeLog(TimeLog data) {
         Long id = data.getID();
         database.delete(DrinkDbHelper.TIME_TABLE_NAME,
                 DrinkDbHelper.COLUMN_TIME_ID + "=" + id, null);
     }
 
-    public boolean updateDrink(int ID, int waterDrunk,String containerTyp) {
+    public boolean updateTimeLog(int ID, int drankAmount,String containerTyp) {
         ContentValues cv = new ContentValues();
-        cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE, waterDrunk);
+        cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK_ONCE, drankAmount);
         cv.put(DrinkDbHelper.COLUMN_TYP, containerTyp);
         return database.update(DrinkDbHelper.TIME_TABLE_NAME, cv,
                 DrinkDbHelper.COLUMN_TIME_ID + "=" + ID, null) > 0;
@@ -322,7 +324,9 @@ public class DrinkDataSource {
    public List<DateLog> getDrinkByYear() {
         ArrayList<DateLog> dateLog = new ArrayList<DateLog>();
        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String[]{DrinkDbHelper.COLUMN_ID,
-               DrinkDbHelper.COLUMN_WATER_NEED, "SUM("+DrinkDbHelper.COLUMN_WATER_DRUNK+")" ,DrinkDbHelper.COLUMN_DATE},DrinkDbHelper.COLUMN_DATE+ " BETWEEN datetime('now', 'start of year') AND datetime('now', 'localtime')", null, " strftime('%m',"+DrinkDbHelper.COLUMN_DATE+")", null, null);
+               DrinkDbHelper.COLUMN_WATER_NEED, "SUM("+DrinkDbHelper.COLUMN_WATER_DRUNK+")"
+               ,DrinkDbHelper.COLUMN_DATE},DrinkDbHelper.COLUMN_DATE+ " BETWEEN datetime('now', 'start of year') AND datetime('now', 'localtime')", null, " strftime('%m',"
+               +DrinkDbHelper.COLUMN_DATE+")", null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

@@ -55,18 +55,18 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     private DrinkDataSource db;
     private int pickerValue=0;
     private BroadcastReceiver updateUIReciver;
-    private String glass="glass";
-    private String bottle="bottle";
+    private final String GLASS="glass";
+    private final String BOTTLE="bottle";
+    private final String OTHER= "other";
     private boolean soundEnable;
     private MediaPlayer mediaPlayer;
-    public boolean gotBefore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db= new DrinkDataSource(this);
         db.open();
-        System.out.println("hereeeee in 1");
         checkAppFirstTimeRun();
         setContentView(R.layout.main_page);
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
@@ -88,8 +88,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (pref.getBoolean("first_time_run", true)) {
-            System.out.println("first time lunched");
-            db.createDate(0,waterNeed,DateHandler.getCurrentDate());
+            db.createDateLog(0,waterNeed,DateHandler.getCurrentDate());
             setupAppAlarm();
             startActivityForResult(new Intent(getBaseContext(), SettingsActivity.class),0);
             SharedPreferences.Editor editor = pref.edit();
@@ -111,7 +110,7 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
             case 0:
                 loadContainerSizePrefs();
                 loadWaterNeedPrefs();
-                db.updateWaterNeed(waterNeed);
+                db.updateWaterNeedForTodayDateLog(waterNeed);
                 loadNotificationsPrefs();
                 break;
         }
@@ -124,10 +123,10 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
         soundEnable= prefs.getBoolean(PreferenceKey.PREF_SOUND,false);
         Intent myIntent= new Intent(getApplicationContext(),AppBroadcastReceiver.class);
         if (isNotEnable){
-            myIntent.putExtra("action","schedule_notifications");
+            myIntent.putExtra(AppBroadcastReceiver.EXTRA,AppBroadcastReceiver.ACTION_SCHEDULE);
             sendBroadcast(myIntent);
         }else {
-            myIntent.putExtra("action","stop_notifications");
+            myIntent.putExtra(AppBroadcastReceiver.EXTRA,AppBroadcastReceiver.ACTION_STOP);
             sendBroadcast(myIntent);
         }
 
@@ -154,17 +153,17 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     private void setupAppAlarm() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY,0);
-        calendar.set(Calendar.MINUTE,1);
+        calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
         calendar.add(Calendar.DAY_OF_YEAR,1);
         Intent mIntent = new Intent(getApplicationContext(),AppBroadcastReceiver.class);
-        mIntent.putExtra("action","setup");
+        mIntent.putExtra(AppBroadcastReceiver.EXTRA,AppBroadcastReceiver.ACTION_SETUP);
         PendingIntent pendingIntent = PendingIntent.
                 getBroadcast(getApplicationContext(),90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
                AlarmManager.INTERVAL_DAY,pendingIntent);
-        System.out.println("db alarm setup"+ new Date());
+        System.out.println("db setup");
     }
 
 
@@ -226,53 +225,57 @@ public class MainActivity extends Activity  implements View.OnClickListener, Num
     }
 }
     private void  addFromNumberPiker() {
-        db.createTime(pickerValue,"other",DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
-        db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),pickerValue);
+        db.createTimeLog(pickerValue,OTHER,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
+        db.updateConsumedWaterForTodayDateLog(pickerValue);
          updateView();
-        if (soundEnable)
-            mediaPlayer.start();
+        playSound();
         numberBickerDialog.dismiss();
     }
 
-    private void addGlass(){
-        db.createTime(glassSize,glass,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
-        db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),glassSize);
-        updateView();
+    private void playSound() {
         if (soundEnable)
             mediaPlayer.start();
+    }
+
+    private void addGlass(){
+        db.createTimeLog(glassSize,GLASS,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
+        db.updateConsumedWaterForTodayDateLog(glassSize);
+        updateView();
+        playSound();
         addDrinkdialog.dismiss();
     }
 
     private void addBottle() {
-        db.createTime(bottleSize,bottle,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
-        db.updateCurrentDrinkingAmount(db.getDrinkingAmount(),bottleSize);
+        db.createTimeLog(bottleSize,BOTTLE,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
+        db.updateConsumedWaterForTodayDateLog(bottleSize);
          updateView();
-        if (soundEnable)
-            mediaPlayer.start();
+         playSound();
         addDrinkdialog.dismiss();
     }
    private void  updateView(){
-     //   addDrinkTv.setText(String.valueOf(db.getTotalDrink())+"%");
-       circleProgress.setProgress(db.getTotalDrink());
-       choosenAmountTv.setText(String.valueOf(db.getDrinkingAmount()+" of "+waterNeed+" ml"));
-       if (db.getTotalDrink()>=100) {
-           circleProgress.setProgress(100);
-           if (isFirstTime()) {
+      int perValue= db.getConsumedPercentage();
+       if(perValue>=100)
+       { circleProgress.setProgress(100);
+           if (getCongDialogPrefs()) {
                congratulationDialog.show();
+               setCongDialogPrefs(false);
            }
        }
-}
-    public boolean isFirstTime()
-    {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        gotBefore = preferences.getBoolean("gotBefore", false);
-        if (!gotBefore) {
+       else
+       {  circleProgress.setProgress(db.getConsumedPercentage());}
+       choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+waterNeed+" ml"));
+       }
 
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("gotBefore", true);
-            editor.commit();
-        }
-        return !gotBefore;
+    public boolean getCongDialogPrefs()
+    {   SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean showDialog = preferences.getBoolean("show_dialog", true);
+        return showDialog;
+    }
+    public  void setCongDialogPrefs(boolean value)
+    {   SharedPreferences preferences =PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("show_dialog", value);
+        editor.commit();
     }
 
     private void showAddDrinkDialog() {
