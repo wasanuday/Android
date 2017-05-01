@@ -107,7 +107,7 @@ public class MainActivity extends Activity  implements View.OnClickListener {
         boolean isNotWorking =(PendingIntent.getBroadcast(getApplicationContext(), 90,
                 new Intent(getApplicationContext(),AppBroadcastReceiver.class),
                 PendingIntent.FLAG_NO_CREATE) == null);
-        System.out.println("working"+isNotWorking);
+        System.out.println("working "+isNotWorking);
         if(isNotWorking) {
             Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY,0);
@@ -120,7 +120,7 @@ public class MainActivity extends Activity  implements View.OnClickListener {
                 getBroadcast(getApplicationContext(),90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
                AlarmManager.INTERVAL_DAY,pendingIntent);
         System.out.println("db setup");}
     }

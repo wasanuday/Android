@@ -85,25 +85,19 @@ public class AppBroadcastReceiver extends BroadcastReceiver {
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(mContext);
              String from = prefs.getString(PreferenceKey.FROM_KEY,"8:0");
              int interval = prefs.getInt(PreferenceKey.PREF_INTERVAL,2);
-             String[] values= from.split(":");
+              String[] values= from.split(":");
               String hr= values[0];
               String mt= values[1];
 
         Calendar calendar = Calendar.getInstance();
-        Calendar now =Calendar.getInstance();
+
         calendar.set(Calendar.HOUR_OF_DAY,Integer.valueOf(hr));
         calendar.set(Calendar.MINUTE,Integer.valueOf(mt));
         calendar.set(Calendar.SECOND,0);
         Intent mIntent = new Intent(mContext,NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,101,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)mContext.getSystemService(ALARM_SERVICE);
-        long time= calendar.getTimeInMillis() ;
-        if(calendar.before(now)){
-            time = System.currentTimeMillis()+500000;}
-         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,time, 1000 * 60 *60*interval, pendingIntent);
-
-
-
+         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(), 1000 * 60 *60*interval, pendingIntent);
         Toast.makeText(mContext,"repeating alarm has been scheduled",Toast.LENGTH_LONG).show();
     }
 

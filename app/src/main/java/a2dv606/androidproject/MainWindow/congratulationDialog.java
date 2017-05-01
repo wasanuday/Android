@@ -25,6 +25,7 @@ public class congratulationDialog  extends Dialog implements View.OnClickListene
         setContentView(R.layout.congratulation_dialog);
         CongCancel = (ImageView) findViewById(R.id.imageView2);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        CongCancel.setOnClickListener(this);
     }
 
     @Override

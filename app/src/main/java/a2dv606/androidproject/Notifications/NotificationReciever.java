@@ -7,6 +7,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 
 import a2dv606.androidproject.MainWindow.MainActivity;
@@ -29,8 +31,9 @@ public class NotificationReciever extends BroadcastReceiver {
     }
 
     private  Notification.Builder setupNotification(Context context) {
+      //  Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.drop_notification_icon);
         Notification.Builder builder = new Notification.Builder(context);
-        builder.setSmallIcon(R.drawable.drop_notification_icon) .setContentTitle("Water Tracker")
+        builder.setSmallIcon( R.drawable.drop_notification_icon).setContentTitle("Water Tracker")
                 .setContentText("It is time to drink water")
                 .setContentInfo("add a drink!").setAutoCancel(true);
 
