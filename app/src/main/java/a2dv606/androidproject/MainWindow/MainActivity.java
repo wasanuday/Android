@@ -21,31 +21,30 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 import a2dv606.androidproject.Database.DrinkDataSource;
 
 
-import java.util.Calendar;
-
 import a2dv606.androidproject.Chart.ChartActivity;
 import a2dv606.androidproject.R;
-import a2dv606.androidproject.Settings.PreferenceKey;
 import a2dv606.androidproject.WaterDrankHistory.DateLogActivity;
 import a2dv606.androidproject.Settings.SettingsActivity;
 import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
 
 public class MainActivity extends Activity  implements View.OnClickListener {
 
-    private ImageButton logButton, chartButton, settingButton,outlineButton;
+    private ImageButton logButton, chartButton, settingButton,outlinesButton, sleepButton;
     private Button addDrinkButton;
     private LinearLayout mainLayout;
     public static  DonutProgress circleProgress;
     public static  TextView choosenAmountTv;
     private DrinkDataSource db;
     private BroadcastReceiver updateUIReciver;
+    private Context context ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db= new DrinkDataSource(this);
         db.open();
-        setupAppAlarm();
+        context=getApplicationContext();
         checkAppFirstTimeRun();
         setContentView(R.layout.main_page);
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
@@ -57,13 +56,12 @@ public class MainActivity extends Activity  implements View.OnClickListener {
 
     private void checkAppFirstTimeRun() {
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if (pref.getBoolean("first_time_run", true)) {
-            db.createDateLog(0,getWaterNeedPrefs(), DateHandler.getCurrentDate());
+        if (PrefsHelper.getFirstTimeRunPrefs(context)) {
+            db.createDateLog(0,PrefsHelper.getWaterNeedPrefs(context),
+                    DateHandler.getCurrentDate());
+            AlarmHelper.setDBAlarm(context);
             startActivityForResult(new Intent(getBaseContext(), SettingsActivity.class),0);
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("first_time_run", false);
-            editor.commit();
+            PrefsHelper.setFirstTimeRunPrefs(context,false);
         }
     }
 
@@ -78,52 +76,24 @@ public class MainActivity extends Activity  implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
         switch (requestCode) {
             case 0:
-                db.updateWaterNeedForTodayDateLog(getWaterNeedPrefs());
-                updateView();
-                loadNotificationsPrefs();
+                 db.updateWaterNeedForTodayDateLog(PrefsHelper.getWaterNeedPrefs(context));
+                 updateView();
+                 loadNotificationsPrefs();
                 break;
         }
 
     }
 
     private void loadNotificationsPrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean isNotEnable= prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
-        Intent myIntent= new Intent(getApplicationContext(),AppBroadcastReceiver.class);
-        if (isNotEnable){
-            myIntent.putExtra(AppBroadcastReceiver.EXTRA,AppBroadcastReceiver.ACTION_SCHEDULE);
-            sendBroadcast(myIntent);
-        }else {
-            myIntent.putExtra(AppBroadcastReceiver.EXTRA,AppBroadcastReceiver.ACTION_STOP);
-            sendBroadcast(myIntent);
-        }
+        boolean isEnable= PrefsHelper.getNotificationsPrefs(context);
+        if (isEnable)
+            AlarmHelper.setNotificationsAlarm(context);
+        else
+            AlarmHelper.stopNotificationsAlarm(context);
     }
-    private int getWaterNeedPrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-       return prefs.getInt(PreferenceKey.PREF_WATER_NEED,0);
 
-    }
-    private void setupAppAlarm() {
-        boolean isNotWorking =(PendingIntent.getBroadcast(getApplicationContext(), 90,
-                new Intent(getApplicationContext(),AppBroadcastReceiver.class),
-                PendingIntent.FLAG_NO_CREATE) == null);
-        System.out.println("working "+isNotWorking);
-        if(isNotWorking) {
-            Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY,0);
-        calendar.set(Calendar.MINUTE,0);
-        calendar.set(Calendar.SECOND,0);
-        calendar.add(Calendar.DAY_OF_YEAR,1);
-        Intent mIntent = new Intent(getApplicationContext(),AppBroadcastReceiver.class);
-        mIntent.putExtra(AppBroadcastReceiver.EXTRA,AppBroadcastReceiver.ACTION_SETUP);
-        PendingIntent pendingIntent = PendingIntent.
-                getBroadcast(getApplicationContext(),90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
-               AlarmManager.INTERVAL_DAY,pendingIntent);
-        System.out.println("db setup");}
-    }
+
 
 
 
@@ -140,8 +110,8 @@ public class MainActivity extends Activity  implements View.OnClickListener {
                 case R.id.chart_button:
                     goTolChartActivity();
                     break;
-                case R.id.outline_button:
-                goToOutlineActivity();
+                case R.id.outlines_button:
+                 goToOutlineActivity();
                     break;
                 case R.id.setting_button:
                     goToSettingActivity();
@@ -150,8 +120,21 @@ public class MainActivity extends Activity  implements View.OnClickListener {
                   showAddDialog();
                     break;
 
+                case R.id.sleep_button:
+                    sleepModeButton();
+                    break;
+
     }
 }
+
+    private void sleepModeButton(){
+        SleepModeDialog sleepModeDialog= new SleepModeDialog(this);
+        sleepModeDialog.show();
+
+    }
+
+
+
 
 
     private void  updateView(){
@@ -161,7 +144,8 @@ public class MainActivity extends Activity  implements View.OnClickListener {
        }
        else
        {  circleProgress.setProgress(db.getConsumedPercentage());}
-          choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+ getWaterNeedPrefs()+" ml"));
+          choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+
+                  PrefsHelper.getWaterNeedPrefs(getApplicationContext())+" ml"));
        }
 
     private void showAddDialog() {
@@ -198,13 +182,15 @@ public class MainActivity extends Activity  implements View.OnClickListener {
         logButton =(ImageButton)findViewById(R.id.log_button);
         chartButton =(ImageButton)findViewById(R.id.chart_button);
         settingButton =(ImageButton)findViewById(R.id.setting_button);
-        outlineButton =(ImageButton)findViewById(R.id.outline_button);
+        outlinesButton =(ImageButton)findViewById(R.id.outlines_button);
+        sleepButton =(ImageButton)findViewById(R.id.sleep_button);
         choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
         addDrinkButton = (Button) findViewById(R.id.add_drink_button);
         logButton.setOnClickListener(this);
         chartButton.setOnClickListener(this);
         settingButton.setOnClickListener(this);
-        outlineButton.setOnClickListener(this);
+        outlinesButton.setOnClickListener(this);
+        sleepButton.setOnClickListener(this);
         addDrinkButton.setOnClickListener(this);
     }
 

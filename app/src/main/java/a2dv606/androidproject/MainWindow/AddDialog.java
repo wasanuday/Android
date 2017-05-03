@@ -83,7 +83,7 @@ public class AddDialog extends Dialog implements View.OnClickListener{
     }
 
     private void playSound() {
-        if (getSoundsPrefs())
+        if (PrefsHelper.getSoundsPrefs(context))
             mediaPlayer.start();
 
 
@@ -94,7 +94,7 @@ public class AddDialog extends Dialog implements View.OnClickListener{
         db.updateConsumedWaterForTodayDateLog(glassSize);
         updateView();
         playSound();
-       dismiss();
+        dismiss();
     }
 
     private void addBottle() {
@@ -109,48 +109,30 @@ public class AddDialog extends Dialog implements View.OnClickListener{
         int perValue= db.getConsumedPercentage();
         if(perValue>=100)
         { MainActivity.circleProgress.setProgress(100);
-            if (getCongDialogPrefs()) {
+            if (PrefsHelper.getCongDialogPrefs(context)) {
                 congratulationDialog c = new congratulationDialog(context);
                 c.show();
-                setCongDialogPrefs(false);
+                PrefsHelper.updateCongDialogPref(context,false);
             }
         }
         else
         {  MainActivity.circleProgress.setProgress(db.getConsumedPercentage());
         }
 
-           MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+ getWaterNeedPrefs()+" ml"));
+           MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+
+                   PrefsHelper.getWaterNeedPrefs(context)+" ml"));
     }
 
 
-    public boolean getCongDialogPrefs()
-    {   SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean showDialog = preferences.getBoolean("show_dialog", true);
-        return showDialog;
-    }
-    public  void setCongDialogPrefs(boolean value)
-    {   SharedPreferences preferences =PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("show_dialog", value);
-        editor.commit();
-    }
-    private int getWaterNeedPrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getInt(PreferenceKey.PREF_WATER_NEED,0);
 
-    }
-    private boolean getSoundsPrefs(){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(PreferenceKey.PREF_SOUND,false);
-    }
+
     private void loadContainerSizePrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String glassSizeV=  prefs.getString(PreferenceKey.PREF_GLASS_SIZE,"250");
-        String bottleSizeV=  prefs.getString(PreferenceKey.PREF_BOTTLE_SIZE, "1500");
-        this.glassSize = Integer.valueOf(glassSizeV);
-        this.bottleSize = Integer.valueOf(bottleSizeV);
-        glassButton.setText(glassSizeV+ " ml");
-        bottleButton.setText(bottleSizeV+ " ml");
+       String glassSizeStr= PrefsHelper.getGlassSizePrefs(context);
+        String bottleSizeStr =PrefsHelper.getBottleSizePrefs(context);
+        this.glassSize = Integer.valueOf(glassSizeStr);
+        this.bottleSize = Integer.valueOf(bottleSizeStr);
+        glassButton.setText(glassSizeStr+ " ml");
+        bottleButton.setText(bottleSizeStr+ " ml");
 
 
     }
