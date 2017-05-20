@@ -127,6 +127,6 @@ public class OtherSizeDialog  extends Dialog implements View.OnClickListener,Num
     }
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        NumberPickerValue= picker.getValue()*5;
+        this.NumberPickerValue= picker.getValue()*5;
     }
 }

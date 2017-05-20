@@ -46,6 +46,7 @@ public class MainActivity extends Activity  implements View.OnClickListener {
         db.open();
         context=getApplicationContext();
         checkAppFirstTimeRun();
+        AlarmHelper.setDBAlarm(context);
         setContentView(R.layout.main_page);
         mainLayout= (LinearLayout) findViewById(R.id.main_view);
         circleProgress = (DonutProgress) findViewById(R.id.donut_progress);
@@ -59,7 +60,7 @@ public class MainActivity extends Activity  implements View.OnClickListener {
         if (PrefsHelper.getFirstTimeRunPrefs(context)) {
             db.createDateLog(0,PrefsHelper.getWaterNeedPrefs(context),
                     DateHandler.getCurrentDate());
-            AlarmHelper.setDBAlarm(context);
+         //   AlarmHelper.setDBAlarm(context);
             startActivityForResult(new Intent(getBaseContext(), SettingsActivity.class),0);
             PrefsHelper.setFirstTimeRunPrefs(context,false);
         }

@@ -3,7 +3,6 @@ package a2dv606.androidproject.MainWindow;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 

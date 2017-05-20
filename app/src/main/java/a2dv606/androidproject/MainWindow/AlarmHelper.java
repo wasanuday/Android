@@ -26,7 +26,7 @@ public class AlarmHelper {
         boolean isNotWorking =(PendingIntent.getBroadcast(context, 90,
                 new Intent(context,DateLogBroadcastReceiver.class),
                 PendingIntent.FLAG_NO_CREATE) == null);
-        System.out.println("not working "+isNotWorking);
+        System.out.println("is not working "+isNotWorking);
         if(isNotWorking) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY,0);
@@ -34,12 +34,11 @@ public class AlarmHelper {
             calendar.set(Calendar.SECOND,0);
             calendar.add(Calendar.DAY_OF_YEAR,1);
             Intent mIntent = new Intent(context,DateLogBroadcastReceiver.class);
-            mIntent.putExtra(DateLogBroadcastReceiver.EXTRA, DateLogBroadcastReceiver.ACTION_SETUP);
             PendingIntent pendingIntent = PendingIntent.
                     getBroadcast(context,90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
             AlarmManager alarmManager = (AlarmManager)context.getSystemService(ALARM_SERVICE);
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY,pendingIntent);
             System.out.println("db setup");
     }}

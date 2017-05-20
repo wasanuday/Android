@@ -26,27 +26,17 @@ public class DateLogBroadcastReceiver extends BroadcastReceiver {
 
     private DrinkDataSource db;
     private Context mContext;
-    final static String ACTION_SETUP = "setup";
-    final static String ACTION_SCHEDULE = "schedule_notifications";
-    final static String ACTION_STOP= "stop_notifications";
-    final static String EXTRA="action";
-
 
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getExtras().getString(EXTRA);
         mContext =context;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isNotiEnable= prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
-        switch (action){
-            case ACTION_SETUP:
                 insertDateLog();
                 PrefsHelper.updateCongDialogPref(context,true);
                   if(isNotiEnable)
                      AlarmHelper.setNotificationsAlarm(context);
-                break;
-        }
 
     }
 

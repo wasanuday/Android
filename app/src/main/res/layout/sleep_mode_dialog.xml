@@ -22,6 +22,6 @@
     android:id="@+id/swtich"
     android:textColor="@color/colorPrimary"
     android:textSize="17dp"
-    android:text="Enable sleep mode to stop the notifications!  "/>
+    android:text="Turn on Sleep mode to stop notifications!  "/>
 
 </LinearLayout>

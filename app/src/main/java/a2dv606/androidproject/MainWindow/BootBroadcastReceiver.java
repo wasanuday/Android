@@ -12,6 +12,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context pContext, Intent intent) {
         System.out.println("loooooooooooooooooooooooooooooooooooooooooooooool");
+        /*
+        here we should insert date log for today and the past days where we left
+         */
         AlarmHelper.setDBAlarm(pContext);
     }
 }
