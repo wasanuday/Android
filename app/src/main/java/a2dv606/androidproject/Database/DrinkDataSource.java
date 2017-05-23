@@ -5,12 +5,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
+import a2dv606.androidproject.MainWindow.DateHandler;
 import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.Model.TimeLog;
 
@@ -36,7 +41,7 @@ public class DrinkDataSource {
     }
 
 
-    public DateLog createDateLog(int amount,int n,String d) {
+   public DateLog createDateLog(int amount,int n,String d) {
      if(! isCurrentDateExist(d)){
         ContentValues values = new ContentValues();
         values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
@@ -53,6 +58,73 @@ public class DrinkDataSource {
     }
        return null;
     }
+    public static List<String> getDaysBetweenDates(String startDate, String endDate)
+    {
+        List<String> dates = new ArrayList<String>();
+        Calendar calendar = new GregorianCalendar();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date sDate = format.parse(startDate);
+            Date eDate = format.parse(endDate);
+
+        calendar.setTime(sDate);
+
+        while (calendar.getTime().before(eDate))
+        {
+            Date result = calendar.getTime();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String reportDate = df.format(result);
+            dates.add(reportDate);
+            calendar.add(Calendar.DATE, 1);
+        }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dates;
+    }
+    public String getLastDay() {
+        String date = null;
+        Cursor cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,new String []{
+                DrinkDbHelper.COLUMN_DATE } , null, null, null,null, DrinkDbHelper.COLUMN_DATE + " DESC", " 1");
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
+        }
+        cursor.close();
+        return date;
+    }
+    public List <DateLog> createMissingDateLog(int amount,int n) {
+        List<DateLog> dateLog = new ArrayList<DateLog>();
+        String day=null;
+        ContentValues values = new ContentValues();
+        Cursor cursor=null;
+        String startDate = getLastDay();
+        String endDate = DateHandler.getCurrentDate();
+        List days = getDaysBetweenDates(startDate, endDate);
+        for (int i = 0; i < days.size(); i++) {
+            day = (String) days.get(i);
+            System.out.println("days " + day);
+
+            values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
+            values.put(DrinkDbHelper.COLUMN_WATER_NEED, n);
+            values.put(DrinkDbHelper.COLUMN_DATE, day);
+
+            long insertId = database.insert(DrinkDbHelper.Date_TABLE_NAME, null, values);
+            cursor = database.query(DrinkDbHelper.Date_TABLE_NAME,
+                    allDateColumns, DrinkDbHelper.COLUMN_ID + " = " + insertId, null,
+                    null, null, null);
+        }
+        if(!isCurrentDateExist(day)) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                DateLog newDateLog = cursorToDataLog(cursor);
+                dateLog.add(newDateLog);
+            }
+            cursor.close();
+            return dateLog;
+        }
+            return null;
+        }
 
     private boolean isCurrentDateExist(String d) {
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -260,7 +332,7 @@ public class DrinkDataSource {
     public ArrayList<TimeLog>getDrinkByDay(){
         ArrayList<TimeLog> timeLog = new ArrayList<TimeLog>();
         Cursor cursor = database.query(DrinkDbHelper.TIME_TABLE_NAME,
-           allTimeColumns , DrinkDbHelper.COLUMN_DATE + " BETWEEN datetime('now', 'start of day') AND datetime('now', 'localtime')", null, null, null, null);
+           allTimeColumns , DrinkDbHelper.COLUMN_TIME_DATE + " BETWEEN datetime('now', 'start of day') AND datetime('now', 'localtime')", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

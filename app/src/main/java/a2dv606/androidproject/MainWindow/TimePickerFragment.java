@@ -1,4 +1,4 @@
-package a2dv606.androidproject.dialogs;
+package a2dv606.androidproject.MainWindow;
 
 import android.app.Activity;
 import android.app.TimePickerDialog;
