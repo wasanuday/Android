@@ -30,11 +30,12 @@ import java.util.Locale;
 import a2dv606.androidproject.Database.DrinkDataSource;
 import a2dv606.androidproject.MainWindow.DateHandler;
 import a2dv606.androidproject.MainWindow.MainActivity;
+import a2dv606.androidproject.MainWindow.TimePickerFragment;
 import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;
 import a2dv606.androidproject.Settings.PreferenceKey;
-import a2dv606.androidproject.dialogs.TimePickerFragment;
+
 
 public class TimeLogActivity extends AppCompatActivity  implements View.OnClickListener, NumberPicker.OnValueChangeListener , TimePickerFragment.OnTimePickedListener {
 

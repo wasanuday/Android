@@ -94,6 +94,7 @@ public class DrinkDataSource {
         return date;
     }
     public List <DateLog> createMissingDateLog(int amount,int n) {
+        System.out.println("In creating massing datelog");
         List<DateLog> dateLog = new ArrayList<DateLog>();
         String day=null;
         ContentValues values = new ContentValues();
