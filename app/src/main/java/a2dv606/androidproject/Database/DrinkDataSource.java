@@ -101,7 +101,7 @@ public class DrinkDataSource {
         String startDate = getLastDay();
         String endDate = DateHandler.getCurrentDate();
         List days = getDaysBetweenDates(startDate, endDate);
-        for (int i = 0; i < days.size(); i++) {
+        for (int i = 1; i < days.size(); i++) {
             day = (String) days.get(i);
             System.out.println("days " + day);
 
