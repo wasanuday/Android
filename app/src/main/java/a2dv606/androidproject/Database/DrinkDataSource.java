@@ -106,6 +106,7 @@ public class DrinkDataSource {
             day = (String) days.get(i);
             System.out.println("days " + day);
 
+
             values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
             values.put(DrinkDbHelper.COLUMN_WATER_NEED, n);
             values.put(DrinkDbHelper.COLUMN_DATE, day);
