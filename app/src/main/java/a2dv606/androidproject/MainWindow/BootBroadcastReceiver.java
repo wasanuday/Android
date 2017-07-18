@@ -13,10 +13,6 @@ import a2dv606.androidproject.Database.DrinkDataSource;
 public class BootBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context pContext, Intent intent) {
-        System.out.println("Boot broadcast receiver fired");
-        /*
-        here we should insert date log for today and the past days where we left
-         */
         DrinkDataSource db= new DrinkDataSource(pContext);
         db.open();
         int waterNeed= PrefsHelper.getWaterNeedPrefs(pContext);

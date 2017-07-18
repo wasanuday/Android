@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/widget_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/w_shape"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight= "10dp"
+        android:layout_marginTop= "10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@android:style/TextAppearance.Medium"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="50sp"
+            android:id="@+id/drank_per_textview"
+            />
+
+        <ImageView
+            android:id="@+id/refresh"
+            style="@android:style/TextAppearance.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src= "@drawable/refresh"
+            android:layout_marginLeft="80dp">
+        </ImageView>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        style="@android:style/TextAppearance.Medium"
+        android:textColor="@color/colorPrimaryDark"
+        android:id="@+id/drank_textview"
+        android:textSize="15sp"
+        />
+</LinearLayout>
