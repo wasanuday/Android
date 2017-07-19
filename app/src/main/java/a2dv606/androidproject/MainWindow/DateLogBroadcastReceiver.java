@@ -47,7 +47,10 @@ public class DateLogBroadcastReceiver extends BroadcastReceiver {
         int waterNeed= PrefsHelper.getWaterNeedPrefs(mContext);
         db= new DrinkDataSource(mContext);
         db.open();
-        db.createDateLog(0,waterNeed, DateHandler.getCurrentDate());
+
+        // db.createDateLog(0,waterNeed, DateHandler.getCurrentDate());
+       db.createMissingDateLog(0,waterNeed);
+
         System.out.println("db alarm fired "+ DateHandler.getCurrentDate());
         System.out.println("new record inserted: "+new Date()+" water need: "+waterNeed+" Water drank: "+0);
 

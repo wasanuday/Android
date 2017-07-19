@@ -229,7 +229,7 @@ public class ChartActivity extends AppCompatActivity {
     private ArrayList<String> getXAxisValues() {
         ArrayList<String> xAxis = new ArrayList<>();
         for (int i = 0; i < dayValues.size(); i++) {
-            xAxis.add(dayValues.get(i).getTime());
+            xAxis.add(dayValues.get(i).getDate());
         }
         return xAxis;
     }

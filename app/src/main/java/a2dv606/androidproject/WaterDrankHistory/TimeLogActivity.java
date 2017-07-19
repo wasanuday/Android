@@ -35,6 +35,7 @@ import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;
 import a2dv606.androidproject.Settings.PreferenceKey;
+import a2dv606.androidproject.MainWindow.TimePickerFragment;
 
 
 public class TimeLogActivity extends AppCompatActivity  implements View.OnClickListener, NumberPicker.OnValueChangeListener , TimePickerFragment.OnTimePickedListener {
