@@ -93,7 +93,7 @@ public class DrinkDataSource {
         cursor.close();
         return date;
     }
-    public List <DateLog> createMissingDateLog(int amount,int n) {
+    public void createMissingDateLog(int amount,int n) {
         System.out.println("In creating massing datelog");
         List<DateLog> dateLog = new ArrayList<DateLog>();
         String day=null;
@@ -116,16 +116,16 @@ public class DrinkDataSource {
                     allDateColumns, DrinkDbHelper.COLUMN_ID + " = " + insertId, null,
                     null, null, null);
         }
-        if(!isCurrentDateExist(day)) {
+        if(day!=null&&!isCurrentDateExist(day)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 DateLog newDateLog = cursorToDataLog(cursor);
                 dateLog.add(newDateLog);
             }
             cursor.close();
-            return dateLog;
+
         }
-            return null;
+
         }
 
     private boolean isCurrentDateExist(String d) {

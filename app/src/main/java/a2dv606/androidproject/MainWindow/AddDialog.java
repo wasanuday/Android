@@ -133,8 +133,6 @@ public class AddDialog extends Dialog implements View.OnClickListener{
         this.bottleSize = Integer.valueOf(bottleSizeStr);
         glassButton.setText(glassSizeStr+ " ml");
         bottleButton.setText(bottleSizeStr+ " ml");
-
-
     }
 
 }
