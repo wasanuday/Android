@@ -26,7 +26,6 @@ public class AlarmHelper {
         boolean isNotWorking =(PendingIntent.getBroadcast(context, 90,
                 new Intent(context,DateLogBroadcastReceiver.class),
                 PendingIntent.FLAG_NO_CREATE) == null);
-        System.out.println("is not working "+isNotWorking);
         if(isNotWorking) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY,0);
@@ -36,11 +35,10 @@ public class AlarmHelper {
             Intent mIntent = new Intent(context,DateLogBroadcastReceiver.class);
             PendingIntent pendingIntent = PendingIntent.
                     getBroadcast(context,90,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-
             AlarmManager alarmManager = (AlarmManager)context.getSystemService(ALARM_SERVICE);
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY,pendingIntent);
-            System.out.println("db setup");
+
     }}
     public static void setNotificationsAlarm(Context mContext) {
 
@@ -60,7 +58,7 @@ public class AlarmHelper {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,101,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)mContext.getSystemService(ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(), 1000 * 60 *60*interval, pendingIntent);
-        Toast.makeText(mContext,"repeating alarm has been scheduled",Toast.LENGTH_LONG).show();
+
     }
 
 
@@ -74,9 +72,7 @@ public class AlarmHelper {
                 getBroadcast(mContext,101,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         if(alarmManager!=null)
-        {  alarmManager.cancel(pendingIntent);
-            String msg = "Repeating alarm has been unscheduled";
-            Toast.makeText(mContext, msg,Toast.LENGTH_LONG).show();}
+        {  alarmManager.cancel(pendingIntent);}
     }
 
 }

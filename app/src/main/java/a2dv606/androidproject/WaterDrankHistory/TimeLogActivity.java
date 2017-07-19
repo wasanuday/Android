@@ -261,7 +261,6 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     }
     private void updateToBottle() {
       int v=  db.updateConsumedWaterInDateLog(- removedValue,date);
-        System.out.println("******************** "+v);
         db.updateTimeLog(ID,bottleSize,"bottle");
         db.updateConsumedWaterInDateLog( bottleSize,date);
         playSound();
@@ -274,12 +273,12 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
 
     private void showAddDrinkDialog() {
-        addDrinkdialog.setTitle("select container");
+        addDrinkdialog.setTitle("Select container");
         addDrinkdialog.show();
     }
 
     private void showUpdateDrinkDialog() {
-        updateDrinkDialog.setTitle("select container");
+        updateDrinkDialog.setTitle("Select container");
         updateDrinkDialog.show();
     }
 
@@ -320,11 +319,13 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm aa", Locale.getDefault());
 
         Calendar now = Calendar.getInstance();
+
+
         if(date.equals(DateHandler.getCurrentFormedDate())&&calendar.after(now)){
 
             AlertDialog alertDialog = new AlertDialog.Builder(TimeLogActivity.this).create();
-            alertDialog.setTitle("Error !");
-            alertDialog.setMessage("This chosen time is after the current time, please chose a valid time !");
+            alertDialog.setTitle("Error!");
+            alertDialog.setMessage("This chosen time is after the current time, please chose a valid time!");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -368,11 +369,11 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
 
             ImageView typ = (ImageView) itemView.findViewById(R.id.containerTyp);
             if(values.get(position).getContainerTyp().equals("glass"))
-            typ.setImageDrawable(getResources().getDrawable(R.drawable.water_glass));
+            typ.setImageDrawable(getResources().getDrawable(R.drawable.water_glass,null));
             if (values.get(position).getContainerTyp().equals("bottle"))
-                typ.setImageDrawable(getResources().getDrawable(R.drawable.water_bottle));
+                typ.setImageDrawable(getResources().getDrawable(R.drawable.water_bottle,null));
             if (values.get(position).getContainerTyp().equals("other"))
-                typ.setImageDrawable(getResources().getDrawable(R.drawable.icon_water_drop));
+                typ.setImageDrawable(getResources().getDrawable(R.drawable.icon_water_drop,null));
 
             waterLog = (TextView) itemView
                     .findViewById(R.id.amount);
@@ -453,7 +454,8 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     }
 
     private void updateViews(){
-        MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+ DateLog.getWaterNeed()));
+        MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()
+                +" of "+ DateLog.getWaterNeed())+"ml");
         int preValue = db.getConsumedPercentage();
         if(preValue>=100)
         {  MainActivity.circleProgress.setProgress(100);}

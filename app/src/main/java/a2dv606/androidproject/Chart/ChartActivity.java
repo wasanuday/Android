@@ -38,7 +38,7 @@ public class ChartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chart);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        setTitle("Daily history");
+        setTitle("Charts");
 
         db = new DrinkDataSource(this);
         db.open();

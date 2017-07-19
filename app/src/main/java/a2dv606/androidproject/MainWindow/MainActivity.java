@@ -58,8 +58,8 @@ public class MainActivity extends Activity  implements View.OnClickListener {
     private void checkAppFirstTimeRun() {
 
         if (PrefsHelper.getFirstTimeRunPrefs(context)) {
-           // db.createDateLog(0,PrefsHelper.getWaterNeedPrefs(context), DateHandler.getCurrentDate());
-           db.createMissingDateLog(0,2000);
+            db.createDateLog(0,PrefsHelper.getWaterNeedPrefs(context),
+                    DateHandler.getCurrentDate());
          //   AlarmHelper.setDBAlarm(context);
             startActivityForResult(new Intent(getBaseContext(), SettingsActivity.class),0);
             PrefsHelper.setFirstTimeRunPrefs(context,false);

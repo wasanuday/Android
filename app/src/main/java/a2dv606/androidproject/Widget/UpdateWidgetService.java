@@ -82,7 +82,7 @@ public class UpdateWidgetService extends Service {
         int perValue=  db.getConsumedPercentage();
         int consumed= db.geConsumedWaterForToadyDateLog();
         views.setTextViewText(R.id.drank_per_textview,String.valueOf(perValue)+"%");
-        views.setTextViewText(R.id.drank_textview,String.valueOf(consumed)+" out of "
+        views.setTextViewText(R.id.drank_textview,String.valueOf(consumed)+"/"
                 +PrefsHelper.getWaterNeedPrefs(getApplicationContext())+" ml");
 
     }
