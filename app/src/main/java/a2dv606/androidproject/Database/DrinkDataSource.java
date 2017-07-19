@@ -116,7 +116,7 @@ public class DrinkDataSource {
                     allDateColumns, DrinkDbHelper.COLUMN_ID + " = " + insertId, null,
                     null, null, null);
         }
-        if(day!=null&&!isCurrentDateExist(day)) {
+        if(!isCurrentDateExist(day)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 DateLog newDateLog = cursorToDataLog(cursor);

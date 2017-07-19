@@ -61,10 +61,6 @@ public class ChartActivity extends AppCompatActivity {
 
 
 
-
-
-
-
         dayBarChart = (BarChart) findViewById(R.id.day_chart);
         BarDataSet barDataSet = new BarDataSet(getYAxisValues(), "The consumed water in ml");
         BarData barData = new BarData(getXAxisValues(), barDataSet);
@@ -229,7 +225,8 @@ public class ChartActivity extends AppCompatActivity {
     private ArrayList<String> getXAxisValues() {
         ArrayList<String> xAxis = new ArrayList<>();
         for (int i = 0; i < dayValues.size(); i++) {
-            xAxis.add(dayValues.get(i).getDate());
+            xAxis.add(dayValues.get(i).getTime().toString());
+
         }
         return xAxis;
     }

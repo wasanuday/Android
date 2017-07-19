@@ -68,7 +68,7 @@ public class OutlineActivity extends AppCompatActivity {
 
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
-        Fragment[] fragments = new Fragment[4];
+        Fragment[] fragments = new Fragment[6];
 
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -77,6 +77,9 @@ public class OutlineActivity extends AppCompatActivity {
             fragments[1] = adviceFragment.create( R.string.sleep_review, R.drawable.sleep);
             fragments[2] = adviceFragment.create( R.string.shower_review, R.drawable.shower);
             fragments[3] = adviceFragment.create( R.string.meal_review, R.drawable.eat);
+            fragments[4] = adviceFragment.create( R.string.lose_weight, R.drawable.lose_weight);
+            fragments[5] = adviceFragment.create( R.string.lack_water, R.drawable.pheart);
+
 
 
         }

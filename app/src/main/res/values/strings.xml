@@ -22,6 +22,8 @@
     <string name="sleep_review">1 glass of water before going to bed - avoids stroke or heart attack</string>
     <string name="shower_review">1 glass of water before taking a shower - helps lower blood pressure </string>
     <string name="meal_review">1 glass of water 30 before a meal - helps digestion</string>
+    <string name="lose_weight">Water speeds up the metabolism. To lose extra weight - drink more water</string>
+    <string name="lack_water">The brain and blood vessels function poorly with a lack of water. To prevent this from happening, maintain a normal water balance</string>
     <string name="title_activity_history_chart">historyChartActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
