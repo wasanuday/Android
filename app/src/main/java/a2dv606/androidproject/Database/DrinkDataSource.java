@@ -334,7 +334,7 @@ public class DrinkDataSource {
     public ArrayList<TimeLog>getDrinkByDay(){
         ArrayList<TimeLog> timeLog = new ArrayList<TimeLog>();
         Cursor cursor = database.query(DrinkDbHelper.TIME_TABLE_NAME,
-           allTimeColumns , DrinkDbHelper.COLUMN_TIME_DATE + " BETWEEN datetime('now', 'start of day') AND datetime('now', 'localtime')", null, null, null, null);
+           allTimeColumns , DrinkDbHelper.COLUMN_TIME_DATE + " BETWEEN date('now', 'start of day') AND datetime('now', 'localtime')", null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

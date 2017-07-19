@@ -315,7 +315,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     public void onTimePicked(int textId, int hour, int minute) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR, hour);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm aa", Locale.getDefault());
 
