@@ -1,17 +1,17 @@
-package a2dv606.androidproject.MainWindow;
+package a2dv606.androidproject.Dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 
 import a2dv606.androidproject.Database.DrinkDataSource;
+import a2dv606.androidproject.MainWindow.DateHandler;
+import a2dv606.androidproject.MainWindow.MainActivity;
+import a2dv606.androidproject.Settings.PrefsHelper;
 import a2dv606.androidproject.R;
-import a2dv606.androidproject.Settings.PreferenceKey;
 
 /**
  * Created by Hussain on 4/30/2017.
@@ -90,37 +90,36 @@ public class AddDialog extends Dialog implements View.OnClickListener{
     }
 
     private void addGlass(){
+       int perBefore= db.getConsumedPercentage();
         db.createTimeLog(glassSize,GLASS, DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateConsumedWaterForTodayDateLog(glassSize);
-        updateView();
+
+
+        updateView(perBefore);
         playSound();
         dismiss();
     }
 
     private void addBottle() {
+        int perBefore= db.getConsumedPercentage();
         db.createTimeLog(bottleSize,BOTTLE,DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateConsumedWaterForTodayDateLog(bottleSize);
-        updateView();
+        updateView(perBefore);
         playSound();
         dismiss();
     }
 
-    private void updateView() {
+    private void updateView(int perBefore) {
         int perValue= db.getConsumedPercentage();
-        if(perValue>=100)
-        { MainActivity.circleProgress.setProgress(100);
-            if (PrefsHelper.getCongDialogPrefs(context)) {
+        MainActivity.circleProgress.setProgress(perValue);
+        MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+
+                PrefsHelper.getWaterNeedPrefs(context)+" ml"));
+            if (perValue==100&&perBefore<100) {
                 congratulationDialog c = new congratulationDialog(context);
                 c.show();
-                PrefsHelper.updateCongDialogPref(context,false);
-            }
-        }
-        else
-        {  MainActivity.circleProgress.setProgress(db.getConsumedPercentage());
-        }
 
-           MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+
-                   PrefsHelper.getWaterNeedPrefs(context)+" ml"));
+            }
+
     }
 
 

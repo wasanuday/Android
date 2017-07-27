@@ -16,6 +16,7 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_splash_screen);
         Thread myThread = new Thread(new Runnable() {
             public void run() {
+
                 try {
                     sleep(3000);
                     Intent splashIntent = new Intent (getApplicationContext(),MainActivity.class);

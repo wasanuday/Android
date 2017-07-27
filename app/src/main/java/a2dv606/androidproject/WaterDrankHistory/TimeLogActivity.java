@@ -454,14 +454,10 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
     }
 
     private void updateViews(){
+        int preValue = db.getConsumedPercentage();
+        MainActivity.circleProgress.setProgress(preValue);
         MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()
                 +" of "+ DateLog.getWaterNeed())+"ml");
-        int preValue = db.getConsumedPercentage();
-        if(preValue>=100)
-        {  MainActivity.circleProgress.setProgress(100);}
-        else
-        {   MainActivity.circleProgress.setProgress(db.getConsumedPercentage());}
-
         adapter.clear();
         adapter.addAll(db.getAllTimeLogs(db.sortByTimeDesc(),date));
         listView.setAdapter(adapter);

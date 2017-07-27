@@ -1,4 +1,4 @@
-package a2dv606.androidproject.MainWindow;
+package a2dv606.androidproject.Dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,8 +11,11 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 
 import a2dv606.androidproject.Database.DrinkDataSource;
+import a2dv606.androidproject.MainWindow.DateHandler;
+import a2dv606.androidproject.MainWindow.MainActivity;
 import a2dv606.androidproject.R;
 import a2dv606.androidproject.Settings.PreferenceKey;
+import a2dv606.androidproject.Settings.PrefsHelper;
 
 /**
  * Created by Hussain on 4/30/2017.
@@ -73,33 +76,33 @@ public class OtherSizeDialog  extends Dialog implements View.OnClickListener,Num
     }
 
     private void addFromNumberPiker() {
+        int preBefore= db.getConsumedPercentage();
         db.createTimeLog(NumberPickerValue,OTHER, DateHandler.getCurrentDate(),DateHandler.getCurrentTime());
         db.updateConsumedWaterForTodayDateLog(NumberPickerValue);
-        updateView();
+        updateView(preBefore);
         playSound();
         dismiss();
     }
 
     private void playSound() {
-        if (getSoundsPrefs())
+        if (PrefsHelper.getSoundsPrefs(context))
             mediaPlayer.start();
 
 
     }
 
-    private void updateView() {
+    private void updateView(int perBefore) {
         int perValue= db.getConsumedPercentage();
-        if(perValue>=100)
-        { MainActivity.circleProgress.setProgress(100);
-            if (getCongDialogPrefs()) {
+        MainActivity.circleProgress.setProgress(db.getConsumedPercentage());
+        MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+
+                PrefsHelper.getWaterNeedPrefs(context)+" ml"));
+
+            if (perBefore<100&&perValue==100) {
                 congratulationDialog c = new congratulationDialog(context);
                 c.show();
-                setCongDialogPrefs(false);
+
             }
-        }
-        else
-        {  MainActivity.circleProgress.setProgress(db.getConsumedPercentage());}
-           MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+ getWaterNeedPrefs()+" ml"));
+
     }
 
 
@@ -115,16 +118,9 @@ public class OtherSizeDialog  extends Dialog implements View.OnClickListener,Num
         editor.putBoolean("show_dialog", value);
         editor.commit();
     }
-    private int getWaterNeedPrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getInt(PreferenceKey.PREF_WATER_NEED,0);
 
-    }
 
-    private boolean getSoundsPrefs(){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(PreferenceKey.PREF_SOUND,false);
-    }
+
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         this.NumberPickerValue= picker.getValue()*5;

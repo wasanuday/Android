@@ -39,6 +39,7 @@ public class DateHandler {
     }
 
     public static String dayFormat(String date) {
+        System.out.println(" date string: "+date);
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date d = null;
         try {
@@ -48,6 +49,7 @@ public class DateHandler {
         }
 
         fmt = new SimpleDateFormat("EEE");
+        System.out.println(" date: "+fmt.format(d));
         return fmt.format(d);
 
     }

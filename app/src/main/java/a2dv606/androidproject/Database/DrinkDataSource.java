@@ -94,7 +94,7 @@ public class DrinkDataSource {
         return date;
     }
     public void createMissingDateLog(int amount,int n) {
-        System.out.println("In creating massing datelog");
+
         List<DateLog> dateLog = new ArrayList<DateLog>();
         String day=null;
         ContentValues values = new ContentValues();
@@ -207,9 +207,12 @@ public class DrinkDataSource {
             waterNeed = cursor.getInt(cursor.getColumnIndex( DrinkDbHelper.COLUMN_WATER_NEED));
         }
         cursor.close();
-        if(waterNeed!=0)
-          return geConsumedWaterForToadyDateLog()*100/waterNeed;
-        return 0;
+        if(waterNeed==0)
+            return 0;
+         int value= geConsumedWaterForToadyDateLog()*100/waterNeed;
+           if (value>100)
+               return 100;
+        return value;
     }
 
     public List<DateLog> getAllDateLogs() {
@@ -373,6 +376,7 @@ public class DrinkDataSource {
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             date = cursor.getString(cursor.getColumnIndex(DrinkDbHelper.COLUMN_DATE));
+
         }
         cursor.close();
         return date;

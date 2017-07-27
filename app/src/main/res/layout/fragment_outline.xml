@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
 
     tools:context="a2dv606.androidproject.OutlinesFragments.OutlineActivity"
-    android:background="#ffffff">
+    android:background="@color/white">
 
 
     <android.support.v4.view.ViewPager

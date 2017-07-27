@@ -3,17 +3,13 @@ package a2dv606.androidproject.Widget;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
-import java.util.Random;
-
 import a2dv606.androidproject.Database.DrinkDataSource;
-import a2dv606.androidproject.MainWindow.DateHandler;
 import a2dv606.androidproject.MainWindow.MainActivity;
-import a2dv606.androidproject.MainWindow.PrefsHelper;
+import a2dv606.androidproject.Settings.PrefsHelper;
 import a2dv606.androidproject.R;
 
 public class UpdateWidgetService extends Service {

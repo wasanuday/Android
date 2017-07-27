@@ -1,15 +1,11 @@
 package a2dv606.androidproject.MainWindow;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,7 +18,10 @@ import a2dv606.androidproject.Database.DrinkDataSource;
 
 
 import a2dv606.androidproject.Chart.ChartActivity;
+import a2dv606.androidproject.Dialogs.AddDialog;
+import a2dv606.androidproject.Dialogs.SleepModeDialog;
 import a2dv606.androidproject.R;
+import a2dv606.androidproject.Settings.PrefsHelper;
 import a2dv606.androidproject.WaterDrankHistory.DateLogActivity;
 import a2dv606.androidproject.Settings.SettingsActivity;
 import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
@@ -87,10 +86,15 @@ public class MainActivity extends Activity  implements View.OnClickListener {
 
     private void loadNotificationsPrefs() {
         boolean isEnable= PrefsHelper.getNotificationsPrefs(context);
+
         if (isEnable)
+        {  System.out.println("is enabled");
             AlarmHelper.setNotificationsAlarm(context);
+           }
         else
+        {     System.out.println("is not enabled");
             AlarmHelper.stopNotificationsAlarm(context);
+      }
     }
 
 
@@ -140,11 +144,7 @@ public class MainActivity extends Activity  implements View.OnClickListener {
 
     private void  updateView(){
       int perValue= db.getConsumedPercentage();
-       if(perValue>=100)
-       { circleProgress.setProgress(100);
-       }
-       else
-       {  circleProgress.setProgress(db.getConsumedPercentage());}
+           circleProgress.setProgress(perValue);
           choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+
                   PrefsHelper.getWaterNeedPrefs(getApplicationContext())+" ml"));
        }

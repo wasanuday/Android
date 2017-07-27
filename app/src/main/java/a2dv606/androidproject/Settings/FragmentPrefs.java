@@ -188,6 +188,7 @@ public class FragmentPrefs extends PreferenceFragment
             {
                 intervalPref.setEnabled(true);
                 fromTimePrf.setEnabled(true);
+
             }
             else{
             intervalPref.setEnabled(false);

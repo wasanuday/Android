@@ -4,6 +4,5 @@
         android:endColor="@color/blue_"
         android:angle="45"
        >
-
     </gradient>
 </shape>

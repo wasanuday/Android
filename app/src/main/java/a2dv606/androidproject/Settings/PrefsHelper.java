@@ -1,4 +1,4 @@
-package a2dv606.androidproject.MainWindow;
+package a2dv606.androidproject.Settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,12 +13,7 @@ import a2dv606.androidproject.Settings.PreferenceKey;
 
 public class PrefsHelper {
 
-    public static void updateCongDialogPref(Context mContext, boolean bln) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("show_dialog", bln);
-        editor.commit();
-    }
+
 
     public static int getWaterNeedPrefs(Context context){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -30,11 +25,7 @@ public class PrefsHelper {
         return  prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
 
     }
-    public static boolean getCongDialogPrefs(Context context)
-    {   SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-       return  preferences.getBoolean("show_dialog", true);
 
-    }
 
     public static boolean getSoundsPrefs(Context context){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

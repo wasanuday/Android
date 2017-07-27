@@ -1,4 +1,4 @@
-package a2dv606.androidproject.MainWindow;
+package a2dv606.androidproject.Dialogs;
 
 import android.app.Dialog;
 import android.content.Context;

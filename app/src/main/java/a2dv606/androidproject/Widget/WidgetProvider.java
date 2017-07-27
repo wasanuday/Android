@@ -3,17 +3,11 @@ package a2dv606.androidproject.Widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 
-import java.util.Random;
-
 import a2dv606.androidproject.Database.DrinkDataSource;
-import a2dv606.androidproject.MainWindow.DateHandler;
-import a2dv606.androidproject.MainWindow.PrefsHelper;
 import a2dv606.androidproject.R;
 
 /**

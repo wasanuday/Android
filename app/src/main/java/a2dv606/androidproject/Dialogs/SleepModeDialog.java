@@ -1,4 +1,4 @@
-package a2dv606.androidproject.MainWindow;
+package a2dv606.androidproject.Dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import a2dv606.androidproject.MainWindow.AlarmHelper;
+import a2dv606.androidproject.Settings.PrefsHelper;
 import a2dv606.androidproject.R;
 
 /**

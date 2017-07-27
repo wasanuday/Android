@@ -28,7 +28,7 @@
         </activity>
 
         <receiver android:name=".Notifications.NotificationReciever" />
-        <receiver android:name=".MainWindow.DateLogBroadcastReceiver" />
+        <receiver android:name=".BroadcastReceivers.DateLogBroadcastReceiver" />
 
         <activity
             android:name=".Chart.ChartActivity"
@@ -42,7 +42,7 @@
         </activity>
 
         <receiver
-            android:name=".MainWindow.BootBroadcastReceiver"
+            android:name=".BroadcastReceivers.BootBroadcastReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
