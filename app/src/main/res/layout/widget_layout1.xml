@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/widget_layout"
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:padding="10dp"
         android:background="@drawable/w_shape"
         android:orientation="horizontal">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -15,11 +13,7 @@
             android:textSize="50sp"
             android:layout_gravity="center"
             android:id="@+id/drank_per_textview"
-            android:shadowColor="@color/colorPrimaryDark"
             android:textColor="@color/colorPrimaryDark"
-            android:shadowDx="0.0"
-            android:shadowDy="0.0"
-            android:shadowRadius="280"
             android:layout_marginStart="10dp"
             />
     <LinearLayout
@@ -39,7 +33,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             style="@android:style/TextAppearance.Medium"
             android:textColor="@color/white"
             android:id="@+id/drank_textview"
@@ -50,8 +43,9 @@
     <ImageView
         android:id="@+id/refresh"
         style="@android:style/TextAppearance.Medium"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
         android:layout_gravity="center"
         android:src= "@drawable/refresh"
 

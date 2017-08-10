@@ -11,19 +11,16 @@ import a2dv606.androidproject.Database.DrinkDataSource;
 import a2dv606.androidproject.R;
 
 /**
- * Created by Hussain on 7/17/2017.
+ * Created by Abeer on 7/17/2017.
  */
 
 public class WidgetProvider  extends AppWidgetProvider {
 
-    private static final String ACTION_CLICK = "ACTION_CLICK";
-    private DrinkDataSource db;
-    private int glassSize;
-    private  int bottleSize;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
+
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         for (int i = 0; i < appWidgetIds.length; i++) {
@@ -43,3 +40,4 @@ public class WidgetProvider  extends AppWidgetProvider {
             view.setOnClickPendingIntent(R.id.refresh, pendingIntent);
             appWidgetManager.updateAppWidget(appWidgetIds, view);
 }}}
+

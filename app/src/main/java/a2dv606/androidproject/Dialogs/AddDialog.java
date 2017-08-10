@@ -14,7 +14,7 @@ import a2dv606.androidproject.Settings.PrefsHelper;
 import a2dv606.androidproject.R;
 
 /**
- * Created by Hussain on 4/30/2017.
+ * Created by Abeer on 4/30/2017.
  */
 
 public class AddDialog extends Dialog implements View.OnClickListener{
@@ -112,8 +112,9 @@ public class AddDialog extends Dialog implements View.OnClickListener{
     private void updateView(int perBefore) {
         int perValue= db.getConsumedPercentage();
         MainActivity.circleProgress.setProgress(perValue);
-        MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+
+        MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" out of "+
                 PrefsHelper.getWaterNeedPrefs(context)+" ml"));
+
             if (perValue==100&&perBefore<100) {
                 congratulationDialog c = new congratulationDialog(context);
                 c.show();

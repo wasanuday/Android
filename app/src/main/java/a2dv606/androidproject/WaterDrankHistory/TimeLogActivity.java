@@ -36,6 +36,7 @@ import a2dv606.androidproject.Model.TimeLog;
 import a2dv606.androidproject.R;
 import a2dv606.androidproject.Settings.PreferenceKey;
 import a2dv606.androidproject.MainWindow.TimePickerFragment;
+import a2dv606.androidproject.Settings.PrefsHelper;
 
 
 public class TimeLogActivity extends AppCompatActivity  implements View.OnClickListener, NumberPicker.OnValueChangeListener , TimePickerFragment.OnTimePickedListener {
@@ -457,7 +458,7 @@ public class TimeLogActivity extends AppCompatActivity  implements View.OnClickL
         int preValue = db.getConsumedPercentage();
         MainActivity.circleProgress.setProgress(preValue);
         MainActivity.choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()
-                +" of "+ DateLog.getWaterNeed())+"ml");
+                +" out of"+ PrefsHelper.getWaterNeedPrefs(getApplicationContext()))+"ml");
         adapter.clear();
         adapter.addAll(db.getAllTimeLogs(db.sortByTimeDesc(),date));
         listView.setAdapter(adapter);

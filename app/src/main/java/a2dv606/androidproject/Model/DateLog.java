@@ -15,7 +15,7 @@ public class DateLog  {
 
 
     private Long ID;
-    private static int waterNeed;
+    private  int waterNeed;
     private int waterDrunk;
     private String date ;
 
@@ -32,7 +32,7 @@ public class DateLog  {
         this.waterDrunk = waterDrunk;
     }
 
-    public static int getWaterNeed() {return waterNeed;}
+    public int getWaterNeed() {return waterNeed;}
 
     public Double getWaterInLiter(int water){
     double w= (double) water;

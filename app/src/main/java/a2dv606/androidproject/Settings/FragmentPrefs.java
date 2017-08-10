@@ -29,8 +29,9 @@ public class FragmentPrefs extends PreferenceFragment
     private SettingsActivity mActivity;
     private Context context;
     private Preference glassSizePref, bottleSizePref, intervalPref, soundPref,
-            notiEnablePref,fromTimePrf, weightPref,trainingPref,waterNeedPref;
+            notiEnablePref,fromTimePrf, toTimePref,weightPref,trainingPref,waterNeedPref;
     private Calendar fromC = Calendar.getInstance();
+    private Calendar toC = Calendar.getInstance();
 
 
 
@@ -43,6 +44,7 @@ public class FragmentPrefs extends PreferenceFragment
         soundPref= findPreference(PreferenceKey.PREF_SOUND);
         intervalPref=findPreference(PreferenceKey.PREF_INTERVAL);
         fromTimePrf =  findPreference(PreferenceKey.PREF_START_TIME);
+        toTimePref= findPreference(PreferenceKey.PREF_EBD_TIME);
         weightPref =findPreference(PreferenceKey.PREF_WEIGHT_NUMBER);
         trainingPref= findPreference(PreferenceKey.PREF_TRAINING);
         waterNeedPref = findPreference(PreferenceKey.PREF_WATER_NEED);
@@ -52,6 +54,7 @@ public class FragmentPrefs extends PreferenceFragment
 
         trainingPref.setOnPreferenceChangeListener(this);
         weightPref.setOnPreferenceChangeListener(this);
+        toTimePref.setOnPreferenceChangeListener(this);
         waterNeedPref.setOnPreferenceChangeListener(this);
         notiEnablePref.setOnPreferenceChangeListener(this);
         intervalPref.setOnPreferenceChangeListener(this);
@@ -75,7 +78,18 @@ public class FragmentPrefs extends PreferenceFragment
             }
         });
 
-
+        toTimePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                int hour = toC.get(Calendar.HOUR_OF_DAY);
+                int minutes = toC.get(Calendar.MINUTE);
+                TimePickerDialog datePickerDialog =
+                        new TimePickerDialog(getActivity(),timeTo ,hour,minutes, true);
+                datePickerDialog.show();
+                return false;
+            }
+        });
     }
     @SuppressWarnings("deprecation")
     @Override
@@ -98,6 +112,7 @@ public class FragmentPrefs extends PreferenceFragment
         String bottleSize = getPreferenceManager().getSharedPreferences().getString(PreferenceKey.PREF_BOTTLE_SIZE,"");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String from = sharedPreferences.getString(PreferenceKey.FROM_KEY,"8:0");
+        String to = sharedPreferences.getString(PreferenceKey.TO_KEY,"20:0");
           if(weight!=0)
              weightPref.setSummary(Integer.toString(weight)+" kg");
         trainingPref.setSummary(getString(training));
@@ -105,6 +120,7 @@ public class FragmentPrefs extends PreferenceFragment
         glassSizePref.setSummary(glassSize+ " ml");
         bottleSizePref.setSummary(bottleSize+ " ml");
         fromTimePrf.setSummary(from);
+        toTimePref.setSummary(to);
         notiEnablePref.setSummary(getString(isNotifEnabled));
         enableNotificationsPrefs(isNotifEnabled);
         soundPref.setSummary(getString(isSoundEnabled));
@@ -123,6 +139,20 @@ public class FragmentPrefs extends PreferenceFragment
             fromC.set(Calendar.MINUTE,minute);
             fromTimePrf.setSummary(String.valueOf(hourOfDay)+":"+String.valueOf(minute));
             setTimePref(PreferenceKey.FROM_KEY,String.valueOf(hourOfDay)+":"+String.valueOf(minute));
+
+
+        }
+
+    };
+
+    TimePickerDialog.OnTimeSetListener timeTo = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+            toC.set(Calendar.HOUR_OF_DAY,hourOfDay);
+            toC.set(Calendar.MINUTE,minute);
+            toTimePref.setSummary(String.valueOf(hourOfDay)+":"+String.valueOf(minute));
+            setTimePref(PreferenceKey.TO_KEY,String.valueOf(hourOfDay)+":"+String.valueOf(minute));
 
 
         }
@@ -188,11 +218,13 @@ public class FragmentPrefs extends PreferenceFragment
             {
                 intervalPref.setEnabled(true);
                 fromTimePrf.setEnabled(true);
+                toTimePref.setEnabled(true);
 
             }
             else{
             intervalPref.setEnabled(false);
             fromTimePrf.setEnabled(false);
+                toTimePref.setEnabled(false);
         }
     }
 

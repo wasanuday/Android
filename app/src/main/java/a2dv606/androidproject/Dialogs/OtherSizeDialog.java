@@ -18,7 +18,7 @@ import a2dv606.androidproject.Settings.PreferenceKey;
 import a2dv606.androidproject.Settings.PrefsHelper;
 
 /**
- * Created by Hussain on 4/30/2017.
+ * Created by Abeer on 4/30/2017.
  */
 
 public class OtherSizeDialog  extends Dialog implements View.OnClickListener,NumberPicker.OnValueChangeListener{

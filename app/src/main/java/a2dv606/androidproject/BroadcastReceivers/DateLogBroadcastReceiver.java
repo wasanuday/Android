@@ -29,11 +29,11 @@ public class DateLogBroadcastReceiver extends BroadcastReceiver {
         mContext =context;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean NotificationSet= prefs.getBoolean(PreferenceKey.PREF_IS_ENABLED,true);
-        boolean sleepModeSet= PrefsHelper.getSleepModePrefs(context);
                 insertDateLog();
 
-                  if(NotificationSet&&!sleepModeSet)
-                     AlarmHelper.setNotificationsAlarm(context);
+                  if(NotificationSet)
+                  { AlarmHelper.setNotificationsAlarm(context);
+                    AlarmHelper.setCancelNotificationAlarm(context);}
 
     }
 

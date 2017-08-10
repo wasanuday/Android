@@ -8,7 +8,7 @@ import a2dv606.androidproject.R;
 import a2dv606.androidproject.Settings.PreferenceKey;
 
 /**
- * Created by Hussain on 5/2/2017.
+ * Created by Abeer on 5/2/2017.
  */
 
 public class PrefsHelper {
@@ -55,17 +55,4 @@ public class PrefsHelper {
         editor.commit();
     }
 
-    public static boolean getSleepModePrefs(Context context){
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = pref.edit();
-       return pref.getBoolean("sleep_mode", false);
-    }
-
-    public static void setSleepModePrefs(Context context, boolean bln) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putBoolean("sleep_mode", bln);
-        editor.commit();
-
-    }
 }

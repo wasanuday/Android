@@ -10,13 +10,14 @@ import android.preference.PreferenceManager;
 import java.util.Calendar;
 
 import a2dv606.androidproject.BroadcastReceivers.DateLogBroadcastReceiver;
+import a2dv606.androidproject.BroadcastReceivers.StopNotificationBroadcastReceiver;
 import a2dv606.androidproject.Notifications.NotificationReciever;
 import a2dv606.androidproject.Settings.PreferenceKey;
 
 import static android.content.Context.ALARM_SERVICE;
 
 /**
- * Created by Hussain on 5/2/2017.
+ * Created by Abeer on 5/2/2017.
  */
 
 public class AlarmHelper {
@@ -84,6 +85,25 @@ public class AlarmHelper {
 
         if(alarmManager!=null)
         {  alarmManager.cancel(pendingIntent);}
+        System.out.println("has canceled");
+    }
+
+    public static void setCancelNotificationAlarm(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String to = prefs.getString(PreferenceKey.TO_KEY, "8:0");
+        String[] values = to.split(":");
+        String hr = values[0];
+        String mt = values[1];
+        Calendar cal= Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(hr));
+        cal.set(Calendar.MINUTE, Integer.valueOf(mt));
+        cal.set(Calendar.SECOND, 0);
+        Intent nIntent = new Intent(context, StopNotificationBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 102, nIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),pendingIntent);
+        System.out.println("cancel set"+ hr +" "+mt);
+
     }
 
 }

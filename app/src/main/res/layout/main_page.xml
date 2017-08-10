@@ -11,17 +11,7 @@
         android:orientation="vertical"
         android:id="@+id/main_view"
         android:padding="20dp">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sleep_button"
-            android:layout_gravity="right"
-            android:src = "@drawable/sleep_mode"
-            android:tint="@color/colorPrimaryDark"
-            android:padding="7dp"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/circle_button"
-            />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

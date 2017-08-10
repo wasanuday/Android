@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import a2dv606.androidproject.R;
 
 /**
- * Created by Hussain on 4/30/2017.
+ * Created by Abeer on 4/30/2017.
  */
 
 public class congratulationDialog  extends Dialog implements View.OnClickListener{

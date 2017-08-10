@@ -106,7 +106,6 @@ public class DrinkDataSource {
             day = (String) days.get(i);
             System.out.println("days " + day);
 
-
             values.put(DrinkDbHelper.COLUMN_WATER_DRUNK, amount);
             values.put(DrinkDbHelper.COLUMN_WATER_NEED, n);
             values.put(DrinkDbHelper.COLUMN_DATE, day);
@@ -116,7 +115,7 @@ public class DrinkDataSource {
                     allDateColumns, DrinkDbHelper.COLUMN_ID + " = " + insertId, null,
                     null, null, null);
         }
-        if(!isCurrentDateExist(day)) {
+        if(day!=null&&!isCurrentDateExist(day)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 DateLog newDateLog = cursorToDataLog(cursor);
@@ -152,6 +151,8 @@ public class DrinkDataSource {
 
     public int updateConsumedWaterInDateLog( int removedAmount ,String date) {
         int TotalDrank = getConsumedAmount(date) + removedAmount;
+        if(TotalDrank<0)
+            TotalDrank=0;
         System.out.println("total consumed "+TotalDrank);
         ContentValues cv = new ContentValues();
         cv.put(DrinkDbHelper.COLUMN_WATER_DRUNK, TotalDrank);
@@ -166,6 +167,8 @@ public class DrinkDataSource {
     }
 
     public boolean updateWaterNeedForTodayDateLog(int waterNeed ) {
+        System.out.println("water need" +waterNeed);
+
         ContentValues cv = new ContentValues();
         cv.put(DrinkDbHelper.COLUMN_WATER_NEED, waterNeed);
         return database.update(DrinkDbHelper.Date_TABLE_NAME, cv,DrinkDbHelper.COLUMN_ID + "= (SELECT  MAX(" + DrinkDbHelper.COLUMN_ID + " ) from "+DrinkDbHelper.Date_TABLE_NAME+" )", null)>0;
@@ -223,6 +226,7 @@ public class DrinkDataSource {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             DateLog task = cursorToDataLog(cursor);
+            System.out.println("here "+task.getWaterNeed());
             dateLog.add(task);
             cursor.moveToNext();
         }

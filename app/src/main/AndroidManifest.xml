@@ -29,6 +29,7 @@
 
         <receiver android:name=".Notifications.NotificationReciever" />
         <receiver android:name=".BroadcastReceivers.DateLogBroadcastReceiver" />
+        <receiver android:name=".BroadcastReceivers.StopNotificationBroadcastReceiver" />
 
         <activity
             android:name=".Chart.ChartActivity"
@@ -49,12 +50,10 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".Widget.WidgetProvider">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.myapp.button_press" />
 
-                <category android:name="com.myapp" />
-            </intent-filter>
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"

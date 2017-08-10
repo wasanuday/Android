@@ -19,7 +19,6 @@ import a2dv606.androidproject.Database.DrinkDataSource;
 
 import a2dv606.androidproject.Chart.ChartActivity;
 import a2dv606.androidproject.Dialogs.AddDialog;
-import a2dv606.androidproject.Dialogs.SleepModeDialog;
 import a2dv606.androidproject.R;
 import a2dv606.androidproject.Settings.PrefsHelper;
 import a2dv606.androidproject.WaterDrankHistory.DateLogActivity;
@@ -28,7 +27,7 @@ import a2dv606.androidproject.OutlinesFragments.OutlineActivity;
 
 public class MainActivity extends Activity  implements View.OnClickListener {
 
-    private ImageButton logButton, chartButton, settingButton,outlinesButton, sleepButton;
+    private ImageButton logButton, chartButton, settingButton,outlinesButton;
     private Button addDrinkButton;
     private LinearLayout mainLayout;
     public static  DonutProgress circleProgress;
@@ -90,6 +89,7 @@ public class MainActivity extends Activity  implements View.OnClickListener {
         if (isEnable)
         {  System.out.println("is enabled");
             AlarmHelper.setNotificationsAlarm(context);
+            AlarmHelper.setCancelNotificationAlarm(context);
            }
         else
         {     System.out.println("is not enabled");
@@ -125,18 +125,12 @@ public class MainActivity extends Activity  implements View.OnClickListener {
                   showAddDialog();
                     break;
 
-                case R.id.sleep_button:
-                    sleepModeButton();
-                    break;
+
 
     }
 }
 
-    private void sleepModeButton(){
-        SleepModeDialog sleepModeDialog= new SleepModeDialog(this);
-        sleepModeDialog.show();
 
-    }
 
 
 
@@ -145,7 +139,7 @@ public class MainActivity extends Activity  implements View.OnClickListener {
     private void  updateView(){
       int perValue= db.getConsumedPercentage();
            circleProgress.setProgress(perValue);
-          choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" of "+
+          choosenAmountTv.setText(String.valueOf(db.geConsumedWaterForToadyDateLog()+" out of "+
                   PrefsHelper.getWaterNeedPrefs(getApplicationContext())+" ml"));
        }
 
@@ -184,14 +178,14 @@ public class MainActivity extends Activity  implements View.OnClickListener {
         chartButton =(ImageButton)findViewById(R.id.chart_button);
         settingButton =(ImageButton)findViewById(R.id.setting_button);
         outlinesButton =(ImageButton)findViewById(R.id.outlines_button);
-        sleepButton =(ImageButton)findViewById(R.id.sleep_button);
+
         choosenAmountTv=(TextView) findViewById(R.id.choosen_drink_text);
         addDrinkButton = (Button) findViewById(R.id.add_drink_button);
         logButton.setOnClickListener(this);
         chartButton.setOnClickListener(this);
         settingButton.setOnClickListener(this);
         outlinesButton.setOnClickListener(this);
-        sleepButton.setOnClickListener(this);
+
         addDrinkButton.setOnClickListener(this);
     }
 

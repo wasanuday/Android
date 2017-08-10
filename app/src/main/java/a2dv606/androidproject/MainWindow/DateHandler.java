@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by Hussain on 4/12/2017.
+ * Created by Abeer on 4/12/2017.
  */
 
 public class DateHandler {

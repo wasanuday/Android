@@ -80,6 +80,12 @@
         android:icon="@drawable/clock_from_icon"
         android:title="From"
         android:enabled="false"/>
+    <Preference
+        android:key="key_to_time"
+        android:defaultValue="20:0"
+        android:icon="@drawable/clock_to_icon"
+        android:title="To"
+        android:enabled="false"/>
     <alobar.preference.NumberPickerPreference
         android:enabled="false"
         android:icon="@drawable/interval_icon"

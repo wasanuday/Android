@@ -20,13 +20,14 @@ import a2dv606.androidproject.Model.DateLog;
 import a2dv606.androidproject.R;
 
 public class DateLogActivity extends AppCompatActivity {
-    private int waterDrank, waterNeed;
+
     private DateLog dateLog;
     private TextView waterLog,dateTv;
     private CircleProgress circleProgress;
     static ListView listView;
     static List<DateLog> values ;
     static ArrayAdapter<DateLog> adapter;
+
 
     private static DrinkDataSource db;
     @Override
@@ -36,7 +37,6 @@ public class DateLogActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         setContentView(R.layout.date_log_activity);
         setTitle("History");
-        System.out.println("hereeeee in 2");
 
         db = new DrinkDataSource(this);
         db.open();
@@ -83,7 +83,8 @@ public class DateLogActivity extends AppCompatActivity {
             });
             ImageButton shareButton = (ImageButton) itemView.findViewById(R.id.forward);
 
-
+            final int  waterNeed =values.get(position).getWaterNeed();
+            final int waterDrank = values.get(position).getWaterDrunk();
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -101,16 +102,17 @@ public class DateLogActivity extends AppCompatActivity {
             dateTv.setText(DateHandler.dateFormat(values.get(position).getDate()));
 
             waterLog = (TextView) itemView.findViewById(R.id.water_drunk);
-            waterDrank = values.get(position).getWaterDrunk();
-            waterNeed =values.get(position).getWaterNeed();
-            waterLog.setText(dateLog.getWaterInLiter(waterDrank) + "/" + dateLog.getWaterInLiter(waterNeed) + "L");
 
-            int preValue= waterDrank*100/waterNeed;
+            System.out.println("in "+waterNeed );
+            waterLog.setText(dateLog.getWaterInLiter(waterDrank) + "/" +
+                    dateLog.getWaterInLiter(waterNeed) + "L");
 
-            if(preValue>=100)
+            int prcValue= waterDrank*100/waterNeed;
+
+            if(prcValue>=100)
              circleProgress.setProgress(100);
             else
-             circleProgress.setProgress(preValue);
+             circleProgress.setProgress(prcValue);
 
             return itemView;
         }
