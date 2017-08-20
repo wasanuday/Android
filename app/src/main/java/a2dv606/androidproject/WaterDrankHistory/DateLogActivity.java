@@ -103,7 +103,6 @@ public class DateLogActivity extends AppCompatActivity {
 
             waterLog = (TextView) itemView.findViewById(R.id.water_drunk);
 
-            System.out.println("in "+waterNeed );
             waterLog.setText(dateLog.getWaterInLiter(waterDrank) + "/" +
                     dateLog.getWaterInLiter(waterNeed) + "L");
 
